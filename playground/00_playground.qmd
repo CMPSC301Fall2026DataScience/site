@@ -1,0 +1,44 @@
+---
+title: "🎮 Data Science Playground"
+subtitle: "Interactive Coding Experiments"
+listing:
+  contents:
+    - "*.qmd"
+    - "!00_playground.qmd"
+  type: grid
+  sort: "title"
+  fields: [title, description, categories]
+  grid-columns: 2
+format: html
+---
+
+Welcome to the **Data Science Playground**! 🚀
+
+Here you'll find interactive demonstrations showcasing the exciting world of data science. Each experiment includes:
+
+- **Live Python/R code** you can run in your browser
+- **Real datasets** to explore and analyze
+- **Visualizations** that bring data to life
+- **Detailed explanations** of concepts and techniques
+
+These demonstrations give you a taste of what you'll learn in CMPSC 301. Play around, experiment, and see what data science is all about!
+
+---
+
+## 🎯 What You'll Explore
+
+:::{.callout-tip}
+## Try It Live!
+Each demonstration includes interactive code cells. Click the **JupyterLite** tab in the navigation to access a full Python/R environment, or use the embedded code runners below!
+:::
+
+:::{.callout-note}
+## For Prospective Students
+These demonstrations showcase the types of projects and analyses you'll create in this course. Don't worry if some concepts are unfamiliar - that's what the course is for! The goal is to inspire curiosity and show you the possibilities.
+:::
+
+---
+
+## 🌟 Featured Demonstrations
+
+Browse the demonstrations below to see data science in action:

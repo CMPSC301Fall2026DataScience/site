@@ -1,0 +1,29 @@
+/*-- scss:defaults --*/
+
+// Color variables from logo
+$bright-cyan: #40C9D9;
+$deep-blue: #2563C7;
+$coral-pink: #FF6B6B;
+$turquoise: #4DD4E5;
+$navy-blue: #1A4B9E;
+
+// Bootstrap overrides
+$primary: $bright-cyan;
+$secondary: $coral-pink;
+$success: #6BCB77;
+$info: $turquoise;
+$warning: #FFD93D;
+$danger: $coral-pink;
+
+$body-bg: #F8FCFF;
+$body-color: #1A1A1A;
+$link-color: $deep-blue;
+$link-hover-color: $coral-pink;
+
+// Typography
+$font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$headings-font-weight: 700;
+
+/*-- scss:rules --*/
+
+// Additional custom styles can go here if needed

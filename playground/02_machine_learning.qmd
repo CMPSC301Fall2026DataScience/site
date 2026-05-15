@@ -1,0 +1,443 @@
+---
+title: "🤖 Machine Learning: Predicting the Future"
+description: "Build your first machine learning model to predict trends and make data-driven decisions"
+categories: [Python, Machine Learning, Scikit-learn, Prediction]
+execute:
+  eval: false
+  echo: true
+format: 
+  html:
+    code-tools: true
+    code-fold: false
+---
+
+## Welcome to Machine Learning! 🧠
+
+Machine learning enables computers to learn patterns from data and make predictions without being explicitly programmed. In this demonstration, you'll build and train your first predictive model!
+
+### 🎯 What You'll Learn
+
+- Understanding supervised learning concepts
+- Training regression models to predict continuous values
+- Evaluating model performance
+- Making predictions on new data
+- Visualizing model predictions
+
+---
+
+## The Challenge: Predicting Housing Prices 🏠
+
+Imagine you're a data scientist working for a real estate company. Your task is to build a model that predicts house prices based on features like size, number of bedrooms, and location.
+
+Let's build this predictive model step by step!
+
+---
+
+## Part 1: Creating Our Dataset
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+import plotly.graph_objects as go
+import plotly.express as px
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Generate realistic housing data
+n_houses = 100
+
+# Features
+square_feet = np.random.randint(800, 4000, n_houses)
+bedrooms = np.random.randint(1, 6, n_houses)
+age_years = np.random.randint(0, 50, n_houses)
+distance_to_city = np.random.uniform(1, 30, n_houses)  # miles
+
+# Target: Price (with realistic relationships)
+base_price = 100000
+price = (base_price + 
+         square_feet * 150 +          # $150 per sq ft
+         bedrooms * 25000 +           # $25k per bedroom
+         -age_years * 1000 +          # -$1k per year of age
+         -distance_to_city * 2000 +   # -$2k per mile from city
+         np.random.normal(0, 30000, n_houses))  # random variation
+
+# Create DataFrame
+df = pd.DataFrame({
+    'square_feet': square_feet,
+    'bedrooms': bedrooms,
+    'age_years': age_years,
+    'distance_to_city': distance_to_city,
+    'price': price
+})
+
+print("🏠 Housing Dataset Preview")
+print("="*60)
+print(df.head(10))
+print(f"\n📊 Dataset shape: {df.shape[0]} houses, {df.shape[1]} features")
+print("\n📈 Summary Statistics:")
+print(df.describe().round(2))
+```
+
+:::{.callout-note}
+## Understanding Our Data
+We have 100 houses with 4 features:
+- **Square Feet**: Size of the house (800-4000 sq ft)
+- **Bedrooms**: Number of bedrooms (1-5)
+- **Age**: How old the house is (0-50 years)
+- **Distance to City**: Miles from downtown (1-30 miles)
+
+Our goal: Predict the **price** based on these features!
+:::
+
+---
+
+## Part 2: Exploring Relationships
+
+Before building a model, let's visualize how each feature relates to price:
+
+```{python}
+# Create comprehensive visualization
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+
+# Plot 1: Square Feet vs Price
+axes[0, 0].scatter(df['square_feet'], df['price'], alpha=0.6, 
+                   c='#FF6B6B', s=60, edgecolors='black', linewidth=0.5)
+axes[0, 0].set_title('📐 Square Feet vs Price', fontweight='bold', fontsize=12)
+axes[0, 0].set_xlabel('Square Feet')
+axes[0, 0].set_ylabel('Price ($)')
+axes[0, 0].grid(alpha=0.3)
+
+# Plot 2: Bedrooms vs Price
+bedroom_avg = df.groupby('bedrooms')['price'].mean()
+axes[0, 1].bar(bedroom_avg.index, bedroom_avg.values, 
+               color='#40C9D9', alpha=0.7, edgecolor='black')
+axes[0, 1].set_title('🛏️ Bedrooms vs Average Price', fontweight='bold', fontsize=12)
+axes[0, 1].set_xlabel('Number of Bedrooms')
+axes[0, 1].set_ylabel('Average Price ($)')
+axes[0, 1].grid(alpha=0.3, axis='y')
+
+# Plot 3: Age vs Price
+axes[1, 0].scatter(df['age_years'], df['price'], alpha=0.6, 
+                   c='#6BCB77', s=60, edgecolors='black', linewidth=0.5)
+axes[1, 0].set_title('⏰ House Age vs Price', fontweight='bold', fontsize=12)
+axes[1, 0].set_xlabel('Age (years)')
+axes[1, 0].set_ylabel('Price ($)')
+axes[1, 0].grid(alpha=0.3)
+
+# Plot 4: Distance vs Price
+axes[1, 1].scatter(df['distance_to_city'], df['price'], alpha=0.6, 
+                   c='#FFD93D', s=60, edgecolors='black', linewidth=0.5)
+axes[1, 1].set_title('📍 Distance to City vs Price', fontweight='bold', fontsize=12)
+axes[1, 1].set_xlabel('Distance to City Center (miles)')
+axes[1, 1].set_ylabel('Price ($)')
+axes[1, 1].grid(alpha=0.3)
+
+plt.suptitle('🔍 Exploring Feature-Price Relationships', 
+             fontsize=16, fontweight='bold', y=0.995)
+plt.tight_layout()
+plt.show()
+```
+
+:::{.callout-tip}
+## 💡 Key Observations
+- **Larger houses** → Higher prices (positive correlation)
+- **More bedrooms** → Higher prices (positive correlation)
+- **Older houses** → Lower prices (negative correlation)
+- **Further from city** → Lower prices (negative correlation)
+
+These patterns make intuitive sense and our model will learn them!
+:::
+
+---
+
+## Part 3: Building the Machine Learning Model
+
+Now for the exciting part - let's train a machine learning model!
+
+```{python}
+# Prepare features (X) and target (y)
+X = df[['square_feet', 'bedrooms', 'age_years', 'distance_to_city']]
+y = df['price']
+
+# Split into training and testing sets (80/20 split)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+print("🔄 Splitting Data...")
+print(f"Training set: {len(X_train)} houses")
+print(f"Testing set: {len(X_test)} houses")
+
+# Create and train the model
+model = LinearRegression()
+print("\n🧠 Training the model...")
+model.fit(X_train, y_train)
+print("✅ Model trained successfully!")
+
+# Analyze what the model learned
+print("\n📊 Model Coefficients (Feature Importance):")
+print("="*60)
+for feature, coef in zip(X.columns, model.coef_):
+    print(f"{feature:20s}: ${coef:>10,.2f} per unit")
+print(f"{'Intercept (base price)':20s}: ${model.intercept_:>10,.2f}")
+```
+
+:::{.callout-note}
+## 🎓 Understanding the Model
+The model learned "weights" (coefficients) for each feature:
+- **Positive coefficients** mean the feature increases price
+- **Negative coefficients** mean the feature decreases price
+- The **magnitude** shows how important each feature is
+
+For example, if square feet has a coefficient of $150, adding 100 sq ft increases the predicted price by $15,000!
+:::
+
+---
+
+## Part 4: Making Predictions
+
+Let's see how well our model predicts house prices:
+
+```{python}
+# Make predictions on test set
+y_pred = model.predict(X_test)
+
+# Calculate performance metrics
+mse = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)
+r2 = r2_score(y_test, y_pred)
+
+print("📊 Model Performance on Test Set")
+print("="*60)
+print(f"Root Mean Squared Error: ${rmse:,.2f}")
+print(f"R² Score: {r2:.4f} ({r2*100:.2f}% of variance explained)")
+
+# Create predictions vs actual plot
+fig = go.Figure()
+
+# Perfect prediction line
+max_price = max(y_test.max(), y_pred.max())
+min_price = min(y_test.min(), y_pred.min())
+fig.add_trace(go.Scatter(
+    x=[min_price, max_price],
+    y=[min_price, max_price],
+    mode='lines',
+    name='Perfect Prediction',
+    line=dict(color='red', dash='dash', width=2)
+))
+
+# Actual predictions
+fig.add_trace(go.Scatter(
+    x=y_test,
+    y=y_pred,
+    mode='markers',
+    name='Predictions',
+    marker=dict(
+        size=10,
+        color='#40C9D9',
+        opacity=0.6,
+        line=dict(color='black', width=1)
+    ),
+    text=[f"Actual: ${actual:,.0f}<br>Predicted: ${pred:,.0f}" 
+          for actual, pred in zip(y_test, y_pred)],
+    hovertemplate='%{text}<extra></extra>'
+))
+
+fig.update_layout(
+    title='🎯 Model Predictions vs Actual Prices',
+    xaxis_title='Actual Price ($)',
+    yaxis_title='Predicted Price ($)',
+    template='plotly_white',
+    height=600,
+    font=dict(size=12)
+)
+
+fig.show()
+```
+
+:::{.callout-tip}
+## 💡 Interpreting Results
+- **R² Score**: Measures how well the model fits the data (0-1 scale)
+  - R² = 1.0 means perfect predictions
+  - R² = 0.0 means model is useless
+  - Our model should have R² > 0.85 (very good!)
+- **RMSE**: Average prediction error in dollars (lower is better)
+- Points close to the red dashed line = accurate predictions!
+:::
+
+---
+
+## Part 5: Predicting New Houses
+
+Now let's use our trained model to predict prices for new houses:
+
+```{python}
+# Define new houses to predict
+new_houses = pd.DataFrame({
+    'square_feet': [2500, 1800, 3500, 1200],
+    'bedrooms': [4, 3, 5, 2],
+    'age_years': [5, 20, 1, 35],
+    'distance_to_city': [8, 15, 3, 25],
+})
+
+# Make predictions
+predicted_prices = model.predict(new_houses)
+
+# Display results
+print("🏠 Predicting Prices for New Houses")
+print("="*80)
+for i, (idx, house) in enumerate(new_houses.iterrows()):
+    print(f"\nHouse {i+1}:")
+    print(f"  📐 {house['square_feet']} sq ft  |  "
+          f"🛏️ {house['bedrooms']} beds  |  "
+          f"⏰ {house['age_years']} years old  |  "
+          f"📍 {house['distance_to_city']:.1f} miles from city")
+    print(f"  💰 Predicted Price: ${predicted_prices[i]:,.0f}")
+```
+
+---
+
+## Part 6: Feature Importance Visualization
+
+Let's visualize which features matter most:
+
+```{python}
+# Calculate absolute importance of each feature
+importance = pd.DataFrame({
+    'Feature': X.columns,
+    'Coefficient': model.coef_,
+    'Abs_Coefficient': np.abs(model.coef_)
+}).sort_values('Abs_Coefficient', ascending=True)
+
+# Create horizontal bar chart
+fig = px.bar(importance, 
+             y='Feature', 
+             x='Coefficient',
+             orientation='h',
+             title='🎯 Feature Importance: What Drives House Prices?',
+             labels={'Coefficient': 'Impact on Price ($)', 'Feature': ''},
+             color='Coefficient',
+             color_continuous_scale=['#FF6B6B', '#FFFFFF', '#40C9D9'],
+             text='Coefficient')
+
+fig.update_traces(texttemplate='$%{text:,.0f}', textposition='outside')
+fig.update_layout(
+    height=400,
+    template='plotly_white',
+    font=dict(size=12),
+    showlegend=False
+)
+
+fig.show()
+```
+
+---
+
+## Part 7: Interactive Prediction Tool
+
+Try adjusting the sliders to see how different features affect predicted price:
+
+```{python}
+# Create an interactive prediction visualization
+def create_prediction_surface():
+    # Create a grid for visualization (varying square feet and distance)
+    sq_ft_range = np.linspace(1000, 3500, 50)
+    distance_range = np.linspace(2, 25, 50)
+    
+    # Create meshgrid
+    sq_ft_grid, distance_grid = np.meshgrid(sq_ft_range, distance_range)
+    
+    # Predict prices for each combination (with fixed bedrooms=3, age=10)
+    predictions = np.zeros_like(sq_ft_grid)
+    for i in range(sq_ft_grid.shape[0]):
+        for j in range(sq_ft_grid.shape[1]):
+            pred_input = pd.DataFrame({
+                'square_feet': [sq_ft_grid[i, j]],
+                'bedrooms': [3],
+                'age_years': [10],
+                'distance_to_city': [distance_grid[i, j]]
+            })
+            predictions[i, j] = model.predict(pred_input)[0]
+    
+    # Create 3D surface plot
+    fig = go.Figure(data=[go.Surface(
+        x=sq_ft_range,
+        y=distance_range,
+        z=predictions,
+        colorscale='Turbo',
+        colorbar=dict(title="Price ($)")
+    )])
+    
+    fig.update_layout(
+        title='🗺️ 3D Price Prediction Surface (3 bed, 10 years old)',
+        scene=dict(
+            xaxis_title='Square Feet',
+            yaxis_title='Distance to City (miles)',
+            zaxis_title='Predicted Price ($)',
+        ),
+        height=600,
+        template='plotly_white'
+    )
+    
+    return fig
+
+fig = create_prediction_surface()
+fig.show()
+```
+
+:::{.callout-tip}
+## 🎮 Interactive Exploration
+Rotate the 3D plot by clicking and dragging! Notice how:
+- **Increasing square footage** (moving right) → Higher prices
+- **Moving closer to city** (moving down) → Higher prices
+- The surface shows all possible price combinations!
+:::
+
+---
+
+## 🎓 What You've Learned
+
+Congratulations! You've just built a complete machine learning pipeline:
+
+✅ **Prepared data** for machine learning  
+✅ **Explored relationships** between features and target  
+✅ **Trained a model** to learn patterns  
+✅ **Evaluated performance** using metrics  
+✅ **Made predictions** on new data  
+✅ **Interpreted results** to understand the model
+
+### 🚀 What's Next in CMPSC 301?
+
+In the course, you'll learn:
+- **Advanced models**: Random Forests, Neural Networks, SVMs
+- **Classification**: Predicting categories (spam/not spam, disease diagnosis)
+- **Clustering**: Finding natural groupings in data
+- **Model tuning**: Optimizing performance
+- **Real datasets**: Working with messy, real-world data
+- **Deployment**: Putting models into production
+
+---
+
+## 💡 Challenge: Try It Yourself!
+
+Want to experiment? Try these modifications:
+
+1. **Add more features**: What about garage size or lot area?
+2. **Try different models**: Research `RandomForestRegressor` or `GradientBoostingRegressor`
+3. **Improve the model**: Can you get R² above 0.95?
+4. **Real data**: Find a housing dataset online and apply these techniques
+
+**Ready to build your own models?** Head to [JupyterLite](/live/) and start experimenting!
+
+---
+
+:::{.callout-note}
+## 🎯 Course Connection
+This demonstration introduces supervised learning and regression - fundamental concepts in data science. In CMPSC 301, you'll master these techniques and apply them to real-world problems in healthcare, business, sports, and more!
+:::

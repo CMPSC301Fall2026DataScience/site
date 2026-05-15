@@ -1,0 +1,10 @@
+# prompt
+
+I would like to build an exciting and colourful Quarto website that will be hosted on GitHub Pages. The website will be for a Data Science course (CMPSC301) for the Fall 2026 Semester and will have several main page areas and features. The first main feature is a JupyterLite page that can be accessed with ("live/") on end of  sites's URL. JupyterLite will have both Python and R programming capabilities. There will be preinstalled libraries for both Python (Seaborn, plotly, matplotlib, numpy, pandas, and others for working with data) and R (Tidyververs, plotly and others for working with data).
+
+The page's tabs are called "Home", "Playground" and "Materials". The tab, "Home" will be used to show the course syllabus and other course information. The tab, "Playground" will have several interactive Python and R online coding experiments to showcase the course's focus of analysis, plotting, models, working with data and similar. Students will have this "Playground" to see what the course is about before they register for the course and so the lessons and demonstrations will have to have a good deal of explanation behind each of the coded and interactive examples. Please think of four or five such demonstrations (and make it convenient to add more later). The tab "Materials" will contain a page listing all course slides and assignments going down the page by week. New slides will be added each week.  Also in the "Materials" tab, there will be a link to a files (source code, data files, articles and other arbitrary materials) that the instructor gives to the course.
+
+
+For context, an example site for a previous course whichi contains the required functionality is available to view for context in the Directory `exmaple_site/`. Do not change the files in `example_site/`.
+
+Please create a new site for the Data Science class using the logo file `logo.png`. It might be nice to have the same types of colours from the logo to colourize the site. See what you think?

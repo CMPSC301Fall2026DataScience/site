@@ -1,0 +1,50 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - "*.qmd"
+    - "*.md"
+    - "playground/*.qmd"
+    - "materials/*.qmd"
+    - "live/**"
+    - "!example_site/"
+    - "!prompt.md"
+  resources:
+    - materials/files/**
+    - logo.png
+    - graphics/**
+
+website:
+  title: "CMPSC301 Fall 2026 :: Data Science"
+  favicon: logo.png
+  navbar:
+    logo: logo.png
+    left:
+      - href: index.qmd
+        text: Home
+      - href: playground/00_playground.qmd
+        text: Playground
+      - href: materials/0_materials.qmd
+        text: Materials
+      - href: live/
+        text: JupyterLite
+        target: _blank
+
+format:
+  html:
+    theme:
+      - cosmo
+      - custom.scss
+    css: styles.css
+    toc: true
+    code-copy: true
+    code-fold: false
+    code-tools: true
+
+execute:
+  freeze: auto
+  echo: true
+  warning: false
+  message: false
+  eval: false
+  enabled: false

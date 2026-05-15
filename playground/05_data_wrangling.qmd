@@ -1,0 +1,585 @@
+---
+title: "🔧 Data Wrangling: Cleaning and Transforming Messy Data"
+description: "Master the essential skills of cleaning, reshaping, and preparing real-world data for analysis"
+categories: [Python, Pandas, Data Cleaning, ETL]
+execute:
+  eval: false
+  echo: true
+format: 
+  html:
+    code-tools: true
+    code-fold: false
+---
+
+## Welcome to Data Wrangling! 🛠️
+
+Real-world data is messy! Before analysis, data scientists spend 60-80% of their time cleaning, transforming, and preparing data. This demonstration shows you the essential wrangling techniques you'll use every day.
+
+### 🎯 What You'll Learn
+
+- Handling missing data
+- Data type conversions
+- String manipulation and parsing
+- Merging and joining datasets
+- Reshaping data (pivot, melt, transpose)
+- Aggregation and grouping
+- Creating new features
+
+---
+
+## The Challenge: Messy Sales Data
+
+You've been hired to analyze sales data for an e-commerce company. Unfortunately, the data is messy, incomplete, and scattered across multiple files. Let's clean it up!
+
+---
+
+## Part 1: Loading Messy Data
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+import plotly.graph_objects as go
+from datetime import datetime, timedelta
+
+# Set display options
+pd.set_option('display.max_columns', None)
+pd.set_option('display.width', None)
+
+# Create messy sales data (realistic problems!)
+np.random.seed(42)
+
+# Messy transactions data
+dates_messy = ['2026-01-15', '2026-01-16', '1/17/2026', 'Jan 18 2026', '2026-01-19',
+               '2026-01-20', '01/21/26', '2026-01-22', 'missing', '2026-01-24']
+               
+products = ['laptop', 'LAPTOP', 'Laptop ', 'mouse', 'Mouse', 
+            'keyboard', 'KEYBOARD', 'monitor', 'Monitor', 'headphones']
+
+messy_df = pd.DataFrame({
+    'transaction_id': ['T001', 'T002', 'T003', 'T004', 'T005', 
+                       'T006', 'T007', 'T008', 'T009', 'T010'],
+    'date': dates_messy,
+    'product': products,
+    'quantity': [1, 2, '3', 1, 'two', 1, 2, None, 1, 3],
+    'price': ['$999.99', '25.50', 'fifty', '189.99', '$29.99',
+              '79.99', '85.00', '399', None, '149.99'],
+    'customer_name': ['john doe', 'JANE SMITH', '  bob jones  ', 'Alice Brown', 'charlie davis',
+                      'Eve Wilson', 'frank miller', None, 'Grace Lee', 'henry taylor'],
+    'email': ['john@email.com', 'JANE@EMAIL.COM', 'bob@email', 'alice@email.com', 'charlie@invalid',
+              'eve@email.com', 'frank@email.com', 'missing', 'grace@email.com', 'henry@email.com'],
+    'region': ['North', 'south', 'EAST', 'West', 'north',
+               'South', 'east', 'west', None, 'North']
+})
+
+print("🚨 MESSY Raw Data (Before Cleaning)")
+print("="*100)
+print(messy_df)
+print(f"\n📊 Shape: {messy_df.shape}")
+print(f"\n🔍 Data Types:")
+print(messy_df.dtypes)
+```
+
+:::{.callout-warning}
+## 😱 Problems We Need to Fix
+Look at all these issues!
+- **Inconsistent dates**: Multiple formats (2026-01-15, 1/17/2026, etc.)
+- **Mixed case**: "laptop" vs "LAPTOP" vs "Laptop "
+- **Extra whitespace**: "  bob jones  "
+- **Wrong data types**: Quantity='3' (string), 'two' (text!)
+- **Missing values**: None, 'missing', empty strings
+- **Invalid formats**: Prices with $ symbols, emails without @
+- **Inconsistent categories**: 'North' vs 'north'
+
+Welcome to real-world data! Let's fix it systematically.
+:::
+
+---
+
+## Part 2: Identifying Data Quality Issues
+
+```{python}
+print("🔍 Data Quality Assessment")
+print("="*100)
+
+# Missing values
+print("\n1. Missing/Invalid Values:")
+print(messy_df.isnull().sum())
+
+# Check for string 'missing' or 'None'
+for col in messy_df.columns:
+    invalid_count = messy_df[col].astype(str).str.contains('missing|None', case=False, na=False).sum()
+    if invalid_count > 0:
+        print(f"  '{col}': {invalid_count} cells contain 'missing' or 'None' as text")
+
+# Data types
+print("\n2. Data Type Issues:")
+for col in messy_df.columns:
+    expected_type = {
+        'transaction_id': 'object',
+        'date': 'datetime',
+        'product': 'object',
+        'quantity': 'int',
+        'price': 'float',
+        'customer_name': 'object',
+        'email': 'object',
+        'region': 'object'
+    }
+    actual = messy_df[col].dtype
+    if col in expected_type:
+        print(f"  {col:20s}: {str(actual):10s} (expected: {expected_type[col]})")
+
+# Duplicates and inconsistencies
+print("\n3. Consistency Issues:")
+print(f"  Unique products (with case/space issues): {messy_df['product'].unique()}")
+print(f"  Unique regions (with case issues): {messy_df['region'].unique()}")
+```
+
+---
+
+## Part 3: Cleaning Step-by-Step
+
+### Step 1: Clean Text Data (Case and Whitespace)
+
+```{python}
+# Create a copy for cleaning
+df_clean = messy_df.copy()
+
+print("🧹 Step 1: Cleaning Text Data")
+print("="*80)
+
+# Fix product names: lowercase, strip whitespace
+df_clean['product'] = df_clean['product'].str.strip().str.lower()
+print(f"\n✅ Products cleaned: {df_clean['product'].unique()}")
+
+# Fix region names: title case
+df_clean['region'] = df_clean['region'].str.strip().str.title()
+print(f"✅ Regions cleaned: {df_clean['region'].unique()}")
+
+# Fix customer names: title case
+df_clean['customer_name'] = df_clean['customer_name'].str.strip().str.title()
+print(f"✅ Customer names cleaned (first 5): {df_clean['customer_name'].head().tolist()}")
+
+# Fix emails: lowercase
+df_clean['email'] = df_clean['email'].str.lower().str.strip()
+print(f"✅ Emails cleaned (first 5): {df_clean['email'].head().tolist()}")
+```
+
+---
+
+### Step 2: Handle Missing Values
+
+```{python}
+print("\n🔧 Step 2: Handling Missing Values")
+print("="*80)
+
+# Replace string 'missing' and 'None' with actual NaN
+df_clean = df_clean.replace(['missing', 'None', 'nan', ''], np.nan)
+
+print(f"\nMissing values after standardization:")
+print(df_clean.isnull().sum())
+
+# Strategy for each column:
+# - date: Drop rows (date is critical)
+# - customer_name: Fill with "Unknown Customer"
+# - email: Fill with "unknown@email.com"
+# - quantity: Fill with median
+# - price: Will handle after conversion
+# - region: Fill with mode (most common)
+
+# Fill missing customer_name
+df_clean['customer_name'].fillna('Unknown Customer', inplace=True)
+print(f"\n✅ Filled missing customer names with 'Unknown Customer'")
+
+# Fill missing email
+df_clean['email'].fillna('unknown@email.com', inplace=True)
+print(f"✅ Filled missing emails with 'unknown@email.com'")
+
+# Fill missing region with mode
+region_mode = df_clean['region'].mode()[0]
+df_clean['region'].fillna(region_mode, inplace=True)
+print(f"✅ Filled missing regions with mode: '{region_mode}'")
+```
+
+---
+
+### Step 3: Convert Data Types
+
+```{python}
+print("\n🔄 Step 3: Converting Data Types")
+print("="*80)
+
+# Clean and convert dates
+def parse_date(date_str):
+    """Parse various date formats"""
+    if pd.isna(date_str):
+        return pd.NaT
+    
+    # Try multiple formats
+    formats = ['%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', '%b %d %Y']
+    for fmt in formats:
+        try:
+            return pd.to_datetime(date_str, format=fmt)
+        except:
+            continue
+    return pd.NaT
+
+df_clean['date'] = df_clean['date'].apply(parse_date)
+print(f"✅ Dates converted to datetime")
+print(f"   Valid dates: {df_clean['date'].notna().sum()}/{len(df_clean)}")
+
+# Clean and convert prices (remove $, handle text)
+def parse_price(price_str):
+    """Parse price strings"""
+    if pd.isna(price_str):
+        return np.nan
+    
+    price_str = str(price_str).replace('$', '').replace(',', '').strip()
+    
+    # Handle text prices
+    text_to_num = {'fifty': 50, 'hundred': 100, 'thousand': 1000}
+    if price_str.lower() in text_to_num:
+        return float(text_to_num[price_str.lower()])
+    
+    try:
+        return float(price_str)
+    except:
+        return np.nan
+
+df_clean['price'] = df_clean['price'].apply(parse_price)
+print(f"✅ Prices converted to float")
+print(f"   Valid prices: {df_clean['price'].notna().sum()}/{len(df_clean)}")
+
+# Clean and convert quantity
+def parse_quantity(qty):
+    """Parse quantity values"""
+    if pd.isna(qty):
+        return np.nan
+    
+    # Handle text quantities
+    text_to_num = {'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5}
+    
+    qty_str = str(qty).lower().strip()
+    if qty_str in text_to_num:
+        return text_to_num[qty_str]
+    
+    try:
+        return int(qty_str)
+    except:
+        return np.nan
+
+df_clean['quantity'] = df_clean['quantity'].apply(parse_quantity)
+print(f"✅ Quantities converted to int")
+print(f"   Valid quantities: {df_clean['quantity'].notna().sum()}/{len(df_clean)}")
+
+# Fill remaining missing numerical values
+df_clean['quantity'].fillna(df_clean['quantity'].median(), inplace=True)
+df_clean['price'].fillna(df_clean['price'].median(), inplace=True)
+print(f"✅ Filled missing numerical values with median")
+```
+
+---
+
+### Step 4: Validate and Remove Invalid Data
+
+```{python}
+print("\n✅ Step 4: Data Validation")
+print("="*80)
+
+# Validate emails
+def is_valid_email(email):
+    """Basic email validation"""
+    if pd.isna(email):
+        return False
+    return '@' in email and '.' in email.split('@')[1] if len(email.split('@')) > 1 else False
+
+df_clean['email_valid'] = df_clean['email'].apply(is_valid_email)
+invalid_emails = df_clean[~df_clean['email_valid']]
+print(f"Invalid emails found: {len(invalid_emails)}")
+if len(invalid_emails) > 0:
+    print(invalid_emails[['transaction_id', 'email']])
+    # Fix invalid emails
+    df_clean.loc[~df_clean['email_valid'], 'email'] = 'unknown@email.com'
+
+# Remove rows with invalid dates (if critical)
+df_clean = df_clean[df_clean['date'].notna()]
+print(f"\n✅ Removed {len(messy_df) - len(df_clean)} rows with invalid dates")
+
+# Drop validation column
+df_clean = df_clean.drop('email_valid', axis=1)
+
+print(f"\n📊 Final Clean Dataset Shape: {df_clean.shape}")
+```
+
+---
+
+## Part 4: The Beautiful, Clean Data!
+
+```{python}
+print("\n✨ CLEANED Data (After Wrangling)")
+print("="*100)
+print(df_clean)
+
+print(f"\n🎉 Data Types (After Cleaning):")
+print(df_clean.dtypes)
+
+print(f"\n📊 Summary Statistics:")
+print(df_clean[['quantity', 'price']].describe())
+```
+
+:::{.callout-tip}
+## 💡 Before vs After
+**Before**: Messy, inconsistent, multiple formats, missing values  
+**After**: Clean, standardized, correct types, no missing critical data
+
+This transformation is the foundation of all data science work!
+:::
+
+---
+
+## Part 5: Feature Engineering
+
+Now let's create new useful features from our clean data:
+
+```{python}
+print("🛠️ Step 5: Creating New Features")
+print("="*80)
+
+# Calculate total revenue
+df_clean['revenue'] = df_clean['quantity'] * df_clean['price']
+print(f"✅ Created 'revenue' column")
+
+# Extract date components
+df_clean['day_of_week'] = df_clean['date'].dt.day_name()
+df_clean['month'] = df_clean['date'].dt.month_name()
+df_clean['year'] = df_clean['date'].dt.year
+print(f"✅ Extracted date components: day_of_week, month, year")
+
+# Create revenue categories
+df_clean['revenue_category'] = pd.cut(df_clean['revenue'], 
+                                       bins=[0, 100, 500, float('inf')],
+                                       labels=['Low', 'Medium', 'High'])
+print(f"✅ Created 'revenue_category' column")
+
+# Customer email domain
+df_clean['email_domain'] = df_clean['email'].str.split('@').str[1]
+print(f"✅ Extracted 'email_domain' from emails")
+
+print(f"\n📊 Enhanced Dataset:")
+print(df_clean[['transaction_id', 'product', 'quantity', 'price', 'revenue', 
+                'revenue_category', 'day_of_week']].head(8))
+```
+
+---
+
+## Part 6: Data Aggregation and Grouping
+
+Let's analyze the clean data:
+
+```{python}
+# Group by product
+product_summary = df_clean.groupby('product').agg({
+    'revenue': ['sum', 'mean', 'count'],
+    'quantity': 'sum'
+}).round(2)
+
+product_summary.columns = ['Total Revenue', 'Avg Revenue', 'Transactions', 'Total Quantity']
+product_summary = product_summary.sort_values('Total Revenue', ascending=False)
+
+print("\n📊 Sales by Product")
+print("="*80)
+print(product_summary)
+
+# Group by region
+region_summary = df_clean.groupby('region').agg({
+    'revenue': 'sum',
+    'transaction_id': 'count'
+}).round(2)
+
+region_summary.columns = ['Total Revenue', 'Transactions']
+region_summary = region_summary.sort_values('Total Revenue', ascending=False)
+
+print("\n🗺️ Sales by Region")
+print("="*80)
+print(region_summary)
+```
+
+---
+
+## Part 7: Visualizing the Clean Data
+
+```{python}
+# Revenue by product
+fig = px.bar(product_summary.reset_index(), 
+             x='product', 
+             y='Total Revenue',
+             title='💰 Total Revenue by Product',
+             color='Total Revenue',
+             color_continuous_scale='Turbo',
+             text='Total Revenue')
+
+fig.update_traces(texttemplate='$%{text:,.2f}', textposition='outside')
+fig.update_layout(
+    font=dict(size=12),
+    height=500,
+    template='plotly_white',
+    showlegend=False
+)
+
+fig.show()
+
+# Revenue by region
+fig2 = px.pie(region_summary.reset_index(), 
+              values='Total Revenue', 
+              names='region',
+              title='🗺️ Revenue Distribution by Region',
+              hole=0.4,
+              color_discrete_sequence=px.colors.qualitative.Bold)
+
+fig2.update_traces(textinfo='label+percent+value', textfont_size=12)
+fig2.update_layout(font=dict(size=12), height=500)
+
+fig2.show()
+```
+
+---
+
+## Part 8: Advanced Wrangling - Merging Datasets
+
+Let's merge with customer data from another source:
+
+```{python}
+# Create additional customer data
+customer_data = pd.DataFrame({
+    'email': ['john@email.com', 'jane@email.com', 'alice@email.com', 
+              'eve@email.com', 'grace@email.com'],
+    'loyalty_tier': ['Gold', 'Silver', 'Gold', 'Bronze', 'Silver'],
+    'member_since': ['2024-01-01', '2024-06-15', '2023-12-01', 
+                     '2025-03-10', '2024-09-20'],
+    'total_lifetime_purchases': [15, 8, 23, 3, 12]
+})
+
+print("📋 Customer Data to Merge:")
+print(customer_data)
+
+# Merge datasets
+df_merged = df_clean.merge(customer_data, on='email', how='left')
+
+print(f"\n🔗 Merged Dataset:")
+print(df_merged[['transaction_id', 'customer_name', 'email', 'product', 
+                 'revenue', 'loyalty_tier', 'member_since']].head(8))
+
+# Fill missing loyalty data
+df_merged['loyalty_tier'].fillna('Bronze', inplace=True)
+df_merged['total_lifetime_purchases'].fillna(1, inplace=True)
+
+print(f"\n✅ Merge complete! Shape: {df_merged.shape}")
+```
+
+:::{.callout-note}
+## 🔗 Merging Strategies
+- **Inner join**: Only matching records
+- **Left join**: All from left, matching from right
+- **Right join**: All from right, matching from left
+- **Outer join**: All records from both
+
+We used **left join** to keep all transactions!
+:::
+
+---
+
+## Part 9: Reshaping Data (Pivot Tables)
+
+```{python}
+# Create pivot table: products vs regions
+pivot_revenue = df_clean.pivot_table(
+    values='revenue',
+    index='product',
+    columns='region',
+    aggfunc='sum',
+    fill_value=0
+).round(2)
+
+print("\n📊 Pivot Table: Revenue by Product and Region")
+print("="*80)
+print(pivot_revenue)
+
+# Visualize pivot table as heatmap
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.heatmap(pivot_revenue, annot=True, fmt='.0f', cmap='YlOrRd', 
+            linewidths=1, cbar_kws={'label': 'Revenue ($)'}, ax=ax)
+plt.title('🔥 Revenue Heatmap: Product × Region', fontsize=14, fontweight='bold', pad=20)
+plt.xlabel('Region', fontsize=12)
+plt.ylabel('Product', fontsize=12)
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## 🎓 What You've Learned
+
+Congratulations! You've mastered data wrangling:
+
+✅ **Identified data quality issues** systematically  
+✅ **Cleaned text data** (case, whitespace, standardization)  
+✅ **Handled missing values** with appropriate strategies  
+✅ **Converted data types** (dates, numbers, text)  
+✅ **Validated data** (email formats, ranges, logic checks)  
+✅ **Engineered features** (calculations, extractions, categories)  
+✅ **Aggregated and grouped** data for analysis  
+✅ **Merged datasets** from multiple sources  
+✅ **Reshaped data** using pivot tables
+
+### 🚀 What's Next in CMPSC 301?
+
+In the course, you'll tackle more complex wrangling:
+- **Large datasets**: Millions of rows with performance optimization
+- **Complex transformations**: Multi-step data pipelines
+- **Web scraping**: Collecting data from websites
+- **API integration**: Getting data from web services
+- **Database queries**: SQL for data extraction
+- **Data validation**: Automated quality checks
+- **ETL pipelines**: Extract, Transform, Load workflows
+
+---
+
+## 💡 Try It Yourself!
+
+Practice with these challenges:
+
+1. **Add more mess**: Create data with outliers, duplicates, mixed formats
+2. **More features**: Extract first/last names, categorize prices
+3. **Time analysis**: Calculate days between purchases
+4. **Data validation**: Create comprehensive quality checks
+5. **Real data**: Find a messy CSV online and clean it!
+
+**Ready to wrangle real-world data?** Visit [JupyterLite](/live/)!
+
+---
+
+:::{.callout-note}
+## 🌍 Why Data Wrangling Matters
+**80% of data science is data wrangling!**
+
+Real-world data is always messy:
+- **E-commerce**: Customer data from multiple systems
+- **Healthcare**: Patient records in various formats
+- **Finance**: Transaction data with errors
+- **Social media**: Unstructured text and timestamps
+- **IoT**: Sensor data with missing values
+
+Master wrangling in CMPSC 301 and you'll be job-ready!
+:::
+
+:::{.callout-tip}
+## 🎯 Best Practices
+1. **Always make copies** before cleaning (keep original)
+2. **Document your steps** (code comments, notebooks)
+3. **Validate results** after each transformation
+4. **Handle edge cases** (nulls, zeros, outliers)
+5. **Automate repetitive tasks** (functions, scripts)
+6. **Test with small samples** first
+:::

@@ -1,0 +1,12 @@
+[
+  {
+    "listing": "/playground/00_playground.html",
+    "items": [
+      "/playground/03_text_analysis.html",
+      "/playground/04_statistical_analysis.html",
+      "/playground/01_visualization.html",
+      "/playground/05_data_wrangling.html",
+      "/playground/02_machine_learning.html"
+    ]
+  }
+]

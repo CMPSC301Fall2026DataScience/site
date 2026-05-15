@@ -1,0 +1,21 @@
+{
+  "jupyter-lite-schema-version": 0,
+  "jupyter-config-data": {
+    "appName": "CMPSC 301 JupyterLite",
+    "appVersion": "0.1.0",
+    "collaborative": false,
+    "disabledExtensions": [],
+    "federated_extensions": [],
+    "settingsStorageDrivers": ["localStorage"]
+  },
+  "piplite": {
+    "pipliteUrls": [
+      "https://pypi.org/pypi/{package_name}/json"
+    ],
+    "pipliteWheelUrl": "https://files.pythonhosted.org"
+  },
+  "jupyter-lite": {
+    "app_name": "CMPSC 301 Data Science Environment",
+    "app_version": "0.1.0"
+  }
+}

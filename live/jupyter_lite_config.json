@@ -1,0 +1,25 @@
+{
+  "LiteBuildConfig": {
+    "apps": [
+      "notebooks",
+      "edit",
+      "lab",
+      "repl"
+    ],
+    "ignore_sys_prefix": false,
+    "output_dir": "../docs/live"
+  },
+  "PipliteAddon": {
+    "piplite_urls": ["https://pypi.org/pypi/{package_name}/json"],
+    "pypi_wheels": [
+      "numpy",
+      "pandas",
+      "matplotlib",
+      "seaborn",
+      "plotly",
+      "scikit-learn",
+      "scipy",
+      "statsmodels"
+    ]
+  }
+}

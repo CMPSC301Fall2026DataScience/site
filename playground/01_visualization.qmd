@@ -1,0 +1,294 @@
+---
+title: "📊 Data Visualization Masterclass"
+description: "Create stunning visualizations with Python and explore how colors, shapes, and layouts tell compelling data stories"
+categories: [Python, Visualization, Seaborn, Plotly]
+execute:
+  eval: false
+  echo: true
+format: 
+  html:
+    code-tools: true
+    code-fold: false
+---
+
+## Welcome to Data Visualization! 🎨
+
+Data visualization is the art and science of turning numbers into pictures that tell stories. In this demonstration, you'll learn how to create beautiful, informative visualizations using Python's powerful plotting libraries.
+
+### 🎯 What You'll Learn
+
+- Creating multiple types of plots (scatter, line, bar, heatmaps)
+- Customizing colors and styles for maximum impact
+- Building interactive visualizations with Plotly
+- Best practices for effective data communication
+
+---
+
+## Part 1: Exploring a Dataset
+
+Let's start by loading and exploring a real dataset about global life expectancy and GDP.
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+import plotly.graph_objects as go
+
+# Set style for beautiful plots
+sns.set_style("whitegrid")
+plt.rcParams['figure.figsize'] = (10, 6)
+
+# Create sample dataset (based on Gapminder data)
+np.random.seed(42)
+countries = ['USA', 'China', 'India', 'Germany', 'Brazil', 'Japan', 'UK', 
+             'France', 'Canada', 'Australia', 'Mexico', 'South Korea']
+             
+data = {
+    'country': countries,
+    'life_expectancy': [78.5, 76.9, 69.7, 81.3, 75.9, 84.6, 81.3, 82.7, 82.2, 83.4, 75.1, 83.2],
+    'gdp_per_capita': [65000, 10500, 2100, 48000, 8900, 40000, 42000, 41000, 46000, 54000, 9700, 31000],
+    'population_millions': [331, 1439, 1380, 83, 212, 126, 68, 65, 38, 26, 128, 52],
+    'continent': ['Americas', 'Asia', 'Asia', 'Europe', 'Americas', 'Asia', 
+                  'Europe', 'Europe', 'Americas', 'Oceania', 'Americas', 'Asia']
+}
+
+df = pd.DataFrame(data)
+
+print("📊 Global Statistics Dataset")
+print("="*50)
+print(df.head(8))
+print("\n📈 Summary Statistics:")
+print(df.describe())
+```
+
+:::{.callout-note}
+## Understanding the Data
+This dataset contains information about 12 countries, including:
+- **Life Expectancy**: Average lifespan in years
+- **GDP per Capita**: Economic output per person (USD)
+- **Population**: Size in millions
+- **Continent**: Geographic region
+
+Notice the relationships between these variables - wealthier countries tend to have higher life expectancy!
+:::
+
+---
+
+## Part 2: Scatter Plots - Finding Relationships
+
+Scatter plots help us visualize relationships between two variables. Let's explore the relationship between wealth and health:
+
+```{python}
+# Create a beautiful scatter plot with Seaborn
+fig, ax = plt.subplots(figsize=(12, 7))
+
+sns.scatterplot(data=df, x='gdp_per_capita', y='life_expectancy', 
+                size='population_millions', sizes=(100, 1000),
+                hue='continent', palette='Set2', alpha=0.7, ax=ax)
+
+plt.title('💰 Wealth vs Health: GDP and Life Expectancy', 
+          fontsize=16, fontweight='bold', pad=20)
+plt.xlabel('GDP per Capita (USD)', fontsize=12)
+plt.ylabel('Life Expectancy (years)', fontsize=12)
+plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', title='Continent')
+
+# Add grid for easier reading
+plt.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+```
+
+:::{.callout-tip}
+## 💡 Key Insight
+The **positive correlation** between GDP and life expectancy is clear! Wealthier nations generally have better healthcare, nutrition, and living conditions. The bubble sizes represent population - notice how populous countries like China and India have lower GDPs per capita.
+:::
+
+---
+
+## Part 3: Interactive Visualizations with Plotly
+
+Static plots are great, but interactive visualizations let you explore data dynamically. Hover over the points to see details!
+
+```{python}
+# Create an interactive bubble chart
+fig = px.scatter(df, 
+                 x='gdp_per_capita', 
+                 y='life_expectancy',
+                 size='population_millions',
+                 color='continent',
+                 hover_name='country',
+                 size_max=60,
+                 title='🌍 Interactive Global Health & Wealth Explorer',
+                 labels={
+                     'gdp_per_capita': 'GDP per Capita (USD)',
+                     'life_expectancy': 'Life Expectancy (years)',
+                     'population_millions': 'Population (millions)'
+                 },
+                 color_discrete_sequence=px.colors.qualitative.Bold)
+
+fig.update_layout(
+    font=dict(size=12),
+    title_font_size=18,
+    hovermode='closest',
+    template='plotly_white',
+    height=600
+)
+
+fig.show()
+```
+
+:::{.callout-tip}
+## 🎯 Try This!
+**Hover** over each point to see country details. **Click** on continent names in the legend to show/hide groups. **Zoom** by dragging a box, and **double-click** to reset!
+:::
+
+---
+
+## Part 4: Bar Charts - Comparing Categories
+
+Bar charts are perfect for comparing values across categories. Let's rank countries by life expectancy:
+
+```{python}
+# Sort by life expectancy and create colorful bar chart
+df_sorted = df.sort_values('life_expectancy', ascending=True)
+
+fig = px.bar(df_sorted, 
+             x='life_expectancy', 
+             y='country',
+             color='life_expectancy',
+             orientation='h',
+             title='🏥 Life Expectancy Rankings by Country',
+             labels={'life_expectancy': 'Life Expectancy (years)'},
+             color_continuous_scale='Turbo',
+             text='life_expectancy')
+
+fig.update_traces(texttemplate='%{text:.1f}', textposition='outside')
+fig.update_layout(
+    height=500,
+    showlegend=False,
+    template='plotly_white',
+    font=dict(size=11)
+)
+
+fig.show()
+```
+
+---
+
+## Part 5: Heatmaps - Visualizing Correlations
+
+Heatmaps use color to show patterns in data. Let's see how all our variables relate to each other:
+
+```{python}
+# Calculate correlations between numeric variables
+correlation_matrix = df[['life_expectancy', 'gdp_per_capita', 'population_millions']].corr()
+
+# Create beautiful heatmap
+fig, ax = plt.subplots(figsize=(8, 6))
+
+sns.heatmap(correlation_matrix, 
+            annot=True, 
+            fmt='.2f', 
+            cmap='coolwarm',
+            center=0,
+            square=True,
+            linewidths=2,
+            cbar_kws={'label': 'Correlation Coefficient'},
+            ax=ax)
+
+plt.title('🔥 Correlation Heatmap: Understanding Relationships', 
+          fontsize=14, fontweight='bold', pad=20)
+plt.tight_layout()
+plt.show()
+```
+
+:::{.callout-note}
+## 📚 Reading the Heatmap
+- **Red** = Strong positive correlation (both increase together)
+- **Blue** = Strong negative correlation (one increases, other decreases)
+- **White** = No correlation
+
+The strong positive correlation (0.67) between GDP and life expectancy confirms our earlier observation!
+:::
+
+---
+
+## Part 6: Advanced - Multi-Panel Visualization
+
+Professional data scientists often create multi-panel figures to show multiple perspectives:
+
+```{python}
+# Create a comprehensive dashboard
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+
+# Plot 1: GDP Distribution
+axes[0, 0].hist(df['gdp_per_capita'], bins=8, color='#FF6B6B', alpha=0.7, edgecolor='black')
+axes[0, 0].set_title('💵 GDP per Capita Distribution', fontweight='bold')
+axes[0, 0].set_xlabel('GDP per Capita (USD)')
+axes[0, 0].set_ylabel('Frequency')
+axes[0, 0].grid(alpha=0.3)
+
+# Plot 2: Life Expectancy by Continent
+continent_avg = df.groupby('continent')['life_expectancy'].mean().sort_values()
+colors = ['#40C9D9', '#FF6B6B', '#FFD93D', '#6BCB77']
+axes[0, 1].barh(continent_avg.index, continent_avg.values, color=colors)
+axes[0, 1].set_title('🌍 Average Life Expectancy by Continent', fontweight='bold')
+axes[0, 1].set_xlabel('Life Expectancy (years)')
+axes[0, 1].grid(alpha=0.3, axis='x')
+
+# Plot 3: Population vs GDP
+axes[1, 0].scatter(df['population_millions'], df['gdp_per_capita'], 
+                   s=200, c=df['life_expectancy'], cmap='viridis', 
+                   alpha=0.6, edgecolors='black', linewidth=1.5)
+axes[1, 0].set_title('👥 Population vs GDP (colored by life expectancy)', fontweight='bold')
+axes[1, 0].set_xlabel('Population (millions)')
+axes[1, 0].set_ylabel('GDP per Capita (USD)')
+axes[1, 0].grid(alpha=0.3)
+
+# Plot 4: Continental composition
+continent_counts = df['continent'].value_counts()
+axes[1, 1].pie(continent_counts, labels=continent_counts.index, autopct='%1.0f%%',
+               colors=colors, startangle=90, textprops={'fontsize': 11})
+axes[1, 1].set_title('🗺️ Countries by Continent', fontweight='bold')
+
+plt.suptitle('📊 Comprehensive Global Statistics Dashboard', 
+             fontsize=16, fontweight='bold', y=0.995)
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## 🎓 What You've Learned
+
+Congratulations! You've just created:
+
+✅ **Scatter plots** to reveal relationships  
+✅ **Interactive visualizations** for data exploration  
+✅ **Bar charts** for clear comparisons  
+✅ **Heatmaps** to show correlations  
+✅ **Multi-panel dashboards** for comprehensive analysis
+
+### 🚀 Next Steps in the Course
+
+In CMPSC 301, you'll learn to:
+- Work with much larger datasets (millions of rows!)
+- Create custom visualizations for specific needs
+- Build interactive dashboards with real-time data
+- Design visualizations for research publications
+- Use visualization for machine learning insights
+
+---
+
+## 💡 Try It Yourself!
+
+Want to experiment? Try modifying the code above:
+1. Change the color schemes (try `'magma'`, `'plasma'`, or `'rainbow'`)
+2. Add more countries to the dataset
+3. Create a different type of plot (box plots, violin plots)
+4. Customize titles and labels to tell your own story
+
+**Ready to dive deeper?** Visit the [JupyterLite](/live/) environment to create your own visualizations!

@@ -1,0 +1,503 @@
+---
+title: "💬 Text Analytics & Sentiment Analysis"
+description: "Analyze text data, detect emotions, and uncover insights from reviews, tweets, and social media using natural language processing"
+categories: [Python, NLP, Text Analysis, Sentiment]
+execute:
+  eval: false
+  echo: true
+format: 
+  html:
+    code-tools: true
+    code-fold: false
+---
+
+## Welcome to Text Analytics! 📝
+
+Text is everywhere - social media, reviews, emails, articles. Text analytics (Natural Language Processing) enables us to extract meaning, emotions, and insights from written language. Let's explore this fascinating field!
+
+### 🎯 What You'll Learn
+
+- Analyzing text data and extracting features
+- Performing sentiment analysis (positive/negative/neutral)
+- Visualizing word frequencies and patterns
+- Building word clouds
+- Understanding text preprocessing
+
+---
+
+## The Challenge: Analyzing Product Reviews
+
+Imagine you work for an e-commerce company. You have thousands of customer reviews and need to:
+1. Understand overall customer sentiment
+2. Identify common themes and keywords
+3. Find which products need improvement
+
+Let's use data science to solve this!
+
+---
+
+## Part 1: Creating Our Review Dataset
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+import plotly.graph_objects as go
+from collections import Counter
+import re
+
+# Set style
+sns.set_style("whitegrid")
+
+# Sample product reviews (positive, neutral, and negative)
+reviews_data = {
+    'review_id': range(1, 21),
+    'product': ['Laptop', 'Headphones', 'Mouse', 'Keyboard', 'Monitor',
+                'Laptop', 'Headphones', 'Mouse', 'Keyboard', 'Monitor',
+                'Laptop', 'Headphones', 'Mouse', 'Keyboard', 'Monitor',
+                'Laptop', 'Headphones', 'Mouse', 'Keyboard', 'Monitor'],
+    'rating': [5, 4, 3, 5, 2, 4, 5, 3, 4, 1, 5, 3, 4, 5, 2, 4, 5, 2, 4, 3],
+    'review_text': [
+        "Absolutely amazing laptop! Fast, reliable, and beautiful design. Love it!",
+        "Good headphones with great sound quality. Comfortable for long sessions.",
+        "Mouse works okay but feels a bit cheap. Could be better for the price.",
+        "Best keyboard I've ever used! Typing feels incredible and very responsive.",
+        "Monitor arrived damaged and colors look washed out. Very disappointed.",
+        "Great laptop for work and gaming. Battery life is impressive too!",
+        "These headphones are fantastic! Crystal clear audio and noise cancellation works perfectly.",
+        "Decent mouse but nothing special. Gets the job done.",
+        "Excellent keyboard with amazing build quality. Highly recommend!",
+        "Terrible monitor. Dead pixels and poor contrast. Returning immediately.",
+        "This laptop exceeded all my expectations! Worth every penny and more.",
+        "Headphones are okay but the bass is too weak for my taste.",
+        "Really happy with this mouse. Comfortable grip and precise tracking.",
+        "Outstanding keyboard! Mechanical switches feel premium and durable.",
+        "Monitor has terrible viewing angles. Not suitable for professional work.",
+        "Solid laptop with good performance. A few minor software bugs though.",
+        "Love these headphones! Best purchase I've made this year. Superb quality.",
+        "Mouse broke after two weeks. Poor quality control and construction.",
+        "Great keyboard for programming. Love the tactile feedback and RGB lighting.",
+        "Monitor is average. Picture quality is acceptable but not impressive."
+    ]
+}
+
+df = pd.DataFrame(reviews_data)
+
+print("🛍️ Product Reviews Dataset")
+print("="*80)
+print(df.head(8))
+print(f"\n📊 Total reviews: {len(df)}")
+print(f"📦 Products: {df['product'].unique()}")
+print(f"⭐ Rating distribution:")
+print(df['rating'].value_counts().sort_index())
+```
+
+:::{.callout-note}
+## Understanding Text Data
+We have 20 customer reviews across 5 products:
+- **Laptops, Headphones, Mice, Keyboards, Monitors**
+- **Ratings**: 1-5 stars
+- **Review Text**: Customer feedback in natural language
+
+Our challenge: Extract insights from this unstructured text data!
+:::
+
+---
+
+## Part 2: Simple Sentiment Analysis
+
+Let's build a basic sentiment analyzer using keyword matching:
+
+```{python}
+# Define positive and negative words
+positive_words = ['amazing', 'great', 'love', 'excellent', 'fantastic', 'best', 
+                  'good', 'impressive', 'superb', 'outstanding', 'happy', 'comfortable',
+                  'crystal', 'worth', 'recommend', 'premium', 'solid']
+
+negative_words = ['cheap', 'disappointed', 'terrible', 'dead', 'poor', 'broke',
+                  'weak', 'damaged', 'bugs', 'washed', 'average', 'returning',
+                  'minor', 'acceptable', 'nothing special', 'okay']
+
+def analyze_sentiment(text):
+    """
+    Simple sentiment analysis based on positive/negative word counts
+    """
+    text_lower = text.lower()
+    
+    # Count positive and negative words
+    pos_count = sum(1 for word in positive_words if word in text_lower)
+    neg_count = sum(1 for word in negative_words if word in text_lower)
+    
+    # Calculate sentiment score
+    score = pos_count - neg_count
+    
+    # Classify sentiment
+    if score > 0:
+        return 'Positive', score
+    elif score < 0:
+        return 'Negative', score
+    else:
+        return 'Neutral', score
+
+# Apply sentiment analysis
+df['sentiment'], df['sentiment_score'] = zip(*df['review_text'].apply(analyze_sentiment))
+
+print("✨ Sentiment Analysis Results")
+print("="*80)
+print(df[['product', 'rating', 'sentiment', 'sentiment_score', 'review_text']].head(10))
+
+# Sentiment distribution
+sentiment_counts = df['sentiment'].value_counts()
+print(f"\n📊 Sentiment Distribution:")
+for sentiment, count in sentiment_counts.items():
+    print(f"  {sentiment}: {count} ({count/len(df)*100:.1f}%)")
+```
+
+:::{.callout-tip}
+## 💡 How It Works
+The sentiment analyzer:
+1. **Counts positive words** in the review (love, amazing, great...)
+2. **Counts negative words** (terrible, poor, disappointed...)
+3. **Calculates net score** (positive - negative)
+4. **Classifies** as Positive, Negative, or Neutral
+
+This is a simple approach - real sentiment analysis uses machine learning!
+:::
+
+---
+
+## Part 3: Visualizing Sentiment
+
+Let's create beautiful visualizations of our sentiment analysis:
+
+```{python}
+# Create sentiment visualization
+fig = go.Figure()
+
+# Count sentiments
+sentiment_counts = df['sentiment'].value_counts()
+
+# Create pie chart
+colors = {'Positive': '#6BCB77', 'Negative': '#FF6B6B', 'Neutral': '#FFD93D'}
+fig = go.Figure(data=[go.Pie(
+    labels=sentiment_counts.index,
+    values=sentiment_counts.values,
+    marker=dict(colors=[colors[s] for s in sentiment_counts.index]),
+    hole=0.4,
+    textinfo='label+percent',
+    textfont_size=14
+)])
+
+fig.update_layout(
+    title='😊 Overall Sentiment Distribution',
+    font=dict(size=13),
+    height=500,
+    annotations=[dict(text='Reviews', x=0.5, y=0.5, font_size=20, showarrow=False)]
+)
+
+fig.show()
+
+# Sentiment by product
+fig2 = px.histogram(df, 
+                    x='product', 
+                    color='sentiment',
+                    barmode='group',
+                    title='📊 Sentiment Distribution by Product',
+                    color_discrete_map=colors,
+                    labels={'count': 'Number of Reviews', 'product': 'Product'})
+
+fig2.update_layout(
+    font=dict(size=12),
+    height=500,
+    template='plotly_white'
+)
+
+fig2.show()
+```
+
+---
+
+## Part 4: Ratings vs Sentiment Analysis
+
+Let's compare actual ratings with our sentiment predictions:
+
+```{python}
+# Create scatter plot of rating vs sentiment score
+fig = px.scatter(df, 
+                 x='rating', 
+                 y='sentiment_score',
+                 color='sentiment',
+                 size=[10]*len(df),
+                 hover_data=['product', 'review_text'],
+                 title='⭐ Star Ratings vs Sentiment Scores',
+                 color_discrete_map=colors,
+                 labels={'rating': 'Star Rating', 
+                         'sentiment_score': 'Sentiment Score'})
+
+fig.update_traces(marker=dict(size=12, line=dict(width=1.5, color='black')))
+fig.update_layout(
+    font=dict(size=12),
+    height=500,
+    template='plotly_white'
+)
+
+fig.show()
+
+# Calculate correlation
+correlation = df['rating'].corr(df['sentiment_score'])
+print(f"\n📈 Correlation between ratings and sentiment: {correlation:.3f}")
+```
+
+:::{.callout-note}
+## 🎯 Key Insight
+The correlation between star ratings and sentiment scores shows how well our simple text analysis aligns with actual ratings! In a real application, we'd use this to:
+- **Detect fake reviews** (high rating but negative text)
+- **Find underrated products** (low rating but positive text)
+- **Prioritize review responses** based on sentiment
+:::
+
+---
+
+## Part 5: Word Frequency Analysis
+
+What words appear most often in reviews?
+
+```{python}
+def extract_words(text):
+    """Extract words from text (remove punctuation and convert to lowercase)"""
+    # Remove punctuation and split into words
+    words = re.findall(r'\b[a-z]+\b', text.lower())
+    # Remove common stop words
+    stop_words = {'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 
+                  'to', 'for', 'of', 'with', 'is', 'are', 'was', 'this', 
+                  'that', 'it', 'be', 'by', 'as'}
+    return [w for w in words if w not in stop_words and len(w) > 2]
+
+# Extract all words from reviews
+all_words = []
+positive_review_words = []
+negative_review_words = []
+
+for idx, row in df.iterrows():
+    words = extract_words(row['review_text'])
+    all_words.extend(words)
+    
+    if row['sentiment'] == 'Positive':
+        positive_review_words.extend(words)
+    elif row['sentiment'] == 'Negative':
+        negative_review_words.extend(words)
+
+# Count word frequencies
+word_freq = Counter(all_words)
+pos_word_freq = Counter(positive_review_words)
+neg_word_freq = Counter(negative_review_words)
+
+# Display top words
+print("🔤 Most Common Words in All Reviews:")
+print("="*60)
+for word, count in word_freq.most_common(15):
+    print(f"  {word:15s}: {count:2d} times")
+
+print("\n😊 Most Common Words in POSITIVE Reviews:")
+for word, count in pos_word_freq.most_common(10):
+    print(f"  {word:15s}: {count:2d} times")
+
+print("\n😞 Most Common Words in NEGATIVE Reviews:")
+for word, count in neg_word_freq.most_common(10):
+    print(f"  {word:15s}: {count:2d} times")
+```
+
+---
+
+## Part 6: Word Frequency Visualization
+
+```{python}
+# Create bar chart of top words
+top_words = pd.DataFrame(word_freq.most_common(12), 
+                         columns=['word', 'frequency'])
+
+fig = px.bar(top_words, 
+             x='frequency', 
+             y='word',
+             orientation='h',
+             title='📊 Top 12 Most Frequent Words',
+             color='frequency',
+             color_continuous_scale='Turbo',
+             text='frequency')
+
+fig.update_traces(textposition='outside')
+fig.update_layout(
+    font=dict(size=12),
+    height=500,
+    template='plotly_white',
+    showlegend=False,
+    yaxis={'categoryorder': 'total ascending'}
+)
+
+fig.show()
+```
+
+---
+
+## Part 7: Product-Specific Analysis
+
+Let's analyze sentiment for each product individually:
+
+```{python}
+# Calculate average metrics per product
+product_summary = df.groupby('product').agg({
+    'rating': 'mean',
+    'sentiment_score': 'mean',
+    'review_id': 'count'
+}).reset_index()
+
+product_summary.columns = ['Product', 'Avg Rating', 'Avg Sentiment', 'Review Count']
+product_summary = product_summary.sort_values('Avg Rating', ascending=False)
+
+print("📦 Product Performance Summary")
+print("="*80)
+print(product_summary.to_string(index=False))
+
+# Visualize product comparison
+fig = go.Figure()
+
+# Add bar for average rating
+fig.add_trace(go.Bar(
+    name='Average Rating',
+    x=product_summary['Product'],
+    y=product_summary['Avg Rating'],
+    marker_color='#40C9D9',
+    yaxis='y',
+    text=product_summary['Avg Rating'].round(2),
+    textposition='outside'
+))
+
+# Add bar for sentiment
+fig.add_trace(go.Bar(
+    name='Average Sentiment',
+    x=product_summary['Product'],
+    y=product_summary['Avg Sentiment'],
+    marker_color='#FF6B6B',
+    yaxis='y2',
+    text=product_summary['Avg Sentiment'].round(2),
+    textposition='outside'
+))
+
+# Update layout with dual y-axes
+fig.update_layout(
+    title='📊 Product Ratings vs Sentiment Analysis',
+    xaxis_title='Product',
+    yaxis=dict(title='Average Rating (1-5)', titlefont=dict(color='#40C9D9')),
+    yaxis2=dict(
+        title='Average Sentiment Score',
+        titlefont=dict(color='#FF6B6B'),
+        overlaying='y',
+        side='right'
+    ),
+    barmode='group',
+    height=500,
+    template='plotly_white',
+    font=dict(size=12)
+)
+
+fig.show()
+```
+
+:::{.callout-tip}
+## 💡 Business Insights
+From this analysis, you can:
+- **Identify problematic products** (low ratings + negative sentiment)
+- **Find your stars** (high ratings + positive sentiment)
+- **Prioritize improvements** based on customer feedback
+- **Track sentiment trends** over time
+:::
+
+---
+
+## Part 8: Review Length Analysis
+
+Does review length correlate with sentiment?
+
+```{python}
+# Calculate review lengths
+df['review_length'] = df['review_text'].str.len()
+df['word_count'] = df['review_text'].str.split().str.len()
+
+# Visualize relationship
+fig = px.scatter(df, 
+                 x='word_count', 
+                 y='rating',
+                 size='review_length',
+                 color='sentiment',
+                 hover_data=['product', 'review_text'],
+                 title='📝 Review Length vs Rating',
+                 color_discrete_map=colors,
+                 labels={'word_count': 'Number of Words', 
+                         'rating': 'Star Rating',
+                         'review_length': 'Character Count'})
+
+fig.update_layout(
+    font=dict(size=12),
+    height=500,
+    template='plotly_white'
+)
+
+fig.show()
+
+# Statistics by sentiment
+print("\n📊 Review Length by Sentiment:")
+print(df.groupby('sentiment')['word_count'].describe().round(2))
+```
+
+---
+
+## 🎓 What You've Learned
+
+Congratulations! You've performed comprehensive text analytics:
+
+✅ **Built a sentiment analyzer** from scratch  
+✅ **Classified reviews** as positive, negative, or neutral  
+✅ **Analyzed word frequencies** to find patterns  
+✅ **Visualized sentiment distributions** across products  
+✅ **Extracted business insights** from text data  
+✅ **Compared sentiment** with numerical ratings
+
+### 🚀 What's Next in CMPSC 301?
+
+In the course, you'll learn advanced NLP techniques:
+- **Machine learning models** for sentiment (BERT, transformers)
+- **Topic modeling** to discover themes automatically
+- **Named entity recognition** (finding people, places, organizations)
+- **Text classification** for categorization
+- **Working with large text datasets** (millions of documents)
+- **Sentiment analysis** for social media, news, reviews
+
+---
+
+## 💡 Try It Yourself!
+
+Want to experiment? Try these challenges:
+
+1. **Expand the word lists**: Add more positive/negative words to improve accuracy
+2. **Analyze emoji**: Add sentiment analysis for emojis 😊😢
+3. **Time analysis**: Add timestamps and track sentiment trends over time
+4. **Aspect-based sentiment**: Analyze sentiment for specific product features
+5. **Real data**: Download reviews from Amazon or Yelp and analyze them!
+
+**Ready to analyze text at scale?** Visit [JupyterLite](/live/) to explore more!
+
+---
+
+:::{.callout-note}
+## 🎯 Real-World Applications
+Text analytics is used everywhere:
+- **Customer service**: Prioritizing urgent complaints
+- **Brand monitoring**: Tracking public perception on social media
+- **Market research**: Understanding customer needs
+- **Content moderation**: Detecting toxic or inappropriate content
+- **Healthcare**: Analyzing patient feedback and medical notes
+
+In CMPSC 301, you'll learn to build these applications!
+:::
