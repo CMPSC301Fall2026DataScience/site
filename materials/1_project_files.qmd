@@ -1,5 +1,8 @@
 ---
 title: "Project Downloads"
+execute:
+  enabled: true
+  eval: true
 jupyter: python3
 ---
 
@@ -80,8 +83,10 @@ else:
                 if group_key == Path("."):
                     print("### Project Files\n")
                 else:
+                    # Show full path from project root
+                    full_path = project_dir.name + "/" + group_key.as_posix()
                     print(f"### {display_name(group_key.name)}\n")
-                    print(f"Folder: `{group_key.as_posix()}`\n")
+                    print(f"Folder: `{full_path}`\n")
 
                 print("| File | Type | Download |")
                 print("| --- | --- | --- |")
