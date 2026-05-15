@@ -11,22 +11,13 @@ subtitle: "Slides, Assignments, and Resources"
 
 ---
 
-Welcome to the course materials hub! Here you'll find all lecture slides, assignments, labs, and downloadable resources organized by week.
 
-:::{.callout-tip}
-## 🔗 Quick Links
-- **Project Downloads**: [Starter files, datasets, and tutorials](1_project_files.qmd)
-- **JupyterLite Environment**: [Code online with Python & R](/live/)
-- **Playground**: [Interactive demonstrations](/playground/00_playground.qmd)
+:::{.callout}
+Welcome to the course materials hub! Here you will find all lecture slides, assignments, labs, and downloadable resources organized by week. Check back regularly for updates and new content.
 :::
 
 ---
 
-## 📥 Course Files & Resources
-
-- **[Project Files & Downloads](1_project_files.qmd)**: All starter code, datasets, tutorials, and project materials
-
----
 
 ## W1. Welcome to Data Science! 🎉
 

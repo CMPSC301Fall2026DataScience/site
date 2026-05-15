@@ -7,8 +7,6 @@ project:
     - "playground/*.qmd"
     - "materials/*.qmd"
     - "live/**"
-    - "!example_site/"
-    - "!prompt.md"
   resources:
     - materials/files/**
     - logo.png

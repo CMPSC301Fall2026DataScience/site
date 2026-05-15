@@ -1,0 +1,765 @@
+[
+  {
+    "objectID": "live/content/welcome.html",
+    "href": "live/content/welcome.html",
+    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
+    "section": "",
+    "text": "You’re using JupyterLite - a full Jupyter environment running entirely in your web browser! No installation required."
+  },
+  {
+    "objectID": "live/content/welcome.html#getting-started",
+    "href": "live/content/welcome.html#getting-started",
+    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
+    "section": "🚀 Getting Started",
+    "text": "🚀 Getting Started\nThis notebook will help you: 1. Test your Python environment 2. Load and explore data 3. Create visualizations 4. Get comfortable with Jupyter notebooks"
+  },
+  {
+    "objectID": "live/content/welcome.html#part-1-testing-python-environment",
+    "href": "live/content/welcome.html#part-1-testing-python-environment",
+    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
+    "section": "Part 1: Testing Python Environment",
+    "text": "Part 1: Testing Python Environment\nLet’s verify that the essential data science libraries are available:\n\n# Import core libraries\nimport sys\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\nprint(\"✅ Python Environment Test\")\nprint(\"=\"*50)\nprint(f\"Python version: {sys.version}\")\nprint(f\"NumPy version: {np.__version__}\")\nprint(f\"Pandas version: {pd.__version__}\")\nprint(\"\\n🎉 All libraries loaded successfully!\")"
+  },
+  {
+    "objectID": "live/content/welcome.html#part-2-your-first-data-analysis",
+    "href": "live/content/welcome.html#part-2-your-first-data-analysis",
+    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
+    "section": "Part 2: Your First Data Analysis",
+    "text": "Part 2: Your First Data Analysis\nLet’s create a simple dataset and analyze it:\n\n# Create sample data\nnp.random.seed(42)\n\ndata = {\n    'Student': [f'Student {i}' for i in range(1, 11)],\n    'Math': np.random.randint(70, 100, 10),\n    'Science': np.random.randint(65, 95, 10),\n    'English': np.random.randint(75, 100, 10)\n}\n\ndf = pd.DataFrame(data)\n\nprint(\"📊 Student Grades Dataset:\")\nprint(df)\nprint(\"\\n📈 Summary Statistics:\")\nprint(df.describe())"
+  },
+  {
+    "objectID": "live/content/welcome.html#part-3-data-manipulation",
+    "href": "live/content/welcome.html#part-3-data-manipulation",
+    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
+    "section": "Part 3: Data Manipulation",
+    "text": "Part 3: Data Manipulation\nLet’s perform some common data operations:\n\n# Calculate average grade for each student\ndf['Average'] = df[['Math', 'Science', 'English']].mean(axis=1)\n\n# Add a grade category\ndf['Grade'] = pd.cut(df['Average'], \n                      bins=[0, 70, 80, 90, 100],\n                      labels=['C', 'B', 'A', 'A+'])\n\nprint(\"📊 Enhanced Dataset:\")\nprint(df)\n\nprint(\"\\n🏆 Top 3 Students:\")\nprint(df.nlargest(3, 'Average')[['Student', 'Average', 'Grade']])"
+  },
+  {
+    "objectID": "live/content/welcome.html#part-4-visualization",
+    "href": "live/content/welcome.html#part-4-visualization",
+    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
+    "section": "Part 4: Visualization",
+    "text": "Part 4: Visualization\nLet’s create a bar chart:\n\n# Create visualization\nplt.figure(figsize=(10, 6))\n\nx = range(len(df))\nwidth = 0.25\n\nplt.bar([i - width for i in x], df['Math'], width, label='Math', color='#FF6B6B')\nplt.bar(x, df['Science'], width, label='Science', color='#40C9D9')\nplt.bar([i + width for i in x], df['English'], width, label='English', color='#6BCB77')\n\nplt.xlabel('Students')\nplt.ylabel('Grades')\nplt.title('Student Performance Across Subjects', fontsize=14, fontweight='bold')\nplt.xticks(x, df['Student'], rotation=45)\nplt.legend()\nplt.grid(axis='y', alpha=0.3)\nplt.tight_layout()\nplt.show()\n\nprint(\"✅ Visualization created successfully!\")"
+  },
+  {
+    "objectID": "live/content/welcome.html#try-it-yourself",
+    "href": "live/content/welcome.html#try-it-yourself",
+    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
+    "section": "🎯 Try It Yourself!",
+    "text": "🎯 Try It Yourself!\nNow it’s your turn! Try these challenges:\n\nCalculate: Find the student with the highest Science score\nFilter: Show only students with Average &gt;= 85\nPlot: Create a line plot showing average grades\nAnalyze: What’s the correlation between Math and Science scores?\n\nUse the cell below to experiment:\n\n# Your code here!"
+  },
+  {
+    "objectID": "live/content/welcome.html#tips-for-using-jupyterlite",
+    "href": "live/content/welcome.html#tips-for-using-jupyterlite",
+    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
+    "section": "💡 Tips for Using JupyterLite",
+    "text": "💡 Tips for Using JupyterLite\n\nRun cells: Press Shift + Enter to execute a cell\nAdd cells: Click the + button in the toolbar\nCell types: Code or Markdown (for text/documentation)\nSave work: File → Download (work is stored in browser)\nRestart kernel: Kernel → Restart (clears all variables)"
+  },
+  {
+    "objectID": "live/content/welcome.html#next-steps",
+    "href": "live/content/welcome.html#next-steps",
+    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
+    "section": "📚 Next Steps",
+    "text": "📚 Next Steps\n\nExplore the Playground for more examples\nCheck out Course Materials for assignments\nVisit the Home page for course information\n\n\nHappy coding! 🚀"
+  },
+  {
+    "objectID": "playground/04_statistical_analysis.html",
+    "href": "playground/04_statistical_analysis.html",
+    "title": "📈 Statistical Analysis: Finding Patterns in Data",
+    "section": "",
+    "text": "Statistics is the foundation of data science - it helps us understand data, test hypotheses, and make informed decisions based on evidence. Let’s explore key statistical concepts with hands-on examples!\n\n\n\nDescriptive statistics (mean, median, standard deviation)\nData distributions and visualization\nCorrelation analysis\nHypothesis testing\nConfidence intervals\nStatistical significance"
+  },
+  {
+    "objectID": "playground/04_statistical_analysis.html#welcome-to-statistical-analysis",
+    "href": "playground/04_statistical_analysis.html#welcome-to-statistical-analysis",
+    "title": "📈 Statistical Analysis: Finding Patterns in Data",
+    "section": "",
+    "text": "Statistics is the foundation of data science - it helps us understand data, test hypotheses, and make informed decisions based on evidence. Let’s explore key statistical concepts with hands-on examples!\n\n\n\nDescriptive statistics (mean, median, standard deviation)\nData distributions and visualization\nCorrelation analysis\nHypothesis testing\nConfidence intervals\nStatistical significance"
+  },
+  {
+    "objectID": "playground/04_statistical_analysis.html#the-scenario-analyzing-student-performance",
+    "href": "playground/04_statistical_analysis.html#the-scenario-analyzing-student-performance",
+    "title": "📈 Statistical Analysis: Finding Patterns in Data",
+    "section": "The Scenario: Analyzing Student Performance",
+    "text": "The Scenario: Analyzing Student Performance\nYou’re a data analyst for a university studying factors that affect student success. You have data on study hours, sleep, exercise, and exam scores for 100 students. Let’s uncover the patterns!"
+  },
+  {
+    "objectID": "playground/04_statistical_analysis.html#part-1-creating-the-dataset",
+    "href": "playground/04_statistical_analysis.html#part-1-creating-the-dataset",
+    "title": "📈 Statistical Analysis: Finding Patterns in Data",
+    "section": "Part 1: Creating the Dataset",
+    "text": "Part 1: Creating the Dataset\n\nimport pandas as pd\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport plotly.express as px\nimport plotly.graph_objects as go\nfrom scipy import stats\n\n# Set random seed for reproducibility\nnp.random.seed(42)\n\n# Generate realistic student data\nn_students = 100\n\n# Study hours per week (with some correlation to scores)\nstudy_hours = np.random.normal(20, 8, n_students)\nstudy_hours = np.clip(study_hours, 5, 45)  # Keep realistic range\n\n# Sleep hours per night\nsleep_hours = np.random.normal(7, 1.5, n_students)\nsleep_hours = np.clip(sleep_hours, 4, 10)\n\n# Exercise hours per week\nexercise_hours = np.random.normal(4, 2, n_students)\nexercise_hours = np.clip(exercise_hours, 0, 12)\n\n# Exam scores (influenced by study, sleep, and exercise)\nexam_scores = (50 + \n               study_hours * 1.2 +           # Study helps!\n               sleep_hours * 2 +             # Sleep is important\n               exercise_hours * 1.5 +        # Exercise helps too\n               np.random.normal(0, 8, n_students))  # Random variation\nexam_scores = np.clip(exam_scores, 40, 100)\n\n# Class attendance (percentage)\nattendance = np.random.normal(85, 12, n_students)\nattendance = np.clip(attendance, 50, 100)\n\n# Create DataFrame\ndf = pd.DataFrame({\n    'student_id': range(1, n_students + 1),\n    'study_hours': study_hours,\n    'sleep_hours': sleep_hours,\n    'exercise_hours': exercise_hours,\n    'attendance_pct': attendance,\n    'exam_score': exam_scores\n})\n\nprint(\"🎓 Student Performance Dataset\")\nprint(\"=\"*80)\nprint(df.head(10))\nprint(f\"\\n📊 Dataset: {len(df)} students with {len(df.columns)-1} variables\")\n\n\n\n\n\n\n\nDataset Overview\n\n\n\nWe’re tracking 100 students with 5 variables: - Study Hours/Week: Time spent studying - Sleep Hours/Night: Average sleep duration - Exercise Hours/Week: Physical activity - Attendance %: Class participation - Exam Score: Performance (0-100)\nOur goal: Understand what factors predict academic success!"
+  },
+  {
+    "objectID": "playground/04_statistical_analysis.html#part-2-descriptive-statistics",
+    "href": "playground/04_statistical_analysis.html#part-2-descriptive-statistics",
+    "title": "📈 Statistical Analysis: Finding Patterns in Data",
+    "section": "Part 2: Descriptive Statistics",
+    "text": "Part 2: Descriptive Statistics\nLet’s start with basic statistical summaries:\n\n# Calculate comprehensive statistics\nprint(\"📊 Descriptive Statistics\")\nprint(\"=\"*80)\nprint(df.describe().round(2))\n\n# Calculate additional statistics\nprint(\"\\n📈 Additional Measures:\")\nprint(f\"Study Hours - Median: {df['study_hours'].median():.2f}, \"\n      f\"Mode: {df['study_hours'].mode().values[0]:.2f}\")\nprint(f\"Exam Scores - Range: {df['exam_score'].min():.1f} to {df['exam_score'].max():.1f}\")\nprint(f\"              Variance: {df['exam_score'].var():.2f}\")\nprint(f\"              Std Dev: {df['exam_score'].std():.2f}\")\n\n# Percentiles\nprint(\"\\n📊 Exam Score Percentiles:\")\nfor percentile in [25, 50, 75, 90]:\n    value = np.percentile(df['exam_score'], percentile)\n    print(f\"  {percentile}th percentile: {value:.1f}\")\n\n\n\n\n\n\n\n💡 Understanding Statistics\n\n\n\n\nMean: Average value (affected by outliers)\nMedian: Middle value (robust to outliers)\nStd Dev: How spread out the data is\nPercentiles: Value below which X% of data falls\n\n50th percentile = median\n25th/75th = quartiles (interquartile range)"
+  },
+  {
+    "objectID": "playground/04_statistical_analysis.html#part-3-visualizing-distributions",
+    "href": "playground/04_statistical_analysis.html#part-3-visualizing-distributions",
+    "title": "📈 Statistical Analysis: Finding Patterns in Data",
+    "section": "Part 3: Visualizing Distributions",
+    "text": "Part 3: Visualizing Distributions\nLet’s see how our variables are distributed:\n\n# Create distribution plots\nfig, axes = plt.subplots(2, 3, figsize=(15, 10))\n\nvariables = ['study_hours', 'sleep_hours', 'exercise_hours', \n             'attendance_pct', 'exam_score']\ncolors = ['#FF6B6B', '#40C9D9', '#6BCB77', '#FFD93D', '#FF7B7C']\ntitles = ['Study Hours/Week', 'Sleep Hours/Night', 'Exercise Hours/Week',\n          'Attendance %', 'Exam Score']\n\nfor idx, (var, color, title) in enumerate(zip(variables, colors, titles)):\n    row = idx // 3\n    col = idx % 3\n    ax = axes[row, col]\n    \n    # Histogram with KDE (kernel density estimate)\n    ax.hist(df[var], bins=20, color=color, alpha=0.6, edgecolor='black', density=True)\n    \n    # Add KDE curve\n    df[var].plot(kind='kde', ax=ax, color='darkblue', linewidth=2)\n    \n    # Add mean line\n    mean_val = df[var].mean()\n    ax.axvline(mean_val, color='red', linestyle='--', linewidth=2, label=f'Mean: {mean_val:.1f}')\n    \n    ax.set_title(f'Distribution of {title}', fontweight='bold', fontsize=11)\n    ax.set_xlabel(title)\n    ax.set_ylabel('Density')\n    ax.legend()\n    ax.grid(alpha=0.3)\n\n# Remove empty subplot\naxes[1, 2].remove()\n\nplt.suptitle('📊 Distribution Analysis of Student Variables', \n             fontsize=16, fontweight='bold', y=0.995)\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n🎯 Distribution Insights\n\n\n\n\nNormal (bell-shaped): Most students cluster around average\nSkewed: Asymmetric distribution (could indicate issues)\nOutliers: Extreme values that stand out\nMultimodal: Multiple peaks (different student groups?)\n\nThe distributions help us understand typical values and variability!"
+  },
+  {
+    "objectID": "playground/04_statistical_analysis.html#part-4-correlation-analysis",
+    "href": "playground/04_statistical_analysis.html#part-4-correlation-analysis",
+    "title": "📈 Statistical Analysis: Finding Patterns in Data",
+    "section": "Part 4: Correlation Analysis",
+    "text": "Part 4: Correlation Analysis\nWhich variables are related to each other?\n\n# Calculate correlation matrix\ncorrelation_matrix = df[['study_hours', 'sleep_hours', 'exercise_hours', \n                          'attendance_pct', 'exam_score']].corr()\n\n# Create beautiful heatmap\nfig, ax = plt.subplots(figsize=(10, 8))\n\nsns.heatmap(correlation_matrix, \n            annot=True, \n            fmt='.3f', \n            cmap='RdYlGn',\n            center=0,\n            square=True,\n            linewidths=2,\n            cbar_kws={'label': 'Correlation Coefficient'},\n            vmin=-1, vmax=1,\n            ax=ax)\n\nplt.title('🔥 Correlation Heatmap: Understanding Relationships', \n          fontsize=14, fontweight='bold', pad=20)\nplt.tight_layout()\nplt.show()\n\n# Display strongest correlations with exam score\nprint(\"\\n🎯 Correlations with Exam Score:\")\nprint(\"=\"*60)\nscore_corr = correlation_matrix['exam_score'].sort_values(ascending=False)\nfor var, corr in score_corr.items():\n    if var != 'exam_score':\n        strength = 'Strong' if abs(corr) &gt; 0.5 else 'Moderate' if abs(corr) &gt; 0.3 else 'Weak'\n        print(f\"  {var:20s}: {corr:6.3f} ({strength})\")\n\n\n\n\n\n\n\n💡 Interpreting Correlations\n\n\n\n\n+1.0: Perfect positive correlation (both increase together)\n0.0: No correlation (no relationship)\n-1.0: Perfect negative correlation (one increases, other decreases)\n&gt; 0.5: Strong relationship\n0.3-0.5: Moderate relationship\n&lt; 0.3: Weak relationship\n\nImportant: Correlation ≠ Causation! Just because variables are correlated doesn’t mean one causes the other."
+  },
+  {
+    "objectID": "playground/04_statistical_analysis.html#part-5-scatter-plots-with-regression-lines",
+    "href": "playground/04_statistical_analysis.html#part-5-scatter-plots-with-regression-lines",
+    "title": "📈 Statistical Analysis: Finding Patterns in Data",
+    "section": "Part 5: Scatter Plots with Regression Lines",
+    "text": "Part 5: Scatter Plots with Regression Lines\nLet’s visualize the strongest relationships:\n\n# Study hours vs exam scores with regression line\nfig = px.scatter(df, \n                 x='study_hours', \n                 y='exam_score',\n                 trendline='ols',  # Ordinary Least Squares regression\n                 title='📚 Study Hours vs Exam Performance',\n                 labels={'study_hours': 'Study Hours per Week',\n                         'exam_score': 'Exam Score'},\n                 color_discrete_sequence=['#FF6B6B'])\n\nfig.update_traces(marker=dict(size=8, line=dict(width=1, color='black')))\nfig.update_layout(\n    font=dict(size=12),\n    height=500,\n    template='plotly_white'\n)\n\nfig.show()\n\n# Calculate regression statistics\nfrom scipy.stats import linregress\nslope, intercept, r_value, p_value, std_err = linregress(df['study_hours'], df['exam_score'])\n\nprint(f\"\\n📈 Regression Analysis: Study Hours → Exam Score\")\nprint(\"=\"*60)\nprint(f\"  Equation: Score = {intercept:.2f} + {slope:.2f} × Study Hours\")\nprint(f\"  R-squared: {r_value**2:.3f} ({r_value**2*100:.1f}% of variance explained)\")\nprint(f\"  P-value: {p_value:.6f} {'(Statistically significant!)' if p_value &lt; 0.05 else ''}\")\nprint(f\"\\n  Interpretation: Each additional study hour predicts a {slope:.2f} point increase in exam score!\")"
+  },
+  {
+    "objectID": "playground/04_statistical_analysis.html#part-6-hypothesis-testing",
+    "href": "playground/04_statistical_analysis.html#part-6-hypothesis-testing",
+    "title": "📈 Statistical Analysis: Finding Patterns in Data",
+    "section": "Part 6: Hypothesis Testing",
+    "text": "Part 6: Hypothesis Testing\nLet’s test a hypothesis: Do students who study more than 20 hours/week score significantly higher?\n\n# Split students into two groups\nhigh_study = df[df['study_hours'] &gt; 20]['exam_score']\nlow_study = df[df['study_hours'] &lt;= 20]['exam_score']\n\nprint(f\"👥 Group Comparison\")\nprint(\"=\"*80)\nprint(f\"High study group (&gt;20 hrs/week): {len(high_study)} students\")\nprint(f\"  Mean score: {high_study.mean():.2f}\")\nprint(f\"  Std dev: {high_study.std():.2f}\")\nprint(f\"\\nLow study group (≤20 hrs/week): {len(low_study)} students\")\nprint(f\"  Mean score: {low_study.mean():.2f}\")\nprint(f\"  Std dev: {low_study.std():.2f}\")\nprint(f\"\\nDifference in means: {high_study.mean() - low_study.mean():.2f} points\")\n\n# Perform independent t-test\nt_statistic, p_value = stats.ttest_ind(high_study, low_study)\n\nprint(f\"\\n📊 Statistical Test Results:\")\nprint(\"=\"*80)\nprint(f\"  T-statistic: {t_statistic:.3f}\")\nprint(f\"  P-value: {p_value:.6f}\")\nprint(f\"  Significance level: α = 0.05\")\n\nif p_value &lt; 0.05:\n    print(f\"\\n  ✅ Result: STATISTICALLY SIGNIFICANT!\")\n    print(f\"  Conclusion: Students who study &gt;20 hrs/week score significantly higher.\")\nelse:\n    print(f\"\\n  ❌ Result: NOT statistically significant\")\n    print(f\"  Conclusion: The difference could be due to random chance.\")\n\n# Visualize group comparison\nfig = go.Figure()\n\nfig.add_trace(go.Box(\n    y=high_study,\n    name='High Study (&gt;20 hrs)',\n    marker_color='#6BCB77',\n    boxmean='sd'\n))\n\nfig.add_trace(go.Box(\n    y=low_study,\n    name='Low Study (≤20 hrs)',\n    marker_color='#FF6B6B',\n    boxmean='sd'\n))\n\nfig.update_layout(\n    title='📦 Exam Score Distribution by Study Group',\n    yaxis_title='Exam Score',\n    template='plotly_white',\n    height=500,\n    font=dict(size=12)\n)\n\nfig.show()\n\n\n\n\n\n\n\n🎓 Understanding Hypothesis Testing\n\n\n\nNull Hypothesis (H₀): There’s no difference between groups\nAlternative Hypothesis (H₁): There is a difference\nP-value: Probability of observing this difference by chance - If p &lt; 0.05: Reject null hypothesis (difference is real!) - If p ≥ 0.05: Fail to reject null (might be random chance)\nThis is how scientists prove their findings!"
+  },
+  {
+    "objectID": "playground/04_statistical_analysis.html#part-7-confidence-intervals",
+    "href": "playground/04_statistical_analysis.html#part-7-confidence-intervals",
+    "title": "📈 Statistical Analysis: Finding Patterns in Data",
+    "section": "Part 7: Confidence Intervals",
+    "text": "Part 7: Confidence Intervals\nWhat’s the true average exam score for all students?\n\n# Calculate 95% confidence interval\nmean_score = df['exam_score'].mean()\nstd_error = stats.sem(df['exam_score'])  # Standard error of mean\nconfidence_level = 0.95\ndegrees_freedom = len(df) - 1\n\n# Calculate confidence interval\nconfidence_interval = stats.t.interval(confidence_level, \n                                       degrees_freedom,\n                                       loc=mean_score,\n                                       scale=std_error)\n\nprint(f\"📊 95% Confidence Interval for Mean Exam Score\")\nprint(\"=\"*80)\nprint(f\"  Sample mean: {mean_score:.2f}\")\nprint(f\"  Standard error: {std_error:.2f}\")\nprint(f\"  95% Confidence Interval: [{confidence_interval[0]:.2f}, {confidence_interval[1]:.2f}]\")\nprint(f\"\\n  Interpretation: We are 95% confident that the true population mean\")\nprint(f\"  exam score falls between {confidence_interval[0]:.2f} and {confidence_interval[1]:.2f}.\")\n\n# Visualize confidence interval\nfig = go.Figure()\n\n# Add mean point\nfig.add_trace(go.Scatter(\n    x=[mean_score],\n    y=['Mean'],\n    mode='markers',\n    marker=dict(size=15, color='#FF6B6B'),\n    name='Sample Mean',\n    showlegend=True\n))\n\n# Add confidence interval\nfig.add_trace(go.Scatter(\n    x=[confidence_interval[0], confidence_interval[1]],\n    y=['Mean', 'Mean'],\n    mode='lines+markers',\n    marker=dict(size=10, color='#40C9D9'),\n    line=dict(width=4, color='#40C9D9'),\n    name='95% CI',\n    showlegend=True\n))\n\nfig.update_layout(\n    title='🎯 95% Confidence Interval for Mean Exam Score',\n    xaxis_title='Exam Score',\n    template='plotly_white',\n    height=400,\n    font=dict(size=12),\n    yaxis=dict(showticklabels=False)\n)\n\nfig.show()"
+  },
+  {
+    "objectID": "playground/04_statistical_analysis.html#part-8-multiple-regression-analysis",
+    "href": "playground/04_statistical_analysis.html#part-8-multiple-regression-analysis",
+    "title": "📈 Statistical Analysis: Finding Patterns in Data",
+    "section": "Part 8: Multiple Regression Analysis",
+    "text": "Part 8: Multiple Regression Analysis\nCan we predict exam scores using multiple variables?\n\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.metrics import r2_score, mean_squared_error\n\n# Prepare data\nX = df[['study_hours', 'sleep_hours', 'exercise_hours', 'attendance_pct']]\ny = df['exam_score']\n\n# Fit model\nmodel = LinearRegression()\nmodel.fit(X, y)\npredictions = model.predict(X)\n\n# Display results\nprint(f\"📊 Multiple Regression: Predicting Exam Scores\")\nprint(\"=\"*80)\nprint(f\"\\nRegression Equation:\")\nprint(f\"  Score = {model.intercept_:.2f}\")\nfor feature, coef in zip(X.columns, model.coef_):\n    sign = '+' if coef &gt;= 0 else '-'\n    print(f\"          {sign} {abs(coef):.2f} × {feature}\")\n\nprint(f\"\\n📈 Model Performance:\")\nprint(f\"  R-squared: {r2_score(y, predictions):.3f}\")\nprint(f\"  RMSE: {np.sqrt(mean_squared_error(y, predictions)):.2f} points\")\n\nprint(f\"\\n💡 Feature Importance (sorted by absolute coefficient):\")\nfeature_importance = pd.DataFrame({\n    'Feature': X.columns,\n    'Coefficient': model.coef_,\n    'Abs_Coefficient': np.abs(model.coef_)\n}).sort_values('Abs_Coefficient', ascending=False)\n\nfor idx, row in feature_importance.iterrows():\n    print(f\"  {row['Feature']:20s}: {row['Coefficient']:6.2f} (impact per unit)\")\n\n\n\n\n\n\n\n🎯 Key Findings\n\n\n\nBased on our statistical analysis:\n\nStudy hours matter: Strong positive correlation with exam scores\nSleep is important: Better sleep → better performance\nExercise helps: Physical activity correlates with academic success\nAttendance counts: Class participation predicts higher scores\nMultiple factors: Best predictions use all variables together\n\nThis is how data science informs educational policy!"
+  },
+  {
+    "objectID": "playground/04_statistical_analysis.html#what-youve-learned",
+    "href": "playground/04_statistical_analysis.html#what-youve-learned",
+    "title": "📈 Statistical Analysis: Finding Patterns in Data",
+    "section": "🎓 What You’ve Learned",
+    "text": "🎓 What You’ve Learned\nCongratulations! You’ve mastered fundamental statistical concepts:\n✅ Descriptive statistics (mean, median, std dev, percentiles)\n✅ Distribution analysis and visualization\n✅ Correlation analysis to find relationships\n✅ Hypothesis testing with t-tests\n✅ Confidence intervals for estimation\n✅ Multiple regression for prediction\n\n🚀 What’s Next in CMPSC 301?\nIn the course, you’ll learn advanced statistics: - ANOVA: Comparing multiple groups - Chi-square tests: Analyzing categorical data - Non-parametric tests: When data isn’t normal - Time series analysis: Temporal patterns - Bayesian statistics: Probabilistic reasoning - Experimental design: A/B testing and causality"
+  },
+  {
+    "objectID": "playground/04_statistical_analysis.html#try-it-yourself",
+    "href": "playground/04_statistical_analysis.html#try-it-yourself",
+    "title": "📈 Statistical Analysis: Finding Patterns in Data",
+    "section": "💡 Try It Yourself!",
+    "text": "💡 Try It Yourself!\nExperiment with these challenges:\n\nAdd more variables: GPA, major, socioeconomic factors\nTest other hypotheses: Do exercise and sleep interact?\nOutlier analysis: Find and investigate unusual students\nPredictive modeling: Build a model to predict struggling students\nReal data: Analyze actual student performance data\n\nReady to become a statistical wizard? Visit JupyterLite!\n\n\n\n\n\n\n\n🌍 Real-World Applications\n\n\n\nStatistical analysis is used everywhere: - Medicine: Clinical trials, drug effectiveness - Business: A/B testing, market research - Sports: Player performance, team strategies - Policy: Economic indicators, social programs - Science: Research validation, discoveries\nMaster these tools in CMPSC 301 and unlock countless opportunities!"
+  },
+  {
+    "objectID": "playground/02_machine_learning.html",
+    "href": "playground/02_machine_learning.html",
+    "title": "🤖 Machine Learning: Predicting the Future",
+    "section": "",
+    "text": "Machine learning enables computers to learn patterns from data and make predictions without being explicitly programmed. In this demonstration, you’ll build and train your first predictive model!\n\n\n\nUnderstanding supervised learning concepts\nTraining regression models to predict continuous values\nEvaluating model performance\nMaking predictions on new data\nVisualizing model predictions"
+  },
+  {
+    "objectID": "playground/02_machine_learning.html#welcome-to-machine-learning",
+    "href": "playground/02_machine_learning.html#welcome-to-machine-learning",
+    "title": "🤖 Machine Learning: Predicting the Future",
+    "section": "",
+    "text": "Machine learning enables computers to learn patterns from data and make predictions without being explicitly programmed. In this demonstration, you’ll build and train your first predictive model!\n\n\n\nUnderstanding supervised learning concepts\nTraining regression models to predict continuous values\nEvaluating model performance\nMaking predictions on new data\nVisualizing model predictions"
+  },
+  {
+    "objectID": "playground/02_machine_learning.html#the-challenge-predicting-housing-prices",
+    "href": "playground/02_machine_learning.html#the-challenge-predicting-housing-prices",
+    "title": "🤖 Machine Learning: Predicting the Future",
+    "section": "The Challenge: Predicting Housing Prices 🏠",
+    "text": "The Challenge: Predicting Housing Prices 🏠\nImagine you’re a data scientist working for a real estate company. Your task is to build a model that predicts house prices based on features like size, number of bedrooms, and location.\nLet’s build this predictive model step by step!"
+  },
+  {
+    "objectID": "playground/02_machine_learning.html#part-1-creating-our-dataset",
+    "href": "playground/02_machine_learning.html#part-1-creating-our-dataset",
+    "title": "🤖 Machine Learning: Predicting the Future",
+    "section": "Part 1: Creating Our Dataset",
+    "text": "Part 1: Creating Our Dataset\n\nimport pandas as pd\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.metrics import mean_squared_error, r2_score\nimport plotly.graph_objects as go\nimport plotly.express as px\n\n# Set random seed for reproducibility\nnp.random.seed(42)\n\n# Generate realistic housing data\nn_houses = 100\n\n# Features\nsquare_feet = np.random.randint(800, 4000, n_houses)\nbedrooms = np.random.randint(1, 6, n_houses)\nage_years = np.random.randint(0, 50, n_houses)\ndistance_to_city = np.random.uniform(1, 30, n_houses)  # miles\n\n# Target: Price (with realistic relationships)\nbase_price = 100000\nprice = (base_price + \n         square_feet * 150 +          # $150 per sq ft\n         bedrooms * 25000 +           # $25k per bedroom\n         -age_years * 1000 +          # -$1k per year of age\n         -distance_to_city * 2000 +   # -$2k per mile from city\n         np.random.normal(0, 30000, n_houses))  # random variation\n\n# Create DataFrame\ndf = pd.DataFrame({\n    'square_feet': square_feet,\n    'bedrooms': bedrooms,\n    'age_years': age_years,\n    'distance_to_city': distance_to_city,\n    'price': price\n})\n\nprint(\"🏠 Housing Dataset Preview\")\nprint(\"=\"*60)\nprint(df.head(10))\nprint(f\"\\n📊 Dataset shape: {df.shape[0]} houses, {df.shape[1]} features\")\nprint(\"\\n📈 Summary Statistics:\")\nprint(df.describe().round(2))\n\n\n\n\n\n\n\nUnderstanding Our Data\n\n\n\nWe have 100 houses with 4 features: - Square Feet: Size of the house (800-4000 sq ft) - Bedrooms: Number of bedrooms (1-5) - Age: How old the house is (0-50 years) - Distance to City: Miles from downtown (1-30 miles)\nOur goal: Predict the price based on these features!"
+  },
+  {
+    "objectID": "playground/02_machine_learning.html#part-2-exploring-relationships",
+    "href": "playground/02_machine_learning.html#part-2-exploring-relationships",
+    "title": "🤖 Machine Learning: Predicting the Future",
+    "section": "Part 2: Exploring Relationships",
+    "text": "Part 2: Exploring Relationships\nBefore building a model, let’s visualize how each feature relates to price:\n\n# Create comprehensive visualization\nfig, axes = plt.subplots(2, 2, figsize=(14, 10))\n\n# Plot 1: Square Feet vs Price\naxes[0, 0].scatter(df['square_feet'], df['price'], alpha=0.6, \n                   c='#FF6B6B', s=60, edgecolors='black', linewidth=0.5)\naxes[0, 0].set_title('📐 Square Feet vs Price', fontweight='bold', fontsize=12)\naxes[0, 0].set_xlabel('Square Feet')\naxes[0, 0].set_ylabel('Price ($)')\naxes[0, 0].grid(alpha=0.3)\n\n# Plot 2: Bedrooms vs Price\nbedroom_avg = df.groupby('bedrooms')['price'].mean()\naxes[0, 1].bar(bedroom_avg.index, bedroom_avg.values, \n               color='#40C9D9', alpha=0.7, edgecolor='black')\naxes[0, 1].set_title('🛏️ Bedrooms vs Average Price', fontweight='bold', fontsize=12)\naxes[0, 1].set_xlabel('Number of Bedrooms')\naxes[0, 1].set_ylabel('Average Price ($)')\naxes[0, 1].grid(alpha=0.3, axis='y')\n\n# Plot 3: Age vs Price\naxes[1, 0].scatter(df['age_years'], df['price'], alpha=0.6, \n                   c='#6BCB77', s=60, edgecolors='black', linewidth=0.5)\naxes[1, 0].set_title('⏰ House Age vs Price', fontweight='bold', fontsize=12)\naxes[1, 0].set_xlabel('Age (years)')\naxes[1, 0].set_ylabel('Price ($)')\naxes[1, 0].grid(alpha=0.3)\n\n# Plot 4: Distance vs Price\naxes[1, 1].scatter(df['distance_to_city'], df['price'], alpha=0.6, \n                   c='#FFD93D', s=60, edgecolors='black', linewidth=0.5)\naxes[1, 1].set_title('📍 Distance to City vs Price', fontweight='bold', fontsize=12)\naxes[1, 1].set_xlabel('Distance to City Center (miles)')\naxes[1, 1].set_ylabel('Price ($)')\naxes[1, 1].grid(alpha=0.3)\n\nplt.suptitle('🔍 Exploring Feature-Price Relationships', \n             fontsize=16, fontweight='bold', y=0.995)\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n💡 Key Observations\n\n\n\n\nLarger houses → Higher prices (positive correlation)\nMore bedrooms → Higher prices (positive correlation)\nOlder houses → Lower prices (negative correlation)\nFurther from city → Lower prices (negative correlation)\n\nThese patterns make intuitive sense and our model will learn them!"
+  },
+  {
+    "objectID": "playground/02_machine_learning.html#part-3-building-the-machine-learning-model",
+    "href": "playground/02_machine_learning.html#part-3-building-the-machine-learning-model",
+    "title": "🤖 Machine Learning: Predicting the Future",
+    "section": "Part 3: Building the Machine Learning Model",
+    "text": "Part 3: Building the Machine Learning Model\nNow for the exciting part - let’s train a machine learning model!\n\n# Prepare features (X) and target (y)\nX = df[['square_feet', 'bedrooms', 'age_years', 'distance_to_city']]\ny = df['price']\n\n# Split into training and testing sets (80/20 split)\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42\n)\n\nprint(\"🔄 Splitting Data...\")\nprint(f\"Training set: {len(X_train)} houses\")\nprint(f\"Testing set: {len(X_test)} houses\")\n\n# Create and train the model\nmodel = LinearRegression()\nprint(\"\\n🧠 Training the model...\")\nmodel.fit(X_train, y_train)\nprint(\"✅ Model trained successfully!\")\n\n# Analyze what the model learned\nprint(\"\\n📊 Model Coefficients (Feature Importance):\")\nprint(\"=\"*60)\nfor feature, coef in zip(X.columns, model.coef_):\n    print(f\"{feature:20s}: ${coef:&gt;10,.2f} per unit\")\nprint(f\"{'Intercept (base price)':20s}: ${model.intercept_:&gt;10,.2f}\")\n\n\n\n\n\n\n\n🎓 Understanding the Model\n\n\n\nThe model learned “weights” (coefficients) for each feature: - Positive coefficients mean the feature increases price - Negative coefficients mean the feature decreases price - The magnitude shows how important each feature is\nFor example, if square feet has a coefficient of $150, adding 100 sq ft increases the predicted price by $15,000!"
+  },
+  {
+    "objectID": "playground/02_machine_learning.html#part-4-making-predictions",
+    "href": "playground/02_machine_learning.html#part-4-making-predictions",
+    "title": "🤖 Machine Learning: Predicting the Future",
+    "section": "Part 4: Making Predictions",
+    "text": "Part 4: Making Predictions\nLet’s see how well our model predicts house prices:\n\n# Make predictions on test set\ny_pred = model.predict(X_test)\n\n# Calculate performance metrics\nmse = mean_squared_error(y_test, y_pred)\nrmse = np.sqrt(mse)\nr2 = r2_score(y_test, y_pred)\n\nprint(\"📊 Model Performance on Test Set\")\nprint(\"=\"*60)\nprint(f\"Root Mean Squared Error: ${rmse:,.2f}\")\nprint(f\"R² Score: {r2:.4f} ({r2*100:.2f}% of variance explained)\")\n\n# Create predictions vs actual plot\nfig = go.Figure()\n\n# Perfect prediction line\nmax_price = max(y_test.max(), y_pred.max())\nmin_price = min(y_test.min(), y_pred.min())\nfig.add_trace(go.Scatter(\n    x=[min_price, max_price],\n    y=[min_price, max_price],\n    mode='lines',\n    name='Perfect Prediction',\n    line=dict(color='red', dash='dash', width=2)\n))\n\n# Actual predictions\nfig.add_trace(go.Scatter(\n    x=y_test,\n    y=y_pred,\n    mode='markers',\n    name='Predictions',\n    marker=dict(\n        size=10,\n        color='#40C9D9',\n        opacity=0.6,\n        line=dict(color='black', width=1)\n    ),\n    text=[f\"Actual: ${actual:,.0f}&lt;br&gt;Predicted: ${pred:,.0f}\" \n          for actual, pred in zip(y_test, y_pred)],\n    hovertemplate='%{text}&lt;extra&gt;&lt;/extra&gt;'\n))\n\nfig.update_layout(\n    title='🎯 Model Predictions vs Actual Prices',\n    xaxis_title='Actual Price ($)',\n    yaxis_title='Predicted Price ($)',\n    template='plotly_white',\n    height=600,\n    font=dict(size=12)\n)\n\nfig.show()\n\n\n\n\n\n\n\n💡 Interpreting Results\n\n\n\n\nR² Score: Measures how well the model fits the data (0-1 scale)\n\nR² = 1.0 means perfect predictions\nR² = 0.0 means model is useless\nOur model should have R² &gt; 0.85 (very good!)\n\nRMSE: Average prediction error in dollars (lower is better)\nPoints close to the red dashed line = accurate predictions!"
+  },
+  {
+    "objectID": "playground/02_machine_learning.html#part-5-predicting-new-houses",
+    "href": "playground/02_machine_learning.html#part-5-predicting-new-houses",
+    "title": "🤖 Machine Learning: Predicting the Future",
+    "section": "Part 5: Predicting New Houses",
+    "text": "Part 5: Predicting New Houses\nNow let’s use our trained model to predict prices for new houses:\n\n# Define new houses to predict\nnew_houses = pd.DataFrame({\n    'square_feet': [2500, 1800, 3500, 1200],\n    'bedrooms': [4, 3, 5, 2],\n    'age_years': [5, 20, 1, 35],\n    'distance_to_city': [8, 15, 3, 25],\n})\n\n# Make predictions\npredicted_prices = model.predict(new_houses)\n\n# Display results\nprint(\"🏠 Predicting Prices for New Houses\")\nprint(\"=\"*80)\nfor i, (idx, house) in enumerate(new_houses.iterrows()):\n    print(f\"\\nHouse {i+1}:\")\n    print(f\"  📐 {house['square_feet']} sq ft  |  \"\n          f\"🛏️ {house['bedrooms']} beds  |  \"\n          f\"⏰ {house['age_years']} years old  |  \"\n          f\"📍 {house['distance_to_city']:.1f} miles from city\")\n    print(f\"  💰 Predicted Price: ${predicted_prices[i]:,.0f}\")"
+  },
+  {
+    "objectID": "playground/02_machine_learning.html#part-6-feature-importance-visualization",
+    "href": "playground/02_machine_learning.html#part-6-feature-importance-visualization",
+    "title": "🤖 Machine Learning: Predicting the Future",
+    "section": "Part 6: Feature Importance Visualization",
+    "text": "Part 6: Feature Importance Visualization\nLet’s visualize which features matter most:\n\n# Calculate absolute importance of each feature\nimportance = pd.DataFrame({\n    'Feature': X.columns,\n    'Coefficient': model.coef_,\n    'Abs_Coefficient': np.abs(model.coef_)\n}).sort_values('Abs_Coefficient', ascending=True)\n\n# Create horizontal bar chart\nfig = px.bar(importance, \n             y='Feature', \n             x='Coefficient',\n             orientation='h',\n             title='🎯 Feature Importance: What Drives House Prices?',\n             labels={'Coefficient': 'Impact on Price ($)', 'Feature': ''},\n             color='Coefficient',\n             color_continuous_scale=['#FF6B6B', '#FFFFFF', '#40C9D9'],\n             text='Coefficient')\n\nfig.update_traces(texttemplate='$%{text:,.0f}', textposition='outside')\nfig.update_layout(\n    height=400,\n    template='plotly_white',\n    font=dict(size=12),\n    showlegend=False\n)\n\nfig.show()"
+  },
+  {
+    "objectID": "playground/02_machine_learning.html#part-7-interactive-prediction-tool",
+    "href": "playground/02_machine_learning.html#part-7-interactive-prediction-tool",
+    "title": "🤖 Machine Learning: Predicting the Future",
+    "section": "Part 7: Interactive Prediction Tool",
+    "text": "Part 7: Interactive Prediction Tool\nTry adjusting the sliders to see how different features affect predicted price:\n\n# Create an interactive prediction visualization\ndef create_prediction_surface():\n    # Create a grid for visualization (varying square feet and distance)\n    sq_ft_range = np.linspace(1000, 3500, 50)\n    distance_range = np.linspace(2, 25, 50)\n    \n    # Create meshgrid\n    sq_ft_grid, distance_grid = np.meshgrid(sq_ft_range, distance_range)\n    \n    # Predict prices for each combination (with fixed bedrooms=3, age=10)\n    predictions = np.zeros_like(sq_ft_grid)\n    for i in range(sq_ft_grid.shape[0]):\n        for j in range(sq_ft_grid.shape[1]):\n            pred_input = pd.DataFrame({\n                'square_feet': [sq_ft_grid[i, j]],\n                'bedrooms': [3],\n                'age_years': [10],\n                'distance_to_city': [distance_grid[i, j]]\n            })\n            predictions[i, j] = model.predict(pred_input)[0]\n    \n    # Create 3D surface plot\n    fig = go.Figure(data=[go.Surface(\n        x=sq_ft_range,\n        y=distance_range,\n        z=predictions,\n        colorscale='Turbo',\n        colorbar=dict(title=\"Price ($)\")\n    )])\n    \n    fig.update_layout(\n        title='🗺️ 3D Price Prediction Surface (3 bed, 10 years old)',\n        scene=dict(\n            xaxis_title='Square Feet',\n            yaxis_title='Distance to City (miles)',\n            zaxis_title='Predicted Price ($)',\n        ),\n        height=600,\n        template='plotly_white'\n    )\n    \n    return fig\n\nfig = create_prediction_surface()\nfig.show()\n\n\n\n\n\n\n\n🎮 Interactive Exploration\n\n\n\nRotate the 3D plot by clicking and dragging! Notice how: - Increasing square footage (moving right) → Higher prices - Moving closer to city (moving down) → Higher prices - The surface shows all possible price combinations!"
+  },
+  {
+    "objectID": "playground/02_machine_learning.html#what-youve-learned",
+    "href": "playground/02_machine_learning.html#what-youve-learned",
+    "title": "🤖 Machine Learning: Predicting the Future",
+    "section": "🎓 What You’ve Learned",
+    "text": "🎓 What You’ve Learned\nCongratulations! You’ve just built a complete machine learning pipeline:\n✅ Prepared data for machine learning\n✅ Explored relationships between features and target\n✅ Trained a model to learn patterns\n✅ Evaluated performance using metrics\n✅ Made predictions on new data\n✅ Interpreted results to understand the model\n\n🚀 What’s Next in CMPSC 301?\nIn the course, you’ll learn: - Advanced models: Random Forests, Neural Networks, SVMs - Classification: Predicting categories (spam/not spam, disease diagnosis) - Clustering: Finding natural groupings in data - Model tuning: Optimizing performance - Real datasets: Working with messy, real-world data - Deployment: Putting models into production"
+  },
+  {
+    "objectID": "playground/02_machine_learning.html#challenge-try-it-yourself",
+    "href": "playground/02_machine_learning.html#challenge-try-it-yourself",
+    "title": "🤖 Machine Learning: Predicting the Future",
+    "section": "💡 Challenge: Try It Yourself!",
+    "text": "💡 Challenge: Try It Yourself!\nWant to experiment? Try these modifications:\n\nAdd more features: What about garage size or lot area?\nTry different models: Research RandomForestRegressor or GradientBoostingRegressor\nImprove the model: Can you get R² above 0.95?\nReal data: Find a housing dataset online and apply these techniques\n\nReady to build your own models? Head to JupyterLite and start experimenting!\n\n\n\n\n\n\n\n🎯 Course Connection\n\n\n\nThis demonstration introduces supervised learning and regression - fundamental concepts in data science. In CMPSC 301, you’ll master these techniques and apply them to real-world problems in healthcare, business, sports, and more!"
+  },
+  {
+    "objectID": "playground/00_playground.html",
+    "href": "playground/00_playground.html",
+    "title": "🎮 Data Science Playground",
+    "section": "",
+    "text": "Welcome to the Data Science Playground! 🚀\nHere you’ll find interactive demonstrations showcasing the exciting world of data science. Each experiment includes:\nThese demonstrations give you a taste of what you’ll learn in CMPSC 301. Play around, experiment, and see what data science is all about!"
+  },
+  {
+    "objectID": "playground/00_playground.html#what-youll-explore",
+    "href": "playground/00_playground.html#what-youll-explore",
+    "title": "🎮 Data Science Playground",
+    "section": "🎯 What You’ll Explore",
+    "text": "🎯 What You’ll Explore\n\n\n\n\n\n\nTry It Live!\n\n\n\nEach demonstration includes interactive code cells. Click the JupyterLite tab in the navigation to access a full Python/R environment, or use the embedded code runners below!\n\n\n\n\n\n\n\n\nFor Prospective Students\n\n\n\nThese demonstrations showcase the types of projects and analyses you’ll create in this course. Don’t worry if some concepts are unfamiliar - that’s what the course is for! The goal is to inspire curiosity and show you the possibilities."
+  },
+  {
+    "objectID": "playground/00_playground.html#featured-demonstrations",
+    "href": "playground/00_playground.html#featured-demonstrations",
+    "title": "🎮 Data Science Playground",
+    "section": "🌟 Featured Demonstrations",
+    "text": "🌟 Featured Demonstrations\nBrowse the demonstrations below to see data science in action:"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "CMPSC 301: Data Science",
+    "section": "",
+    "text": "Department of Computer Science\nAllegheny College\nFall 2026"
+  },
+  {
+    "objectID": "index.html#course-overview",
+    "href": "index.html#course-overview",
+    "title": "CMPSC 301: Data Science",
+    "section": "Course Overview",
+    "text": "Course Overview\nWelcome to CMPSC 301: Data Science! This course provides a comprehensive introduction to the principles, techniques, and applications of data science. You’ll learn how to collect, clean, analyze, visualize, and interpret data using modern computational tools and statistical methods."
+  },
+  {
+    "objectID": "index.html#course-description",
+    "href": "index.html#course-description",
+    "title": "CMPSC 301: Data Science",
+    "section": "Course Description",
+    "text": "Course Description\nA continuation of CMPSC 100 with an emphasis on implementing, using, and evaluating the computational structures needed to efficiently store and retrieve digital data. Participating in hands-on activities that often require teamwork, students create data structures and algorithms whose correctness and performance they study through proofs and experimentation. Students continue to refine their ability to organize and document a program’s source code so that it effectively communicates with the intended users and maintainers. During a weekly laboratory session, students use state-of-the-art technology to complete projects, reporting on their results through both written documents and oral presentations.\n\nPrerequisite: CMPSC 100 or permission of the instructor.\nDistribution Requirements: QR, SP."
+  },
+  {
+    "objectID": "index.html#distribution-requirements",
+    "href": "index.html#distribution-requirements",
+    "title": "CMPSC 301: Data Science",
+    "section": "Distribution Requirements",
+    "text": "Distribution Requirements\n\nPD: Power, Privilege, & Difference. Understanding Power, Privilege, & Difference means understanding the role of power, privilege, prejudice, discrimination, stereotypes, inequity, and oppression in human society, in both historical and contemporary contexts, and recognizing these dynamics in the learner’s own life and communities.\n\nLearning Outcome: Students who successfully complete this requirement will demonstrate an understanding of the historical and/or contemporary roles of power, privilege, and difference in human society.\n\nQR: Quantitative Reasoning. Quantitative Reasoning is the ability to understand, investigate, communicate, and contextualize numerical, symbolic, and graphical information towards the exploration of natural, physical, behavioral, or social phenomena.\n\nLearning Outcome: Students who successfully complete this requirement will demonstrate an understanding of how to interpret numeric data and/or their graphical or symbolic representations.\n\n\n\n\n🎯 Learning Objectives\nBy the end of this course, you will develop technical skills in programming in R and Python to be able to complete the following types of tasks:\n\nCollect and clean real-world data from various sources\nAnalyze data using statistical methods and machine learning techniques\nVisualize data effectively to communicate insights\nBuild predictive models using Python and R\nWork with databases and structured data formats\nApply data science to solve real-world problems\nCommunicate findings through reports and presentations\n\nData science skills developed:\n\nGain a “big-picture” view of data science.\nGain an understanding of the objectives and limitations of data analytics.\nGain an understanding of the main methods in data science for analytical goals.\nGain practical skills using relevant software tools and programming techniques.\nGain an understanding of the contemporary roles of power and difference as they relate to the knowledge derived from a data set.\nGain an understanding of biases, discrimination and stereotypes that maybe present during collection, analysis, and reflection on the latent trends in real-world data sets.\n\nThe course is divided into modules, with several of the modules consisting of investigations of real-world data in a specific field. In addition to learning specific technical and programming skills in each module students will be required to read a relevant article and prepare for a discussion related to the issues raised in the article.\nStudents will also enhance their ability to write and present ideas about data analytics in a clear and compelling fashion. Finally, students will gain practical experience in the design, implementation, and analysis of data for research during laboratory sessions and a final project."
+  },
+  {
+    "objectID": "index.html#an-ethical-interest",
+    "href": "index.html#an-ethical-interest",
+    "title": "CMPSC 301: Data Science",
+    "section": "An Ethical Interest",
+    "text": "An Ethical Interest\nThroughout the semester students will be challenged with serious analytical questions connecting the investigated data and its analysis to arising societal issues of bias, ethical consideration and the culture of power. This step is to ensure that analytics is performed with a lens on the data, as well as its impacts (positive and negative) on culture, community, and society. We note here that there is often no clear indication of a “correct” decision as a result of an analysis of data. The so-called “right” decision ought to be made by analysis who has studied both the data, and the consequences of decision in terms of humanitarian, environmental, ecological and other factors. This class cannot give you the correct decision, however it can help to enable your critical thinking skills which will provide you with some understanding of how to navigate to worthy decisions."
+  },
+  {
+    "objectID": "index.html#course-information",
+    "href": "index.html#course-information",
+    "title": "CMPSC 301: Data Science",
+    "section": "Course Information",
+    "text": "Course Information\n\n📚 Prerequisites\n\nCMPSC 101 (Data Structures) or equivalent programming experience\nBasic understanding of mathematics and statistics (or willingness to learn!)"
+  },
+  {
+    "objectID": "index.html#course-structure",
+    "href": "index.html#course-structure",
+    "title": "CMPSC 301: Data Science",
+    "section": "Course Structure",
+    "text": "Course Structure\n\n📖 Topics Covered\n\nIntroduction to Data Science - Tools, workflows, and ethical considerations\nData Collection & Cleaning - Web scraping, APIs, data wrangling\nExploratory Data Analysis - Statistical summaries and visualizations\nData Visualization - Creating effective plots and interactive dashboards\nStatistical Inference - Hypothesis testing, confidence intervals\nMachine Learning Basics - Supervised and unsupervised learning\nPredictive Modeling - Regression, classification, model evaluation\nTime Series Analysis - Working with temporal data\nText Analysis & NLP - Processing and analyzing text data\nBig Data & Databases - SQL, NoSQL, and distributed computing\nData Ethics & Privacy - Responsible data science practices\nFinal Project - Apply data science to a real-world problem\n\n\n\n🛠️ Tools & Technologies\n\nLanguages: Python, R\nLibraries: Pandas, NumPy, Matplotlib, Seaborn, Plotly, Scikit-learn, Tidyverse\nPlatforms: Jupyter Notebooks, RStudio, GitHub\nData Tools: SQL, APIs, web scraping tools"
+  },
+  {
+    "objectID": "index.html#grading-assessment",
+    "href": "index.html#grading-assessment",
+    "title": "CMPSC 301: Data Science",
+    "section": "Grading & Assessment",
+    "text": "Grading & Assessment\nYour grade will be determined by the following components:\n\n\n\n\n\n\n\n\nComponent\nWeight\nDescription\n\n\n\n\nWeekly Labs\n40%\nHands-on programming assignments\n\n\nParticipation and Activities\n20%\nAttendance and short assessments on key concepts\n\n\nExams\n20%\nAssessment of knowledge and skills\n\n\nFinal Project\n20%\nComprehensive data science project\n\n\n\n\n\nGrading Scale\n\n\n\n\n\n\n\n\n\n\n\nLetter\nRange\nLetter\nRange\nLetter\nRange\n\n\n\n\nA\n96 - 100\nA-\n90 - 95.9\n\n\n\n\nB+\n87 - 89.9\nB\n83 - 86.9\nB-\n80 - 82.9\n\n\nC+\n77 - 79.9\nC\n73 - 76.9\nC-\n70 - 72.9\n\n\nD+\n67 - 69.9\nD\n63 - 69.9\n\n\n\n\nF\n62.9 and below"
+  },
+  {
+    "objectID": "index.html#course-policies",
+    "href": "index.html#course-policies",
+    "title": "CMPSC 301: Data Science",
+    "section": "Course Policies",
+    "text": "Course Policies\n\n📝 Attendance & Participation\nRegular attendance is essential for success in this course. You are expected to:\n\nAttend all lectures and lab sessions\nParticipate actively in class discussions\nComplete pre-class readings and assignments\nCollaborate respectfully with classmates\n\n\n\n⏰ Late Work Policy\n\nLate submissions will be accepted with a 10% penalty per day (up to 3 days)\nAfter 3 days, assignments receive a 50% penalty\nExtensions may be granted for documented emergencies\nCommunicate with the instructor before the deadline if you need an extension\n\n\n\n🤝 Academic Integrity\nAllegheny College has a student-run Honor Code designed to promote individual responsibility and integrity in academic affairs. Each student pledges the following: “I hereby recognize and pledge to fulfill my responsibilities, as defined in the Honor Code, and to maintain the integrity of both myself and the College community as a whole.” Your professor will educate you about the meaning of academic integrity in this course, which may be different in some respects from other courses in which you are enrolled. Please ask the professor if you have questions. Please see academic honor program’s website for more details.\nAcademic honesty is fundamental to our learning community. You are expected to: - Complete all work independently unless explicitly stated as group work - Cite all sources appropriately - Never share or copy code/solutions - Follow Allegheny College’s Honor Code\nViolations will result in serious consequences, including failure of the assignment or course.\n\n\n💻 Technology Requirements\n\nLaptop: Required for all class sessions\nSoftware: Python, R, Jupyter, VS Code (installation help provided)\nGitHub Account: Free student account\nInternet: Reliable connection for online resources"
+  },
+  {
+    "objectID": "index.html#bring-your-own-computer-to-class",
+    "href": "index.html#bring-your-own-computer-to-class",
+    "title": "CMPSC 301: Data Science",
+    "section": "Bring your own computer to class",
+    "text": "Bring your own computer to class\nThe classrooms in the Department of Computer Science no longer provide machines for student use. You are to bring your own wifi-ready device to class to be able to follow along with course material. If the class is meeting online using Zoom, then please be sure that you machine is configured correctly to use these services to connect you to the class. As it is your responsibility to maintain your machine, please perform online research to determine how to configure your machine accordingly, or to install any necessary software to enable online meetings.\nDuring the semester, you will be told which software to install on your machine to be prepared for class. Some of the prominent software that we may be using can be found at the following resource."
+  },
+  {
+    "objectID": "index.html#resources-support",
+    "href": "index.html#resources-support",
+    "title": "CMPSC 301: Data Science",
+    "section": "Resources & Support",
+    "text": "Resources & Support\n\n📚 Recommended Textbooks\n\n“Python for Data Analysis” by Wes McKinney (O’Reilly)\n“R for Data Science” by Hadley Wickham & Garrett Grolemund (O’Reilly)\n“Introduction to Statistical Learning” by James, Witten, Hastie & Tibshirani\n\nAll textbooks available free online!\n\n\n🆘 Getting Help\n\nOffice Hours: Drop in or schedule appointments\nDiscord: Course Discord server for questions and discussions\nGitHub Discussions: Post questions about assignments\nPeer Learning: Form study groups with classmates\nTutorial Sessions: Weekly optional review sessions\n\n\n\n🔗 Important Links\n\nCourse Website: [This site!]\nGitHub Organization: github.com/Allegheny-CMPSC-301-Fall-2026\nDiscord Server: [Link provided via email]\nJupyterLite: Try Python/R in your browser!\nPlayground: Interactive demonstrations"
+  },
+  {
+    "objectID": "index.html#course-calendar",
+    "href": "index.html#course-calendar",
+    "title": "CMPSC 301: Data Science",
+    "section": "Course Calendar",
+    "text": "Course Calendar\n\n🗓️ Important Dates\n\nFirst Day of Class: August 26, 2026\nLabor Day (No Class): September 7, 2026\nFall Break: October 12-13, 2026\nMidterm Project Due: October 23, 2026\nThanksgiving Break: November 24-27, 2026\nFinal Project Presentations: December 8-10, 2026\nFinal Project Due: December 15, 2026\n\nDetailed weekly schedule available on the Materials page."
+  },
+  {
+    "objectID": "index.html#diversity-inclusion-statement",
+    "href": "index.html#diversity-inclusion-statement",
+    "title": "CMPSC 301: Data Science",
+    "section": "Diversity & Inclusion Statement",
+    "text": "Diversity & Inclusion Statement\nThis course welcomes students of all backgrounds, identities, and experiences. Data science has historically lacked diversity, and we are committed to creating an inclusive learning environment where all students can thrive. We will:\n\nStudy diverse datasets and applications\nDiscuss bias, fairness, and ethics in data science\nValue different perspectives and approaches\nSupport each other’s learning and growth\n\nPlease let me know if there are any accommodations or support you need to succeed in this course."
+  },
+  {
+    "objectID": "index.html#wellness-support",
+    "href": "index.html#wellness-support",
+    "title": "CMPSC 301: Data Science",
+    "section": "Wellness & Support",
+    "text": "Wellness & Support\nYour health and well-being are priorities. If you’re struggling with: - Mental health challenges - Academic difficulties - Personal emergencies - Accessibility needs\nPlease reach out to me or contact: - Counseling Center: counseling@allegheny.edu - Student Accessibility & Support Services: sass@allegheny.edu - Dean of Students Office: deanofstudents@allegheny.edu"
+  },
+  {
+    "objectID": "index.html#lets-begin",
+    "href": "index.html#lets-begin",
+    "title": "CMPSC 301: Data Science",
+    "section": "Let’s Begin! 🚀",
+    "text": "Let’s Begin! 🚀\nI’m excited to explore the fascinating world of data science with you this semester. Check out the Playground to see what we’ll be learning, and visit JupyterLite to start coding right away!\nHave questions? Come to office hours or reach out via email or Discord. Let’s make this an amazing semester!\n\nThis syllabus is subject to change. Updates will be announced in class and on the course website."
+  },
+  {
+    "objectID": "materials/0_materials.html",
+    "href": "materials/0_materials.html",
+    "title": "📚 Course Materials",
+    "section": "",
+    "text": "CMPSC301 :: Data Science :: Fall 2026"
+  },
+  {
+    "objectID": "materials/0_materials.html#w1.-welcome-to-data-science",
+    "href": "materials/0_materials.html#w1.-welcome-to-data-science",
+    "title": "📚 Course Materials",
+    "section": "W1. Welcome to Data Science! 🎉",
+    "text": "W1. Welcome to Data Science! 🎉\nWeek of August 26, 2026\n\nGetting to Know You: Welcome Survey\nIcebreaker Activity: Pair up with classmates and learn:\n\nNames and backgrounds\nProgramming experience\nFavorite data visualization you’ve seen\nA dataset you’d love to analyze\nCareer interests in data science\n\nImportant: Join our GitHub Organization (check your email!)\nDiscord: Make sure you’re in the course Discord server!\n\n\nMaterials\n\nLecture 01: Introduction to Data Science\n\nSlides (Coming soon!)\nWhat is data science?\nThe data science workflow\nTools and technologies\nCareer paths\n\n\n\n\nAssignments\n\nActivity 01: Setting Up Your Data Science Environment\n\nGitHub Classroom Link (Coming soon!)\nInstalling Python, R, Jupyter, VS Code\nTesting your installation\nFirst data exploration"
+  },
+  {
+    "objectID": "materials/0_materials.html#w2.-python-foundations-for-data-science",
+    "href": "materials/0_materials.html#w2.-python-foundations-for-data-science",
+    "title": "📚 Course Materials",
+    "section": "W2. Python Foundations for Data Science 🐍",
+    "text": "W2. Python Foundations for Data Science 🐍\nWeek of September 2, 2026\nNote: No class Monday, September 7 (Labor Day)\n\nMaterials\n\nLecture 02: Python Essentials\n\nSlides (Coming soon!)\nNumPy arrays and operations\nPandas DataFrames\nData types and structures\n\nLecture 03: Data Manipulation with Pandas\n\nSlides (Coming soon!)\nReading CSV, Excel, JSON files\nSelecting, filtering, sorting data\nBasic data cleaning\n\n\n\n\nAssignments\n\nLab 01: Python Data Structures & Pandas Basics\n\nGitHub Classroom Link (Coming soon!)\nDue: Friday, September 11\nWorking with DataFrames\nData selection and filtering\nBasic calculations"
+  },
+  {
+    "objectID": "materials/0_materials.html#w3.-data-visualization",
+    "href": "materials/0_materials.html#w3.-data-visualization",
+    "title": "📚 Course Materials",
+    "section": "W3. Data Visualization 📊",
+    "text": "W3. Data Visualization 📊\nWeek of September 9, 2026\n\nMaterials\n\nLecture 04: Visualization Principles\n\nSlides (Coming soon!)\nChoosing the right chart type\nColor theory and accessibility\nStorytelling with data\n\nLecture 05: Matplotlib, Seaborn & Plotly\n\nSlides (Coming soon!)\nStatic plots with Matplotlib\nStatistical plots with Seaborn\nInteractive visualizations with Plotly\n\n\n\n\nAssignments\n\nActivity 02: Creating Your First Visualizations\n\nGitHub Classroom Link (Coming soon!)\nDue: Friday, September 18\n\nLab 02: Data Visualization Portfolio\n\nGitHub Classroom Link (Coming soon!)\nDue: Friday, September 18\nCreate 5 different chart types\nTell a story with data"
+  },
+  {
+    "objectID": "materials/0_materials.html#w4.-statistical-analysis",
+    "href": "materials/0_materials.html#w4.-statistical-analysis",
+    "title": "📚 Course Materials",
+    "section": "W4. Statistical Analysis 📈",
+    "text": "W4. Statistical Analysis 📈\nWeek of September 16, 2026\n\nMaterials\n\nLecture 06: Descriptive Statistics\n\nSlides (Coming soon!)\nMeasures of central tendency\nMeasures of spread\nDistributions\n\nLecture 07: Inferential Statistics\n\nSlides (Coming soon!)\nHypothesis testing\nConfidence intervals\nP-values and significance\n\n\n\n\nAssignments\n\nLab 03: Statistical Analysis Project\n\nGitHub Classroom Link (Coming soon!)\nDue: Friday, September 25\nAnalyze a real dataset\nTest hypotheses\nReport findings"
+  },
+  {
+    "objectID": "materials/0_materials.html#w5.-data-cleaning-wrangling",
+    "href": "materials/0_materials.html#w5.-data-cleaning-wrangling",
+    "title": "📚 Course Materials",
+    "section": "W5. Data Cleaning & Wrangling 🔧",
+    "text": "W5. Data Cleaning & Wrangling 🔧\nWeek of September 23, 2026\n\nMaterials\n\nLecture 08: Data Quality Issues\n\nSlides (Coming soon!)\nMissing data strategies\nOutlier detection\nData validation\n\nLecture 09: Advanced Pandas\n\nSlides (Coming soon!)\nMerging and joining\nReshaping data\nGroup operations\n\n\n\n\nAssignments\n\nActivity 03: Cleaning Messy Data\n\nGitHub Classroom Link (Coming soon!)\nReal-world messy dataset\nDue: Friday, October 2\n\nLab 04: Data Wrangling Challenge\n\nGitHub Classroom Link (Coming soon!)\nDue: Friday, October 2\nMultiple data sources\nComplete cleaning pipeline"
+  },
+  {
+    "objectID": "materials/0_materials.html#w6.-introduction-to-machine-learning",
+    "href": "materials/0_materials.html#w6.-introduction-to-machine-learning",
+    "title": "📚 Course Materials",
+    "section": "W6. Introduction to Machine Learning 🤖",
+    "text": "W6. Introduction to Machine Learning 🤖\nWeek of September 30, 2026\n\nMaterials\n\nLecture 10: ML Fundamentals\n\nSlides (Coming soon!)\nSupervised vs unsupervised learning\nTraining and testing\nModel evaluation\n\nLecture 11: Regression Models\n\nSlides (Coming soon!)\nLinear regression\nMultiple regression\nModel metrics\n\n\n\n\nAssignments\n\nLab 05: Building Your First ML Model\n\nGitHub Classroom Link (Coming soon!)\nDue: Friday, October 9\nPredict continuous values\nEvaluate model performance"
+  },
+  {
+    "objectID": "materials/0_materials.html#w7.-classification-model-evaluation",
+    "href": "materials/0_materials.html#w7.-classification-model-evaluation",
+    "title": "📚 Course Materials",
+    "section": "W7. Classification & Model Evaluation 🎯",
+    "text": "W7. Classification & Model Evaluation 🎯\nWeek of October 7, 2026\n\nMaterials\n\nLecture 12: Classification Algorithms\n\nSlides (Coming soon!)\nLogistic regression\nDecision trees\nRandom forests\n\nLecture 13: Model Evaluation\n\nSlides (Coming soon!)\nAccuracy, precision, recall\nConfusion matrices\nROC curves and AUC\n\n\n\n\nAssignments\n\nActivity 04: Classification Challenge\n\nGitHub Classroom Link (Coming soon!)\n\nLab 06: Multi-Class Classification\n\nGitHub Classroom Link (Coming soon!)\nDue: Friday, October 16"
+  },
+  {
+    "objectID": "materials/0_materials.html#fall-break-october-12-13",
+    "href": "materials/0_materials.html#fall-break-october-12-13",
+    "title": "📚 Course Materials",
+    "section": "🍂 FALL BREAK (October 12-13)",
+    "text": "🍂 FALL BREAK (October 12-13)"
+  },
+  {
+    "objectID": "materials/0_materials.html#w8.-midterm-project-week",
+    "href": "materials/0_materials.html#w8.-midterm-project-week",
+    "title": "📚 Course Materials",
+    "section": "W8. Midterm Project Week 📝",
+    "text": "W8. Midterm Project Week 📝\nWeek of October 14, 2026\n\nMidterm Project\n\nTopic: Comprehensive Data Analysis & Prediction\nRequirements:\n\nChoose your own dataset\nComplete EDA with visualizations\nBuild and evaluate a model\nWritten report and presentation\n\nDue: Friday, October 23, 2026\nWeight: 20% of final grade\n\n\n\nSupport\n\nOffice hours extended this week\nPeer review sessions\nDiscord Q&A"
+  },
+  {
+    "objectID": "materials/0_materials.html#w9.-natural-language-processing",
+    "href": "materials/0_materials.html#w9.-natural-language-processing",
+    "title": "📚 Course Materials",
+    "section": "W9. Natural Language Processing 💬",
+    "text": "W9. Natural Language Processing 💬\nWeek of October 21, 2026\n\nMaterials\n\nLecture 14: Text Analysis Basics\n\nSlides (Coming soon!)\nText preprocessing\nTokenization and stemming\nWord frequencies\n\nLecture 15: Sentiment Analysis\n\nSlides (Coming soon!)\nSentiment scoring\nText classification\nApplications\n\n\n\n\nAssignments\n\nLab 07: Analyzing Text Data\n\nGitHub Classroom Link (Coming soon!)\nDue: Friday, October 30\nAnalyze social media or reviews\nBuild sentiment classifier"
+  },
+  {
+    "objectID": "materials/0_materials.html#w10.-clustering-unsupervised-learning",
+    "href": "materials/0_materials.html#w10.-clustering-unsupervised-learning",
+    "title": "📚 Course Materials",
+    "section": "W10. Clustering & Unsupervised Learning 🔍",
+    "text": "W10. Clustering & Unsupervised Learning 🔍\nWeek of October 28, 2026\n\nMaterials\n\nLecture 16: Clustering Algorithms\n\nSlides (Coming soon!)\nK-means clustering\nHierarchical clustering\nDBSCAN\n\nLecture 17: Dimensionality Reduction\n\nSlides (Coming soon!)\nPCA (Principal Component Analysis)\nt-SNE\nApplications\n\n\n\n\nAssignments\n\nActivity 05: Customer Segmentation\n\nGitHub Classroom Link (Coming soon!)\n\nLab 08: Unsupervised Learning Project\n\nGitHub Classroom Link (Coming soon!)\nDue: Friday, November 6"
+  },
+  {
+    "objectID": "materials/0_materials.html#w11.-time-series-analysis",
+    "href": "materials/0_materials.html#w11.-time-series-analysis",
+    "title": "📚 Course Materials",
+    "section": "W11. Time Series Analysis ⏰",
+    "text": "W11. Time Series Analysis ⏰\nWeek of November 4, 2026\n\nMaterials\n\nLecture 18: Time Series Fundamentals\n\nSlides (Coming soon!)\nTrends and seasonality\nMoving averages\nStationarity\n\nLecture 19: Forecasting\n\nSlides (Coming soon!)\nARIMA models\nProphet\nModel evaluation\n\n\n\n\nAssignments\n\nLab 09: Time Series Forecasting\n\nGitHub Classroom Link (Coming soon!)\nDue: Friday, November 13\nPredict future values\nStock prices or weather data"
+  },
+  {
+    "objectID": "materials/0_materials.html#w12.-databases-big-data",
+    "href": "materials/0_materials.html#w12.-databases-big-data",
+    "title": "📚 Course Materials",
+    "section": "W12. Databases & Big Data 💾",
+    "text": "W12. Databases & Big Data 💾\nWeek of November 11, 2026\n\nMaterials\n\nLecture 20: SQL for Data Science\n\nSlides (Coming soon!)\nQuerying databases\nJoins and aggregations\nSubqueries\n\nLecture 21: Introduction to Big Data\n\nSlides (Coming soon!)\nDistributed computing concepts\nIntroduction to Spark\nScalable data processing\n\n\n\n\nAssignments\n\nActivity 06: SQL Practice\n\nGitHub Classroom Link (Coming soon!)\n\nLab 10: Database Project\n\nGitHub Classroom Link (Coming soon!)\nDue: Friday, November 20"
+  },
+  {
+    "objectID": "materials/0_materials.html#w13.-data-ethics-communication",
+    "href": "materials/0_materials.html#w13.-data-ethics-communication",
+    "title": "📚 Course Materials",
+    "section": "W13. Data Ethics & Communication 🎤",
+    "text": "W13. Data Ethics & Communication 🎤\nWeek of November 18, 2026\n\nMaterials\n\nLecture 22: Ethics in Data Science\n\nSlides (Coming soon!)\nBias and fairness\nPrivacy and security\nResponsible AI\n\nLecture 23: Communicating Results\n\nSlides (Coming soon!)\nCreating effective presentations\nData storytelling\nDashboards and reports\n\n\n\n\nAssignments\n\nFinal Project Proposal Due: Friday, November 20\n\n1-page description\nDataset selection\nResearch questions\nMethodology outline"
+  },
+  {
+    "objectID": "materials/0_materials.html#thanksgiving-break-november-24-27",
+    "href": "materials/0_materials.html#thanksgiving-break-november-24-27",
+    "title": "📚 Course Materials",
+    "section": "🦃 THANKSGIVING BREAK (November 24-27)",
+    "text": "🦃 THANKSGIVING BREAK (November 24-27)"
+  },
+  {
+    "objectID": "materials/0_materials.html#w14.-final-project-work",
+    "href": "materials/0_materials.html#w14.-final-project-work",
+    "title": "📚 Course Materials",
+    "section": "W14. Final Project Work 🚀",
+    "text": "W14. Final Project Work 🚀\nWeek of November 25, 2026\n\nFinal project work time\nIndividual consultations\nPeer feedback sessions\nPractice presentations"
+  },
+  {
+    "objectID": "materials/0_materials.html#w15.-final-presentations",
+    "href": "materials/0_materials.html#w15.-final-presentations",
+    "title": "📚 Course Materials",
+    "section": "W15. Final Presentations 🎓",
+    "text": "W15. Final Presentations 🎓\nWeek of December 2, 2026\n\nFinal Project Presentations\n\nTuesday, December 8: Presentations (Group 1)\nThursday, December 10: Presentations (Group 2)\nFormat: 10-minute presentation + 5-minute Q&A\n\n\n\nFinal Project Deliverables\n\nWritten Report: Comprehensive analysis\nCode Repository: Clean, documented code\nPresentation Slides: Visual summary\nInteractive Demo (optional bonus)\n\nFinal Project Due: Monday, December 15, 2026"
+  },
+  {
+    "objectID": "materials/0_materials.html#recommended-resources",
+    "href": "materials/0_materials.html#recommended-resources",
+    "title": "📚 Course Materials",
+    "section": "📖 Recommended Resources",
+    "text": "📖 Recommended Resources\n\nFree Online Books\n\nPython for Data Analysis by Wes McKinney\nR for Data Science by Hadley Wickham\nIntroduction to Statistical Learning\n\n\n\nOnline Courses\n\nKaggle Learn\nGoogle’s Machine Learning Crash Course\nFast.ai\n\n\n\nPractice Platforms\n\nKaggle Competitions\nDataCamp\nLeetCode (for coding practice)"
+  },
+  {
+    "objectID": "materials/0_materials.html#need-help",
+    "href": "materials/0_materials.html#need-help",
+    "title": "📚 Course Materials",
+    "section": "🆘 Need Help?",
+    "text": "🆘 Need Help?\n\nOffice Hours: Monday/Wednesday 2-4 PM, Thursday 1-3 PM\nDiscord: Real-time chat with classmates and instructors\nGitHub Discussions: Post questions about assignments\nEmail: instructor@allegheny.edu\n\n\nMaterials are updated throughout the semester. Check back weekly for new content!"
+  },
+  {
+    "objectID": "playground/01_visualization.html",
+    "href": "playground/01_visualization.html",
+    "title": "📊 Data Visualization Masterclass",
+    "section": "",
+    "text": "Data visualization is the art and science of turning numbers into pictures that tell stories. In this demonstration, you’ll learn how to create beautiful, informative visualizations using Python’s powerful plotting libraries.\n\n\n\nCreating multiple types of plots (scatter, line, bar, heatmaps)\nCustomizing colors and styles for maximum impact\nBuilding interactive visualizations with Plotly\nBest practices for effective data communication"
+  },
+  {
+    "objectID": "playground/01_visualization.html#welcome-to-data-visualization",
+    "href": "playground/01_visualization.html#welcome-to-data-visualization",
+    "title": "📊 Data Visualization Masterclass",
+    "section": "",
+    "text": "Data visualization is the art and science of turning numbers into pictures that tell stories. In this demonstration, you’ll learn how to create beautiful, informative visualizations using Python’s powerful plotting libraries.\n\n\n\nCreating multiple types of plots (scatter, line, bar, heatmaps)\nCustomizing colors and styles for maximum impact\nBuilding interactive visualizations with Plotly\nBest practices for effective data communication"
+  },
+  {
+    "objectID": "playground/01_visualization.html#part-1-exploring-a-dataset",
+    "href": "playground/01_visualization.html#part-1-exploring-a-dataset",
+    "title": "📊 Data Visualization Masterclass",
+    "section": "Part 1: Exploring a Dataset",
+    "text": "Part 1: Exploring a Dataset\nLet’s start by loading and exploring a real dataset about global life expectancy and GDP.\n\nimport pandas as pd\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport plotly.express as px\nimport plotly.graph_objects as go\n\n# Set style for beautiful plots\nsns.set_style(\"whitegrid\")\nplt.rcParams['figure.figsize'] = (10, 6)\n\n# Create sample dataset (based on Gapminder data)\nnp.random.seed(42)\ncountries = ['USA', 'China', 'India', 'Germany', 'Brazil', 'Japan', 'UK', \n             'France', 'Canada', 'Australia', 'Mexico', 'South Korea']\n             \ndata = {\n    'country': countries,\n    'life_expectancy': [78.5, 76.9, 69.7, 81.3, 75.9, 84.6, 81.3, 82.7, 82.2, 83.4, 75.1, 83.2],\n    'gdp_per_capita': [65000, 10500, 2100, 48000, 8900, 40000, 42000, 41000, 46000, 54000, 9700, 31000],\n    'population_millions': [331, 1439, 1380, 83, 212, 126, 68, 65, 38, 26, 128, 52],\n    'continent': ['Americas', 'Asia', 'Asia', 'Europe', 'Americas', 'Asia', \n                  'Europe', 'Europe', 'Americas', 'Oceania', 'Americas', 'Asia']\n}\n\ndf = pd.DataFrame(data)\n\nprint(\"📊 Global Statistics Dataset\")\nprint(\"=\"*50)\nprint(df.head(8))\nprint(\"\\n📈 Summary Statistics:\")\nprint(df.describe())\n\n\n\n\n\n\n\nUnderstanding the Data\n\n\n\nThis dataset contains information about 12 countries, including: - Life Expectancy: Average lifespan in years - GDP per Capita: Economic output per person (USD) - Population: Size in millions - Continent: Geographic region\nNotice the relationships between these variables - wealthier countries tend to have higher life expectancy!"
+  },
+  {
+    "objectID": "playground/01_visualization.html#part-2-scatter-plots---finding-relationships",
+    "href": "playground/01_visualization.html#part-2-scatter-plots---finding-relationships",
+    "title": "📊 Data Visualization Masterclass",
+    "section": "Part 2: Scatter Plots - Finding Relationships",
+    "text": "Part 2: Scatter Plots - Finding Relationships\nScatter plots help us visualize relationships between two variables. Let’s explore the relationship between wealth and health:\n\n# Create a beautiful scatter plot with Seaborn\nfig, ax = plt.subplots(figsize=(12, 7))\n\nsns.scatterplot(data=df, x='gdp_per_capita', y='life_expectancy', \n                size='population_millions', sizes=(100, 1000),\n                hue='continent', palette='Set2', alpha=0.7, ax=ax)\n\nplt.title('💰 Wealth vs Health: GDP and Life Expectancy', \n          fontsize=16, fontweight='bold', pad=20)\nplt.xlabel('GDP per Capita (USD)', fontsize=12)\nplt.ylabel('Life Expectancy (years)', fontsize=12)\nplt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', title='Continent')\n\n# Add grid for easier reading\nplt.grid(True, alpha=0.3)\n\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n💡 Key Insight\n\n\n\nThe positive correlation between GDP and life expectancy is clear! Wealthier nations generally have better healthcare, nutrition, and living conditions. The bubble sizes represent population - notice how populous countries like China and India have lower GDPs per capita."
+  },
+  {
+    "objectID": "playground/01_visualization.html#part-3-interactive-visualizations-with-plotly",
+    "href": "playground/01_visualization.html#part-3-interactive-visualizations-with-plotly",
+    "title": "📊 Data Visualization Masterclass",
+    "section": "Part 3: Interactive Visualizations with Plotly",
+    "text": "Part 3: Interactive Visualizations with Plotly\nStatic plots are great, but interactive visualizations let you explore data dynamically. Hover over the points to see details!\n\n# Create an interactive bubble chart\nfig = px.scatter(df, \n                 x='gdp_per_capita', \n                 y='life_expectancy',\n                 size='population_millions',\n                 color='continent',\n                 hover_name='country',\n                 size_max=60,\n                 title='🌍 Interactive Global Health & Wealth Explorer',\n                 labels={\n                     'gdp_per_capita': 'GDP per Capita (USD)',\n                     'life_expectancy': 'Life Expectancy (years)',\n                     'population_millions': 'Population (millions)'\n                 },\n                 color_discrete_sequence=px.colors.qualitative.Bold)\n\nfig.update_layout(\n    font=dict(size=12),\n    title_font_size=18,\n    hovermode='closest',\n    template='plotly_white',\n    height=600\n)\n\nfig.show()\n\n\n\n\n\n\n\n🎯 Try This!\n\n\n\nHover over each point to see country details. Click on continent names in the legend to show/hide groups. Zoom by dragging a box, and double-click to reset!"
+  },
+  {
+    "objectID": "playground/01_visualization.html#part-4-bar-charts---comparing-categories",
+    "href": "playground/01_visualization.html#part-4-bar-charts---comparing-categories",
+    "title": "📊 Data Visualization Masterclass",
+    "section": "Part 4: Bar Charts - Comparing Categories",
+    "text": "Part 4: Bar Charts - Comparing Categories\nBar charts are perfect for comparing values across categories. Let’s rank countries by life expectancy:\n\n# Sort by life expectancy and create colorful bar chart\ndf_sorted = df.sort_values('life_expectancy', ascending=True)\n\nfig = px.bar(df_sorted, \n             x='life_expectancy', \n             y='country',\n             color='life_expectancy',\n             orientation='h',\n             title='🏥 Life Expectancy Rankings by Country',\n             labels={'life_expectancy': 'Life Expectancy (years)'},\n             color_continuous_scale='Turbo',\n             text='life_expectancy')\n\nfig.update_traces(texttemplate='%{text:.1f}', textposition='outside')\nfig.update_layout(\n    height=500,\n    showlegend=False,\n    template='plotly_white',\n    font=dict(size=11)\n)\n\nfig.show()"
+  },
+  {
+    "objectID": "playground/01_visualization.html#part-5-heatmaps---visualizing-correlations",
+    "href": "playground/01_visualization.html#part-5-heatmaps---visualizing-correlations",
+    "title": "📊 Data Visualization Masterclass",
+    "section": "Part 5: Heatmaps - Visualizing Correlations",
+    "text": "Part 5: Heatmaps - Visualizing Correlations\nHeatmaps use color to show patterns in data. Let’s see how all our variables relate to each other:\n\n# Calculate correlations between numeric variables\ncorrelation_matrix = df[['life_expectancy', 'gdp_per_capita', 'population_millions']].corr()\n\n# Create beautiful heatmap\nfig, ax = plt.subplots(figsize=(8, 6))\n\nsns.heatmap(correlation_matrix, \n            annot=True, \n            fmt='.2f', \n            cmap='coolwarm',\n            center=0,\n            square=True,\n            linewidths=2,\n            cbar_kws={'label': 'Correlation Coefficient'},\n            ax=ax)\n\nplt.title('🔥 Correlation Heatmap: Understanding Relationships', \n          fontsize=14, fontweight='bold', pad=20)\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n📚 Reading the Heatmap\n\n\n\n\nRed = Strong positive correlation (both increase together)\nBlue = Strong negative correlation (one increases, other decreases)\nWhite = No correlation\n\nThe strong positive correlation (0.67) between GDP and life expectancy confirms our earlier observation!"
+  },
+  {
+    "objectID": "playground/01_visualization.html#part-6-advanced---multi-panel-visualization",
+    "href": "playground/01_visualization.html#part-6-advanced---multi-panel-visualization",
+    "title": "📊 Data Visualization Masterclass",
+    "section": "Part 6: Advanced - Multi-Panel Visualization",
+    "text": "Part 6: Advanced - Multi-Panel Visualization\nProfessional data scientists often create multi-panel figures to show multiple perspectives:\n\n# Create a comprehensive dashboard\nfig, axes = plt.subplots(2, 2, figsize=(14, 10))\n\n# Plot 1: GDP Distribution\naxes[0, 0].hist(df['gdp_per_capita'], bins=8, color='#FF6B6B', alpha=0.7, edgecolor='black')\naxes[0, 0].set_title('💵 GDP per Capita Distribution', fontweight='bold')\naxes[0, 0].set_xlabel('GDP per Capita (USD)')\naxes[0, 0].set_ylabel('Frequency')\naxes[0, 0].grid(alpha=0.3)\n\n# Plot 2: Life Expectancy by Continent\ncontinent_avg = df.groupby('continent')['life_expectancy'].mean().sort_values()\ncolors = ['#40C9D9', '#FF6B6B', '#FFD93D', '#6BCB77']\naxes[0, 1].barh(continent_avg.index, continent_avg.values, color=colors)\naxes[0, 1].set_title('🌍 Average Life Expectancy by Continent', fontweight='bold')\naxes[0, 1].set_xlabel('Life Expectancy (years)')\naxes[0, 1].grid(alpha=0.3, axis='x')\n\n# Plot 3: Population vs GDP\naxes[1, 0].scatter(df['population_millions'], df['gdp_per_capita'], \n                   s=200, c=df['life_expectancy'], cmap='viridis', \n                   alpha=0.6, edgecolors='black', linewidth=1.5)\naxes[1, 0].set_title('👥 Population vs GDP (colored by life expectancy)', fontweight='bold')\naxes[1, 0].set_xlabel('Population (millions)')\naxes[1, 0].set_ylabel('GDP per Capita (USD)')\naxes[1, 0].grid(alpha=0.3)\n\n# Plot 4: Continental composition\ncontinent_counts = df['continent'].value_counts()\naxes[1, 1].pie(continent_counts, labels=continent_counts.index, autopct='%1.0f%%',\n               colors=colors, startangle=90, textprops={'fontsize': 11})\naxes[1, 1].set_title('🗺️ Countries by Continent', fontweight='bold')\n\nplt.suptitle('📊 Comprehensive Global Statistics Dashboard', \n             fontsize=16, fontweight='bold', y=0.995)\nplt.tight_layout()\nplt.show()"
+  },
+  {
+    "objectID": "playground/01_visualization.html#what-youve-learned",
+    "href": "playground/01_visualization.html#what-youve-learned",
+    "title": "📊 Data Visualization Masterclass",
+    "section": "🎓 What You’ve Learned",
+    "text": "🎓 What You’ve Learned\nCongratulations! You’ve just created:\n✅ Scatter plots to reveal relationships\n✅ Interactive visualizations for data exploration\n✅ Bar charts for clear comparisons\n✅ Heatmaps to show correlations\n✅ Multi-panel dashboards for comprehensive analysis\n\n🚀 Next Steps in the Course\nIn CMPSC 301, you’ll learn to: - Work with much larger datasets (millions of rows!) - Create custom visualizations for specific needs - Build interactive dashboards with real-time data - Design visualizations for research publications - Use visualization for machine learning insights"
+  },
+  {
+    "objectID": "playground/01_visualization.html#try-it-yourself",
+    "href": "playground/01_visualization.html#try-it-yourself",
+    "title": "📊 Data Visualization Masterclass",
+    "section": "💡 Try It Yourself!",
+    "text": "💡 Try It Yourself!\nWant to experiment? Try modifying the code above: 1. Change the color schemes (try 'magma', 'plasma', or 'rainbow') 2. Add more countries to the dataset 3. Create a different type of plot (box plots, violin plots) 4. Customize titles and labels to tell your own story\nReady to dive deeper? Visit the JupyterLite environment to create your own visualizations!"
+  },
+  {
+    "objectID": "playground/03_text_analysis.html",
+    "href": "playground/03_text_analysis.html",
+    "title": "💬 Text Analytics & Sentiment Analysis",
+    "section": "",
+    "text": "Text is everywhere - social media, reviews, emails, articles. Text analytics (Natural Language Processing) enables us to extract meaning, emotions, and insights from written language. Let’s explore this fascinating field!\n\n\n\nAnalyzing text data and extracting features\nPerforming sentiment analysis (positive/negative/neutral)\nVisualizing word frequencies and patterns\nBuilding word clouds\nUnderstanding text preprocessing"
+  },
+  {
+    "objectID": "playground/03_text_analysis.html#welcome-to-text-analytics",
+    "href": "playground/03_text_analysis.html#welcome-to-text-analytics",
+    "title": "💬 Text Analytics & Sentiment Analysis",
+    "section": "",
+    "text": "Text is everywhere - social media, reviews, emails, articles. Text analytics (Natural Language Processing) enables us to extract meaning, emotions, and insights from written language. Let’s explore this fascinating field!\n\n\n\nAnalyzing text data and extracting features\nPerforming sentiment analysis (positive/negative/neutral)\nVisualizing word frequencies and patterns\nBuilding word clouds\nUnderstanding text preprocessing"
+  },
+  {
+    "objectID": "playground/03_text_analysis.html#the-challenge-analyzing-product-reviews",
+    "href": "playground/03_text_analysis.html#the-challenge-analyzing-product-reviews",
+    "title": "💬 Text Analytics & Sentiment Analysis",
+    "section": "The Challenge: Analyzing Product Reviews",
+    "text": "The Challenge: Analyzing Product Reviews\nImagine you work for an e-commerce company. You have thousands of customer reviews and need to: 1. Understand overall customer sentiment 2. Identify common themes and keywords 3. Find which products need improvement\nLet’s use data science to solve this!"
+  },
+  {
+    "objectID": "playground/03_text_analysis.html#part-1-creating-our-review-dataset",
+    "href": "playground/03_text_analysis.html#part-1-creating-our-review-dataset",
+    "title": "💬 Text Analytics & Sentiment Analysis",
+    "section": "Part 1: Creating Our Review Dataset",
+    "text": "Part 1: Creating Our Review Dataset\n\nimport pandas as pd\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport plotly.express as px\nimport plotly.graph_objects as go\nfrom collections import Counter\nimport re\n\n# Set style\nsns.set_style(\"whitegrid\")\n\n# Sample product reviews (positive, neutral, and negative)\nreviews_data = {\n    'review_id': range(1, 21),\n    'product': ['Laptop', 'Headphones', 'Mouse', 'Keyboard', 'Monitor',\n                'Laptop', 'Headphones', 'Mouse', 'Keyboard', 'Monitor',\n                'Laptop', 'Headphones', 'Mouse', 'Keyboard', 'Monitor',\n                'Laptop', 'Headphones', 'Mouse', 'Keyboard', 'Monitor'],\n    'rating': [5, 4, 3, 5, 2, 4, 5, 3, 4, 1, 5, 3, 4, 5, 2, 4, 5, 2, 4, 3],\n    'review_text': [\n        \"Absolutely amazing laptop! Fast, reliable, and beautiful design. Love it!\",\n        \"Good headphones with great sound quality. Comfortable for long sessions.\",\n        \"Mouse works okay but feels a bit cheap. Could be better for the price.\",\n        \"Best keyboard I've ever used! Typing feels incredible and very responsive.\",\n        \"Monitor arrived damaged and colors look washed out. Very disappointed.\",\n        \"Great laptop for work and gaming. Battery life is impressive too!\",\n        \"These headphones are fantastic! Crystal clear audio and noise cancellation works perfectly.\",\n        \"Decent mouse but nothing special. Gets the job done.\",\n        \"Excellent keyboard with amazing build quality. Highly recommend!\",\n        \"Terrible monitor. Dead pixels and poor contrast. Returning immediately.\",\n        \"This laptop exceeded all my expectations! Worth every penny and more.\",\n        \"Headphones are okay but the bass is too weak for my taste.\",\n        \"Really happy with this mouse. Comfortable grip and precise tracking.\",\n        \"Outstanding keyboard! Mechanical switches feel premium and durable.\",\n        \"Monitor has terrible viewing angles. Not suitable for professional work.\",\n        \"Solid laptop with good performance. A few minor software bugs though.\",\n        \"Love these headphones! Best purchase I've made this year. Superb quality.\",\n        \"Mouse broke after two weeks. Poor quality control and construction.\",\n        \"Great keyboard for programming. Love the tactile feedback and RGB lighting.\",\n        \"Monitor is average. Picture quality is acceptable but not impressive.\"\n    ]\n}\n\ndf = pd.DataFrame(reviews_data)\n\nprint(\"🛍️ Product Reviews Dataset\")\nprint(\"=\"*80)\nprint(df.head(8))\nprint(f\"\\n📊 Total reviews: {len(df)}\")\nprint(f\"📦 Products: {df['product'].unique()}\")\nprint(f\"⭐ Rating distribution:\")\nprint(df['rating'].value_counts().sort_index())\n\n\n\n\n\n\n\nUnderstanding Text Data\n\n\n\nWe have 20 customer reviews across 5 products: - Laptops, Headphones, Mice, Keyboards, Monitors - Ratings: 1-5 stars - Review Text: Customer feedback in natural language\nOur challenge: Extract insights from this unstructured text data!"
+  },
+  {
+    "objectID": "playground/03_text_analysis.html#part-2-simple-sentiment-analysis",
+    "href": "playground/03_text_analysis.html#part-2-simple-sentiment-analysis",
+    "title": "💬 Text Analytics & Sentiment Analysis",
+    "section": "Part 2: Simple Sentiment Analysis",
+    "text": "Part 2: Simple Sentiment Analysis\nLet’s build a basic sentiment analyzer using keyword matching:\n\n# Define positive and negative words\npositive_words = ['amazing', 'great', 'love', 'excellent', 'fantastic', 'best', \n                  'good', 'impressive', 'superb', 'outstanding', 'happy', 'comfortable',\n                  'crystal', 'worth', 'recommend', 'premium', 'solid']\n\nnegative_words = ['cheap', 'disappointed', 'terrible', 'dead', 'poor', 'broke',\n                  'weak', 'damaged', 'bugs', 'washed', 'average', 'returning',\n                  'minor', 'acceptable', 'nothing special', 'okay']\n\ndef analyze_sentiment(text):\n    \"\"\"\n    Simple sentiment analysis based on positive/negative word counts\n    \"\"\"\n    text_lower = text.lower()\n    \n    # Count positive and negative words\n    pos_count = sum(1 for word in positive_words if word in text_lower)\n    neg_count = sum(1 for word in negative_words if word in text_lower)\n    \n    # Calculate sentiment score\n    score = pos_count - neg_count\n    \n    # Classify sentiment\n    if score &gt; 0:\n        return 'Positive', score\n    elif score &lt; 0:\n        return 'Negative', score\n    else:\n        return 'Neutral', score\n\n# Apply sentiment analysis\ndf['sentiment'], df['sentiment_score'] = zip(*df['review_text'].apply(analyze_sentiment))\n\nprint(\"✨ Sentiment Analysis Results\")\nprint(\"=\"*80)\nprint(df[['product', 'rating', 'sentiment', 'sentiment_score', 'review_text']].head(10))\n\n# Sentiment distribution\nsentiment_counts = df['sentiment'].value_counts()\nprint(f\"\\n📊 Sentiment Distribution:\")\nfor sentiment, count in sentiment_counts.items():\n    print(f\"  {sentiment}: {count} ({count/len(df)*100:.1f}%)\")\n\n\n\n\n\n\n\n💡 How It Works\n\n\n\nThe sentiment analyzer: 1. Counts positive words in the review (love, amazing, great…) 2. Counts negative words (terrible, poor, disappointed…) 3. Calculates net score (positive - negative) 4. Classifies as Positive, Negative, or Neutral\nThis is a simple approach - real sentiment analysis uses machine learning!"
+  },
+  {
+    "objectID": "playground/03_text_analysis.html#part-3-visualizing-sentiment",
+    "href": "playground/03_text_analysis.html#part-3-visualizing-sentiment",
+    "title": "💬 Text Analytics & Sentiment Analysis",
+    "section": "Part 3: Visualizing Sentiment",
+    "text": "Part 3: Visualizing Sentiment\nLet’s create beautiful visualizations of our sentiment analysis:\n\n# Create sentiment visualization\nfig = go.Figure()\n\n# Count sentiments\nsentiment_counts = df['sentiment'].value_counts()\n\n# Create pie chart\ncolors = {'Positive': '#6BCB77', 'Negative': '#FF6B6B', 'Neutral': '#FFD93D'}\nfig = go.Figure(data=[go.Pie(\n    labels=sentiment_counts.index,\n    values=sentiment_counts.values,\n    marker=dict(colors=[colors[s] for s in sentiment_counts.index]),\n    hole=0.4,\n    textinfo='label+percent',\n    textfont_size=14\n)])\n\nfig.update_layout(\n    title='😊 Overall Sentiment Distribution',\n    font=dict(size=13),\n    height=500,\n    annotations=[dict(text='Reviews', x=0.5, y=0.5, font_size=20, showarrow=False)]\n)\n\nfig.show()\n\n# Sentiment by product\nfig2 = px.histogram(df, \n                    x='product', \n                    color='sentiment',\n                    barmode='group',\n                    title='📊 Sentiment Distribution by Product',\n                    color_discrete_map=colors,\n                    labels={'count': 'Number of Reviews', 'product': 'Product'})\n\nfig2.update_layout(\n    font=dict(size=12),\n    height=500,\n    template='plotly_white'\n)\n\nfig2.show()"
+  },
+  {
+    "objectID": "playground/03_text_analysis.html#part-4-ratings-vs-sentiment-analysis",
+    "href": "playground/03_text_analysis.html#part-4-ratings-vs-sentiment-analysis",
+    "title": "💬 Text Analytics & Sentiment Analysis",
+    "section": "Part 4: Ratings vs Sentiment Analysis",
+    "text": "Part 4: Ratings vs Sentiment Analysis\nLet’s compare actual ratings with our sentiment predictions:\n\n# Create scatter plot of rating vs sentiment score\nfig = px.scatter(df, \n                 x='rating', \n                 y='sentiment_score',\n                 color='sentiment',\n                 size=[10]*len(df),\n                 hover_data=['product', 'review_text'],\n                 title='⭐ Star Ratings vs Sentiment Scores',\n                 color_discrete_map=colors,\n                 labels={'rating': 'Star Rating', \n                         'sentiment_score': 'Sentiment Score'})\n\nfig.update_traces(marker=dict(size=12, line=dict(width=1.5, color='black')))\nfig.update_layout(\n    font=dict(size=12),\n    height=500,\n    template='plotly_white'\n)\n\nfig.show()\n\n# Calculate correlation\ncorrelation = df['rating'].corr(df['sentiment_score'])\nprint(f\"\\n📈 Correlation between ratings and sentiment: {correlation:.3f}\")\n\n\n\n\n\n\n\n🎯 Key Insight\n\n\n\nThe correlation between star ratings and sentiment scores shows how well our simple text analysis aligns with actual ratings! In a real application, we’d use this to: - Detect fake reviews (high rating but negative text) - Find underrated products (low rating but positive text) - Prioritize review responses based on sentiment"
+  },
+  {
+    "objectID": "playground/03_text_analysis.html#part-5-word-frequency-analysis",
+    "href": "playground/03_text_analysis.html#part-5-word-frequency-analysis",
+    "title": "💬 Text Analytics & Sentiment Analysis",
+    "section": "Part 5: Word Frequency Analysis",
+    "text": "Part 5: Word Frequency Analysis\nWhat words appear most often in reviews?\n\ndef extract_words(text):\n    \"\"\"Extract words from text (remove punctuation and convert to lowercase)\"\"\"\n    # Remove punctuation and split into words\n    words = re.findall(r'\\b[a-z]+\\b', text.lower())\n    # Remove common stop words\n    stop_words = {'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', \n                  'to', 'for', 'of', 'with', 'is', 'are', 'was', 'this', \n                  'that', 'it', 'be', 'by', 'as'}\n    return [w for w in words if w not in stop_words and len(w) &gt; 2]\n\n# Extract all words from reviews\nall_words = []\npositive_review_words = []\nnegative_review_words = []\n\nfor idx, row in df.iterrows():\n    words = extract_words(row['review_text'])\n    all_words.extend(words)\n    \n    if row['sentiment'] == 'Positive':\n        positive_review_words.extend(words)\n    elif row['sentiment'] == 'Negative':\n        negative_review_words.extend(words)\n\n# Count word frequencies\nword_freq = Counter(all_words)\npos_word_freq = Counter(positive_review_words)\nneg_word_freq = Counter(negative_review_words)\n\n# Display top words\nprint(\"🔤 Most Common Words in All Reviews:\")\nprint(\"=\"*60)\nfor word, count in word_freq.most_common(15):\n    print(f\"  {word:15s}: {count:2d} times\")\n\nprint(\"\\n😊 Most Common Words in POSITIVE Reviews:\")\nfor word, count in pos_word_freq.most_common(10):\n    print(f\"  {word:15s}: {count:2d} times\")\n\nprint(\"\\n😞 Most Common Words in NEGATIVE Reviews:\")\nfor word, count in neg_word_freq.most_common(10):\n    print(f\"  {word:15s}: {count:2d} times\")"
+  },
+  {
+    "objectID": "playground/03_text_analysis.html#part-6-word-frequency-visualization",
+    "href": "playground/03_text_analysis.html#part-6-word-frequency-visualization",
+    "title": "💬 Text Analytics & Sentiment Analysis",
+    "section": "Part 6: Word Frequency Visualization",
+    "text": "Part 6: Word Frequency Visualization\n\n# Create bar chart of top words\ntop_words = pd.DataFrame(word_freq.most_common(12), \n                         columns=['word', 'frequency'])\n\nfig = px.bar(top_words, \n             x='frequency', \n             y='word',\n             orientation='h',\n             title='📊 Top 12 Most Frequent Words',\n             color='frequency',\n             color_continuous_scale='Turbo',\n             text='frequency')\n\nfig.update_traces(textposition='outside')\nfig.update_layout(\n    font=dict(size=12),\n    height=500,\n    template='plotly_white',\n    showlegend=False,\n    yaxis={'categoryorder': 'total ascending'}\n)\n\nfig.show()"
+  },
+  {
+    "objectID": "playground/03_text_analysis.html#part-7-product-specific-analysis",
+    "href": "playground/03_text_analysis.html#part-7-product-specific-analysis",
+    "title": "💬 Text Analytics & Sentiment Analysis",
+    "section": "Part 7: Product-Specific Analysis",
+    "text": "Part 7: Product-Specific Analysis\nLet’s analyze sentiment for each product individually:\n\n# Calculate average metrics per product\nproduct_summary = df.groupby('product').agg({\n    'rating': 'mean',\n    'sentiment_score': 'mean',\n    'review_id': 'count'\n}).reset_index()\n\nproduct_summary.columns = ['Product', 'Avg Rating', 'Avg Sentiment', 'Review Count']\nproduct_summary = product_summary.sort_values('Avg Rating', ascending=False)\n\nprint(\"📦 Product Performance Summary\")\nprint(\"=\"*80)\nprint(product_summary.to_string(index=False))\n\n# Visualize product comparison\nfig = go.Figure()\n\n# Add bar for average rating\nfig.add_trace(go.Bar(\n    name='Average Rating',\n    x=product_summary['Product'],\n    y=product_summary['Avg Rating'],\n    marker_color='#40C9D9',\n    yaxis='y',\n    text=product_summary['Avg Rating'].round(2),\n    textposition='outside'\n))\n\n# Add bar for sentiment\nfig.add_trace(go.Bar(\n    name='Average Sentiment',\n    x=product_summary['Product'],\n    y=product_summary['Avg Sentiment'],\n    marker_color='#FF6B6B',\n    yaxis='y2',\n    text=product_summary['Avg Sentiment'].round(2),\n    textposition='outside'\n))\n\n# Update layout with dual y-axes\nfig.update_layout(\n    title='📊 Product Ratings vs Sentiment Analysis',\n    xaxis_title='Product',\n    yaxis=dict(title='Average Rating (1-5)', titlefont=dict(color='#40C9D9')),\n    yaxis2=dict(\n        title='Average Sentiment Score',\n        titlefont=dict(color='#FF6B6B'),\n        overlaying='y',\n        side='right'\n    ),\n    barmode='group',\n    height=500,\n    template='plotly_white',\n    font=dict(size=12)\n)\n\nfig.show()\n\n\n\n\n\n\n\n💡 Business Insights\n\n\n\nFrom this analysis, you can: - Identify problematic products (low ratings + negative sentiment) - Find your stars (high ratings + positive sentiment) - Prioritize improvements based on customer feedback - Track sentiment trends over time"
+  },
+  {
+    "objectID": "playground/03_text_analysis.html#part-8-review-length-analysis",
+    "href": "playground/03_text_analysis.html#part-8-review-length-analysis",
+    "title": "💬 Text Analytics & Sentiment Analysis",
+    "section": "Part 8: Review Length Analysis",
+    "text": "Part 8: Review Length Analysis\nDoes review length correlate with sentiment?\n\n# Calculate review lengths\ndf['review_length'] = df['review_text'].str.len()\ndf['word_count'] = df['review_text'].str.split().str.len()\n\n# Visualize relationship\nfig = px.scatter(df, \n                 x='word_count', \n                 y='rating',\n                 size='review_length',\n                 color='sentiment',\n                 hover_data=['product', 'review_text'],\n                 title='📝 Review Length vs Rating',\n                 color_discrete_map=colors,\n                 labels={'word_count': 'Number of Words', \n                         'rating': 'Star Rating',\n                         'review_length': 'Character Count'})\n\nfig.update_layout(\n    font=dict(size=12),\n    height=500,\n    template='plotly_white'\n)\n\nfig.show()\n\n# Statistics by sentiment\nprint(\"\\n📊 Review Length by Sentiment:\")\nprint(df.groupby('sentiment')['word_count'].describe().round(2))"
+  },
+  {
+    "objectID": "playground/03_text_analysis.html#what-youve-learned",
+    "href": "playground/03_text_analysis.html#what-youve-learned",
+    "title": "💬 Text Analytics & Sentiment Analysis",
+    "section": "🎓 What You’ve Learned",
+    "text": "🎓 What You’ve Learned\nCongratulations! You’ve performed comprehensive text analytics:\n✅ Built a sentiment analyzer from scratch\n✅ Classified reviews as positive, negative, or neutral\n✅ Analyzed word frequencies to find patterns\n✅ Visualized sentiment distributions across products\n✅ Extracted business insights from text data\n✅ Compared sentiment with numerical ratings\n\n🚀 What’s Next in CMPSC 301?\nIn the course, you’ll learn advanced NLP techniques: - Machine learning models for sentiment (BERT, transformers) - Topic modeling to discover themes automatically - Named entity recognition (finding people, places, organizations) - Text classification for categorization - Working with large text datasets (millions of documents) - Sentiment analysis for social media, news, reviews"
+  },
+  {
+    "objectID": "playground/03_text_analysis.html#try-it-yourself",
+    "href": "playground/03_text_analysis.html#try-it-yourself",
+    "title": "💬 Text Analytics & Sentiment Analysis",
+    "section": "💡 Try It Yourself!",
+    "text": "💡 Try It Yourself!\nWant to experiment? Try these challenges:\n\nExpand the word lists: Add more positive/negative words to improve accuracy\nAnalyze emoji: Add sentiment analysis for emojis 😊😢\nTime analysis: Add timestamps and track sentiment trends over time\nAspect-based sentiment: Analyze sentiment for specific product features\nReal data: Download reviews from Amazon or Yelp and analyze them!\n\nReady to analyze text at scale? Visit JupyterLite to explore more!\n\n\n\n\n\n\n\n🎯 Real-World Applications\n\n\n\nText analytics is used everywhere: - Customer service: Prioritizing urgent complaints - Brand monitoring: Tracking public perception on social media - Market research: Understanding customer needs - Content moderation: Detecting toxic or inappropriate content - Healthcare: Analyzing patient feedback and medical notes\nIn CMPSC 301, you’ll learn to build these applications!"
+  },
+  {
+    "objectID": "playground/05_data_wrangling.html",
+    "href": "playground/05_data_wrangling.html",
+    "title": "🔧 Data Wrangling: Cleaning and Transforming Messy Data",
+    "section": "",
+    "text": "Real-world data is messy! Before analysis, data scientists spend 60-80% of their time cleaning, transforming, and preparing data. This demonstration shows you the essential wrangling techniques you’ll use every day.\n\n\n\nHandling missing data\nData type conversions\nString manipulation and parsing\nMerging and joining datasets\nReshaping data (pivot, melt, transpose)\nAggregation and grouping\nCreating new features"
+  },
+  {
+    "objectID": "playground/05_data_wrangling.html#welcome-to-data-wrangling",
+    "href": "playground/05_data_wrangling.html#welcome-to-data-wrangling",
+    "title": "🔧 Data Wrangling: Cleaning and Transforming Messy Data",
+    "section": "",
+    "text": "Real-world data is messy! Before analysis, data scientists spend 60-80% of their time cleaning, transforming, and preparing data. This demonstration shows you the essential wrangling techniques you’ll use every day.\n\n\n\nHandling missing data\nData type conversions\nString manipulation and parsing\nMerging and joining datasets\nReshaping data (pivot, melt, transpose)\nAggregation and grouping\nCreating new features"
+  },
+  {
+    "objectID": "playground/05_data_wrangling.html#the-challenge-messy-sales-data",
+    "href": "playground/05_data_wrangling.html#the-challenge-messy-sales-data",
+    "title": "🔧 Data Wrangling: Cleaning and Transforming Messy Data",
+    "section": "The Challenge: Messy Sales Data",
+    "text": "The Challenge: Messy Sales Data\nYou’ve been hired to analyze sales data for an e-commerce company. Unfortunately, the data is messy, incomplete, and scattered across multiple files. Let’s clean it up!"
+  },
+  {
+    "objectID": "playground/05_data_wrangling.html#part-1-loading-messy-data",
+    "href": "playground/05_data_wrangling.html#part-1-loading-messy-data",
+    "title": "🔧 Data Wrangling: Cleaning and Transforming Messy Data",
+    "section": "Part 1: Loading Messy Data",
+    "text": "Part 1: Loading Messy Data\n\nimport pandas as pd\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport plotly.express as px\nimport plotly.graph_objects as go\nfrom datetime import datetime, timedelta\n\n# Set display options\npd.set_option('display.max_columns', None)\npd.set_option('display.width', None)\n\n# Create messy sales data (realistic problems!)\nnp.random.seed(42)\n\n# Messy transactions data\ndates_messy = ['2026-01-15', '2026-01-16', '1/17/2026', 'Jan 18 2026', '2026-01-19',\n               '2026-01-20', '01/21/26', '2026-01-22', 'missing', '2026-01-24']\n               \nproducts = ['laptop', 'LAPTOP', 'Laptop ', 'mouse', 'Mouse', \n            'keyboard', 'KEYBOARD', 'monitor', 'Monitor', 'headphones']\n\nmessy_df = pd.DataFrame({\n    'transaction_id': ['T001', 'T002', 'T003', 'T004', 'T005', \n                       'T006', 'T007', 'T008', 'T009', 'T010'],\n    'date': dates_messy,\n    'product': products,\n    'quantity': [1, 2, '3', 1, 'two', 1, 2, None, 1, 3],\n    'price': ['$999.99', '25.50', 'fifty', '189.99', '$29.99',\n              '79.99', '85.00', '399', None, '149.99'],\n    'customer_name': ['john doe', 'JANE SMITH', '  bob jones  ', 'Alice Brown', 'charlie davis',\n                      'Eve Wilson', 'frank miller', None, 'Grace Lee', 'henry taylor'],\n    'email': ['john@email.com', 'JANE@EMAIL.COM', 'bob@email', 'alice@email.com', 'charlie@invalid',\n              'eve@email.com', 'frank@email.com', 'missing', 'grace@email.com', 'henry@email.com'],\n    'region': ['North', 'south', 'EAST', 'West', 'north',\n               'South', 'east', 'west', None, 'North']\n})\n\nprint(\"🚨 MESSY Raw Data (Before Cleaning)\")\nprint(\"=\"*100)\nprint(messy_df)\nprint(f\"\\n📊 Shape: {messy_df.shape}\")\nprint(f\"\\n🔍 Data Types:\")\nprint(messy_df.dtypes)\n\n\n\n\n\n\n\n😱 Problems We Need to Fix\n\n\n\nLook at all these issues! - Inconsistent dates: Multiple formats (2026-01-15, 1/17/2026, etc.) - Mixed case: “laptop” vs “LAPTOP” vs “Laptop” - Extra whitespace: ” bob jones ” - Wrong data types: Quantity=‘3’ (string), ‘two’ (text!) - Missing values: None, ‘missing’, empty strings - Invalid formats: Prices with $ symbols, emails without @ - Inconsistent categories: ‘North’ vs ‘north’\nWelcome to real-world data! Let’s fix it systematically."
+  },
+  {
+    "objectID": "playground/05_data_wrangling.html#part-2-identifying-data-quality-issues",
+    "href": "playground/05_data_wrangling.html#part-2-identifying-data-quality-issues",
+    "title": "🔧 Data Wrangling: Cleaning and Transforming Messy Data",
+    "section": "Part 2: Identifying Data Quality Issues",
+    "text": "Part 2: Identifying Data Quality Issues\n\nprint(\"🔍 Data Quality Assessment\")\nprint(\"=\"*100)\n\n# Missing values\nprint(\"\\n1. Missing/Invalid Values:\")\nprint(messy_df.isnull().sum())\n\n# Check for string 'missing' or 'None'\nfor col in messy_df.columns:\n    invalid_count = messy_df[col].astype(str).str.contains('missing|None', case=False, na=False).sum()\n    if invalid_count &gt; 0:\n        print(f\"  '{col}': {invalid_count} cells contain 'missing' or 'None' as text\")\n\n# Data types\nprint(\"\\n2. Data Type Issues:\")\nfor col in messy_df.columns:\n    expected_type = {\n        'transaction_id': 'object',\n        'date': 'datetime',\n        'product': 'object',\n        'quantity': 'int',\n        'price': 'float',\n        'customer_name': 'object',\n        'email': 'object',\n        'region': 'object'\n    }\n    actual = messy_df[col].dtype\n    if col in expected_type:\n        print(f\"  {col:20s}: {str(actual):10s} (expected: {expected_type[col]})\")\n\n# Duplicates and inconsistencies\nprint(\"\\n3. Consistency Issues:\")\nprint(f\"  Unique products (with case/space issues): {messy_df['product'].unique()}\")\nprint(f\"  Unique regions (with case issues): {messy_df['region'].unique()}\")"
+  },
+  {
+    "objectID": "playground/05_data_wrangling.html#part-3-cleaning-step-by-step",
+    "href": "playground/05_data_wrangling.html#part-3-cleaning-step-by-step",
+    "title": "🔧 Data Wrangling: Cleaning and Transforming Messy Data",
+    "section": "Part 3: Cleaning Step-by-Step",
+    "text": "Part 3: Cleaning Step-by-Step\n\nStep 1: Clean Text Data (Case and Whitespace)\n\n# Create a copy for cleaning\ndf_clean = messy_df.copy()\n\nprint(\"🧹 Step 1: Cleaning Text Data\")\nprint(\"=\"*80)\n\n# Fix product names: lowercase, strip whitespace\ndf_clean['product'] = df_clean['product'].str.strip().str.lower()\nprint(f\"\\n✅ Products cleaned: {df_clean['product'].unique()}\")\n\n# Fix region names: title case\ndf_clean['region'] = df_clean['region'].str.strip().str.title()\nprint(f\"✅ Regions cleaned: {df_clean['region'].unique()}\")\n\n# Fix customer names: title case\ndf_clean['customer_name'] = df_clean['customer_name'].str.strip().str.title()\nprint(f\"✅ Customer names cleaned (first 5): {df_clean['customer_name'].head().tolist()}\")\n\n# Fix emails: lowercase\ndf_clean['email'] = df_clean['email'].str.lower().str.strip()\nprint(f\"✅ Emails cleaned (first 5): {df_clean['email'].head().tolist()}\")\n\n\n\n\nStep 2: Handle Missing Values\n\nprint(\"\\n🔧 Step 2: Handling Missing Values\")\nprint(\"=\"*80)\n\n# Replace string 'missing' and 'None' with actual NaN\ndf_clean = df_clean.replace(['missing', 'None', 'nan', ''], np.nan)\n\nprint(f\"\\nMissing values after standardization:\")\nprint(df_clean.isnull().sum())\n\n# Strategy for each column:\n# - date: Drop rows (date is critical)\n# - customer_name: Fill with \"Unknown Customer\"\n# - email: Fill with \"unknown@email.com\"\n# - quantity: Fill with median\n# - price: Will handle after conversion\n# - region: Fill with mode (most common)\n\n# Fill missing customer_name\ndf_clean['customer_name'].fillna('Unknown Customer', inplace=True)\nprint(f\"\\n✅ Filled missing customer names with 'Unknown Customer'\")\n\n# Fill missing email\ndf_clean['email'].fillna('unknown@email.com', inplace=True)\nprint(f\"✅ Filled missing emails with 'unknown@email.com'\")\n\n# Fill missing region with mode\nregion_mode = df_clean['region'].mode()[0]\ndf_clean['region'].fillna(region_mode, inplace=True)\nprint(f\"✅ Filled missing regions with mode: '{region_mode}'\")\n\n\n\n\nStep 3: Convert Data Types\n\nprint(\"\\n🔄 Step 3: Converting Data Types\")\nprint(\"=\"*80)\n\n# Clean and convert dates\ndef parse_date(date_str):\n    \"\"\"Parse various date formats\"\"\"\n    if pd.isna(date_str):\n        return pd.NaT\n    \n    # Try multiple formats\n    formats = ['%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', '%b %d %Y']\n    for fmt in formats:\n        try:\n            return pd.to_datetime(date_str, format=fmt)\n        except:\n            continue\n    return pd.NaT\n\ndf_clean['date'] = df_clean['date'].apply(parse_date)\nprint(f\"✅ Dates converted to datetime\")\nprint(f\"   Valid dates: {df_clean['date'].notna().sum()}/{len(df_clean)}\")\n\n# Clean and convert prices (remove $, handle text)\ndef parse_price(price_str):\n    \"\"\"Parse price strings\"\"\"\n    if pd.isna(price_str):\n        return np.nan\n    \n    price_str = str(price_str).replace('$', '').replace(',', '').strip()\n    \n    # Handle text prices\n    text_to_num = {'fifty': 50, 'hundred': 100, 'thousand': 1000}\n    if price_str.lower() in text_to_num:\n        return float(text_to_num[price_str.lower()])\n    \n    try:\n        return float(price_str)\n    except:\n        return np.nan\n\ndf_clean['price'] = df_clean['price'].apply(parse_price)\nprint(f\"✅ Prices converted to float\")\nprint(f\"   Valid prices: {df_clean['price'].notna().sum()}/{len(df_clean)}\")\n\n# Clean and convert quantity\ndef parse_quantity(qty):\n    \"\"\"Parse quantity values\"\"\"\n    if pd.isna(qty):\n        return np.nan\n    \n    # Handle text quantities\n    text_to_num = {'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5}\n    \n    qty_str = str(qty).lower().strip()\n    if qty_str in text_to_num:\n        return text_to_num[qty_str]\n    \n    try:\n        return int(qty_str)\n    except:\n        return np.nan\n\ndf_clean['quantity'] = df_clean['quantity'].apply(parse_quantity)\nprint(f\"✅ Quantities converted to int\")\nprint(f\"   Valid quantities: {df_clean['quantity'].notna().sum()}/{len(df_clean)}\")\n\n# Fill remaining missing numerical values\ndf_clean['quantity'].fillna(df_clean['quantity'].median(), inplace=True)\ndf_clean['price'].fillna(df_clean['price'].median(), inplace=True)\nprint(f\"✅ Filled missing numerical values with median\")\n\n\n\n\nStep 4: Validate and Remove Invalid Data\n\nprint(\"\\n✅ Step 4: Data Validation\")\nprint(\"=\"*80)\n\n# Validate emails\ndef is_valid_email(email):\n    \"\"\"Basic email validation\"\"\"\n    if pd.isna(email):\n        return False\n    return '@' in email and '.' in email.split('@')[1] if len(email.split('@')) &gt; 1 else False\n\ndf_clean['email_valid'] = df_clean['email'].apply(is_valid_email)\ninvalid_emails = df_clean[~df_clean['email_valid']]\nprint(f\"Invalid emails found: {len(invalid_emails)}\")\nif len(invalid_emails) &gt; 0:\n    print(invalid_emails[['transaction_id', 'email']])\n    # Fix invalid emails\n    df_clean.loc[~df_clean['email_valid'], 'email'] = 'unknown@email.com'\n\n# Remove rows with invalid dates (if critical)\ndf_clean = df_clean[df_clean['date'].notna()]\nprint(f\"\\n✅ Removed {len(messy_df) - len(df_clean)} rows with invalid dates\")\n\n# Drop validation column\ndf_clean = df_clean.drop('email_valid', axis=1)\n\nprint(f\"\\n📊 Final Clean Dataset Shape: {df_clean.shape}\")"
+  },
+  {
+    "objectID": "playground/05_data_wrangling.html#part-4-the-beautiful-clean-data",
+    "href": "playground/05_data_wrangling.html#part-4-the-beautiful-clean-data",
+    "title": "🔧 Data Wrangling: Cleaning and Transforming Messy Data",
+    "section": "Part 4: The Beautiful, Clean Data!",
+    "text": "Part 4: The Beautiful, Clean Data!\n\nprint(\"\\n✨ CLEANED Data (After Wrangling)\")\nprint(\"=\"*100)\nprint(df_clean)\n\nprint(f\"\\n🎉 Data Types (After Cleaning):\")\nprint(df_clean.dtypes)\n\nprint(f\"\\n📊 Summary Statistics:\")\nprint(df_clean[['quantity', 'price']].describe())\n\n\n\n\n\n\n\n💡 Before vs After\n\n\n\nBefore: Messy, inconsistent, multiple formats, missing values\nAfter: Clean, standardized, correct types, no missing critical data\nThis transformation is the foundation of all data science work!"
+  },
+  {
+    "objectID": "playground/05_data_wrangling.html#part-5-feature-engineering",
+    "href": "playground/05_data_wrangling.html#part-5-feature-engineering",
+    "title": "🔧 Data Wrangling: Cleaning and Transforming Messy Data",
+    "section": "Part 5: Feature Engineering",
+    "text": "Part 5: Feature Engineering\nNow let’s create new useful features from our clean data:\n\nprint(\"🛠️ Step 5: Creating New Features\")\nprint(\"=\"*80)\n\n# Calculate total revenue\ndf_clean['revenue'] = df_clean['quantity'] * df_clean['price']\nprint(f\"✅ Created 'revenue' column\")\n\n# Extract date components\ndf_clean['day_of_week'] = df_clean['date'].dt.day_name()\ndf_clean['month'] = df_clean['date'].dt.month_name()\ndf_clean['year'] = df_clean['date'].dt.year\nprint(f\"✅ Extracted date components: day_of_week, month, year\")\n\n# Create revenue categories\ndf_clean['revenue_category'] = pd.cut(df_clean['revenue'], \n                                       bins=[0, 100, 500, float('inf')],\n                                       labels=['Low', 'Medium', 'High'])\nprint(f\"✅ Created 'revenue_category' column\")\n\n# Customer email domain\ndf_clean['email_domain'] = df_clean['email'].str.split('@').str[1]\nprint(f\"✅ Extracted 'email_domain' from emails\")\n\nprint(f\"\\n📊 Enhanced Dataset:\")\nprint(df_clean[['transaction_id', 'product', 'quantity', 'price', 'revenue', \n                'revenue_category', 'day_of_week']].head(8))"
+  },
+  {
+    "objectID": "playground/05_data_wrangling.html#part-6-data-aggregation-and-grouping",
+    "href": "playground/05_data_wrangling.html#part-6-data-aggregation-and-grouping",
+    "title": "🔧 Data Wrangling: Cleaning and Transforming Messy Data",
+    "section": "Part 6: Data Aggregation and Grouping",
+    "text": "Part 6: Data Aggregation and Grouping\nLet’s analyze the clean data:\n\n# Group by product\nproduct_summary = df_clean.groupby('product').agg({\n    'revenue': ['sum', 'mean', 'count'],\n    'quantity': 'sum'\n}).round(2)\n\nproduct_summary.columns = ['Total Revenue', 'Avg Revenue', 'Transactions', 'Total Quantity']\nproduct_summary = product_summary.sort_values('Total Revenue', ascending=False)\n\nprint(\"\\n📊 Sales by Product\")\nprint(\"=\"*80)\nprint(product_summary)\n\n# Group by region\nregion_summary = df_clean.groupby('region').agg({\n    'revenue': 'sum',\n    'transaction_id': 'count'\n}).round(2)\n\nregion_summary.columns = ['Total Revenue', 'Transactions']\nregion_summary = region_summary.sort_values('Total Revenue', ascending=False)\n\nprint(\"\\n🗺️ Sales by Region\")\nprint(\"=\"*80)\nprint(region_summary)"
+  },
+  {
+    "objectID": "playground/05_data_wrangling.html#part-7-visualizing-the-clean-data",
+    "href": "playground/05_data_wrangling.html#part-7-visualizing-the-clean-data",
+    "title": "🔧 Data Wrangling: Cleaning and Transforming Messy Data",
+    "section": "Part 7: Visualizing the Clean Data",
+    "text": "Part 7: Visualizing the Clean Data\n\n# Revenue by product\nfig = px.bar(product_summary.reset_index(), \n             x='product', \n             y='Total Revenue',\n             title='💰 Total Revenue by Product',\n             color='Total Revenue',\n             color_continuous_scale='Turbo',\n             text='Total Revenue')\n\nfig.update_traces(texttemplate='$%{text:,.2f}', textposition='outside')\nfig.update_layout(\n    font=dict(size=12),\n    height=500,\n    template='plotly_white',\n    showlegend=False\n)\n\nfig.show()\n\n# Revenue by region\nfig2 = px.pie(region_summary.reset_index(), \n              values='Total Revenue', \n              names='region',\n              title='🗺️ Revenue Distribution by Region',\n              hole=0.4,\n              color_discrete_sequence=px.colors.qualitative.Bold)\n\nfig2.update_traces(textinfo='label+percent+value', textfont_size=12)\nfig2.update_layout(font=dict(size=12), height=500)\n\nfig2.show()"
+  },
+  {
+    "objectID": "playground/05_data_wrangling.html#part-8-advanced-wrangling---merging-datasets",
+    "href": "playground/05_data_wrangling.html#part-8-advanced-wrangling---merging-datasets",
+    "title": "🔧 Data Wrangling: Cleaning and Transforming Messy Data",
+    "section": "Part 8: Advanced Wrangling - Merging Datasets",
+    "text": "Part 8: Advanced Wrangling - Merging Datasets\nLet’s merge with customer data from another source:\n\n# Create additional customer data\ncustomer_data = pd.DataFrame({\n    'email': ['john@email.com', 'jane@email.com', 'alice@email.com', \n              'eve@email.com', 'grace@email.com'],\n    'loyalty_tier': ['Gold', 'Silver', 'Gold', 'Bronze', 'Silver'],\n    'member_since': ['2024-01-01', '2024-06-15', '2023-12-01', \n                     '2025-03-10', '2024-09-20'],\n    'total_lifetime_purchases': [15, 8, 23, 3, 12]\n})\n\nprint(\"📋 Customer Data to Merge:\")\nprint(customer_data)\n\n# Merge datasets\ndf_merged = df_clean.merge(customer_data, on='email', how='left')\n\nprint(f\"\\n🔗 Merged Dataset:\")\nprint(df_merged[['transaction_id', 'customer_name', 'email', 'product', \n                 'revenue', 'loyalty_tier', 'member_since']].head(8))\n\n# Fill missing loyalty data\ndf_merged['loyalty_tier'].fillna('Bronze', inplace=True)\ndf_merged['total_lifetime_purchases'].fillna(1, inplace=True)\n\nprint(f\"\\n✅ Merge complete! Shape: {df_merged.shape}\")\n\n\n\n\n\n\n\n🔗 Merging Strategies\n\n\n\n\nInner join: Only matching records\nLeft join: All from left, matching from right\nRight join: All from right, matching from left\nOuter join: All records from both\n\nWe used left join to keep all transactions!"
+  },
+  {
+    "objectID": "playground/05_data_wrangling.html#part-9-reshaping-data-pivot-tables",
+    "href": "playground/05_data_wrangling.html#part-9-reshaping-data-pivot-tables",
+    "title": "🔧 Data Wrangling: Cleaning and Transforming Messy Data",
+    "section": "Part 9: Reshaping Data (Pivot Tables)",
+    "text": "Part 9: Reshaping Data (Pivot Tables)\n\n# Create pivot table: products vs regions\npivot_revenue = df_clean.pivot_table(\n    values='revenue',\n    index='product',\n    columns='region',\n    aggfunc='sum',\n    fill_value=0\n).round(2)\n\nprint(\"\\n📊 Pivot Table: Revenue by Product and Region\")\nprint(\"=\"*80)\nprint(pivot_revenue)\n\n# Visualize pivot table as heatmap\nfig, ax = plt.subplots(figsize=(10, 6))\nsns.heatmap(pivot_revenue, annot=True, fmt='.0f', cmap='YlOrRd', \n            linewidths=1, cbar_kws={'label': 'Revenue ($)'}, ax=ax)\nplt.title('🔥 Revenue Heatmap: Product × Region', fontsize=14, fontweight='bold', pad=20)\nplt.xlabel('Region', fontsize=12)\nplt.ylabel('Product', fontsize=12)\nplt.tight_layout()\nplt.show()"
+  },
+  {
+    "objectID": "playground/05_data_wrangling.html#what-youve-learned",
+    "href": "playground/05_data_wrangling.html#what-youve-learned",
+    "title": "🔧 Data Wrangling: Cleaning and Transforming Messy Data",
+    "section": "🎓 What You’ve Learned",
+    "text": "🎓 What You’ve Learned\nCongratulations! You’ve mastered data wrangling:\n✅ Identified data quality issues systematically\n✅ Cleaned text data (case, whitespace, standardization)\n✅ Handled missing values with appropriate strategies\n✅ Converted data types (dates, numbers, text)\n✅ Validated data (email formats, ranges, logic checks)\n✅ Engineered features (calculations, extractions, categories)\n✅ Aggregated and grouped data for analysis\n✅ Merged datasets from multiple sources\n✅ Reshaped data using pivot tables\n\n🚀 What’s Next in CMPSC 301?\nIn the course, you’ll tackle more complex wrangling: - Large datasets: Millions of rows with performance optimization - Complex transformations: Multi-step data pipelines - Web scraping: Collecting data from websites - API integration: Getting data from web services - Database queries: SQL for data extraction - Data validation: Automated quality checks - ETL pipelines: Extract, Transform, Load workflows"
+  },
+  {
+    "objectID": "playground/05_data_wrangling.html#try-it-yourself",
+    "href": "playground/05_data_wrangling.html#try-it-yourself",
+    "title": "🔧 Data Wrangling: Cleaning and Transforming Messy Data",
+    "section": "💡 Try It Yourself!",
+    "text": "💡 Try It Yourself!\nPractice with these challenges:\n\nAdd more mess: Create data with outliers, duplicates, mixed formats\nMore features: Extract first/last names, categorize prices\nTime analysis: Calculate days between purchases\nData validation: Create comprehensive quality checks\nReal data: Find a messy CSV online and clean it!\n\nReady to wrangle real-world data? Visit JupyterLite!\n\n\n\n\n\n\n\n🌍 Why Data Wrangling Matters\n\n\n\n80% of data science is data wrangling!\nReal-world data is always messy: - E-commerce: Customer data from multiple systems - Healthcare: Patient records in various formats - Finance: Transaction data with errors - Social media: Unstructured text and timestamps - IoT: Sensor data with missing values\nMaster wrangling in CMPSC 301 and you’ll be job-ready!\n\n\n\n\n\n\n\n\n🎯 Best Practices\n\n\n\n\nAlways make copies before cleaning (keep original)\nDocument your steps (code comments, notebooks)\nValidate results after each transformation\nHandle edge cases (nulls, zeros, outliers)\nAutomate repetitive tasks (functions, scripts)\nTest with small samples first"
+  }
+]
