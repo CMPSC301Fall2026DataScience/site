@@ -11,13 +11,15 @@ subtitle: "Slides, Assignments, and Resources"
 
 ---
 
-
 :::{.callout}
 Welcome to the course materials hub! Here you will find all lecture slides, assignments, labs, and downloadable resources organized by week. Check back regularly for updates and new content.
 :::
 
 ---
 
+- **Project Downloads**: [Starter files, tutorials, and other downloadable project materials](1_project_files.html)
+
+---
 
 ## W1. Welcome to Data Science! 🎉
 
