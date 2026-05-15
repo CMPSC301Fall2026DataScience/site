@@ -238,7 +238,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="part-1-creating-our-review-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="part-1-creating-our-review-dataset">Part 1: Creating Our Review Dataset</h2>
-<div id="e89af044" class="cell">
+<div id="34409581" class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -312,7 +312,7 @@ Understanding Text Data
 <section id="part-2-simple-sentiment-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="part-2-simple-sentiment-analysis">Part 2: Simple Sentiment Analysis</h2>
 <p>Let’s build a basic sentiment analyzer using keyword matching:</p>
-<div id="1bf5156b" class="cell">
+<div id="fc849786" class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define positive and negative words</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>positive_words <span class="op">=</span> [<span class="st">'amazing'</span>, <span class="st">'great'</span>, <span class="st">'love'</span>, <span class="st">'excellent'</span>, <span class="st">'fantastic'</span>, <span class="st">'best'</span>, </span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                  <span class="st">'good'</span>, <span class="st">'impressive'</span>, <span class="st">'superb'</span>, <span class="st">'outstanding'</span>, <span class="st">'happy'</span>, <span class="st">'comfortable'</span>,</span>
@@ -375,7 +375,7 @@ Understanding Text Data
 <section id="part-3-visualizing-sentiment" class="level2">
 <h2 class="anchored" data-anchor-id="part-3-visualizing-sentiment">Part 3: Visualizing Sentiment</h2>
 <p>Let’s create beautiful visualizations of our sentiment analysis:</p>
-<div id="115837a1" class="cell">
+<div id="7de548dd" class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create sentiment visualization</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure()</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -424,7 +424,7 @@ Understanding Text Data
 <section id="part-4-ratings-vs-sentiment-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="part-4-ratings-vs-sentiment-analysis">Part 4: Ratings vs Sentiment Analysis</h2>
 <p>Let’s compare actual ratings with our sentiment predictions:</p>
-<div id="c3a4cbea" class="cell">
+<div id="675bed03" class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create scatter plot of rating vs sentiment score</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> px.scatter(df, </span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                 x<span class="op">=</span><span class="st">'rating'</span>, </span>
@@ -468,7 +468,7 @@ Understanding Text Data
 <section id="part-5-word-frequency-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="part-5-word-frequency-analysis">Part 5: Word Frequency Analysis</h2>
 <p>What words appear most often in reviews?</p>
-<div id="7515088b" class="cell">
+<div id="fde44720" class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_words(text):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Extract words from text (remove punctuation and convert to lowercase)"""</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Remove punctuation and split into words</span></span>
@@ -516,7 +516,7 @@ Understanding Text Data
 </section>
 <section id="part-6-word-frequency-visualization" class="level2">
 <h2 class="anchored" data-anchor-id="part-6-word-frequency-visualization">Part 6: Word Frequency Visualization</h2>
-<div id="e26fcac3" class="cell">
+<div id="32e57410" class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create bar chart of top words</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>top_words <span class="op">=</span> pd.DataFrame(word_freq.most_common(<span class="dv">12</span>), </span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                         columns<span class="op">=</span>[<span class="st">'word'</span>, <span class="st">'frequency'</span>])</span>
@@ -546,7 +546,7 @@ Understanding Text Data
 <section id="part-7-product-specific-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="part-7-product-specific-analysis">Part 7: Product-Specific Analysis</h2>
 <p>Let’s analyze sentiment for each product individually:</p>
-<div id="b2d8e31a" class="cell">
+<div id="3516a8c8" class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate average metrics per product</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>product_summary <span class="op">=</span> df.groupby(<span class="st">'product'</span>).agg({</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rating'</span>: <span class="st">'mean'</span>,</span>
@@ -623,7 +623,7 @@ Understanding Text Data
 <section id="part-8-review-length-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="part-8-review-length-analysis">Part 8: Review Length Analysis</h2>
 <p>Does review length correlate with sentiment?</p>
-<div id="e5c8280a" class="cell">
+<div id="7a07aac5" class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate review lengths</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'review_length'</span>] <span class="op">=</span> df[<span class="st">'review_text'</span>].<span class="bu">str</span>.<span class="bu">len</span>()</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'word_count'</span>] <span class="op">=</span> df[<span class="st">'review_text'</span>].<span class="bu">str</span>.split().<span class="bu">str</span>.<span class="bu">len</span>()</span>

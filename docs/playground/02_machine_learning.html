@@ -237,7 +237,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="part-1-creating-our-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="part-1-creating-our-dataset">Part 1: Creating Our Dataset</h2>
-<div id="0384489c" class="cell">
+<div id="38e61f67" class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -304,7 +304,7 @@ Understanding Our Data
 <section id="part-2-exploring-relationships" class="level2">
 <h2 class="anchored" data-anchor-id="part-2-exploring-relationships">Part 2: Exploring Relationships</h2>
 <p>Before building a model, let’s visualize how each feature relates to price:</p>
-<div id="adf807c8" class="cell">
+<div id="9917e6a1" class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create comprehensive visualization</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">10</span>))</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -370,7 +370,7 @@ Understanding Our Data
 <section id="part-3-building-the-machine-learning-model" class="level2">
 <h2 class="anchored" data-anchor-id="part-3-building-the-machine-learning-model">Part 3: Building the Machine Learning Model</h2>
 <p>Now for the exciting part - let’s train a machine learning model!</p>
-<div id="9312af58" class="cell">
+<div id="717f693a" class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare features (X) and target (y)</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[[<span class="st">'square_feet'</span>, <span class="st">'bedrooms'</span>, <span class="st">'age_years'</span>, <span class="st">'distance_to_city'</span>]]</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">'price'</span>]</span>
@@ -416,7 +416,7 @@ Understanding Our Data
 <section id="part-4-making-predictions" class="level2">
 <h2 class="anchored" data-anchor-id="part-4-making-predictions">Part 4: Making Predictions</h2>
 <p>Let’s see how well our model predicts house prices:</p>
-<div id="5cfc226a" class="cell">
+<div id="1333c6a1" class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make predictions on test set</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> model.predict(X_test)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -499,7 +499,7 @@ Understanding Our Data
 <section id="part-5-predicting-new-houses" class="level2">
 <h2 class="anchored" data-anchor-id="part-5-predicting-new-houses">Part 5: Predicting New Houses</h2>
 <p>Now let’s use our trained model to predict prices for new houses:</p>
-<div id="5accc68b" class="cell">
+<div id="eed3847f" class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define new houses to predict</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>new_houses <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'square_feet'</span>: [<span class="dv">2500</span>, <span class="dv">1800</span>, <span class="dv">3500</span>, <span class="dv">1200</span>],</span>
@@ -527,7 +527,7 @@ Understanding Our Data
 <section id="part-6-feature-importance-visualization" class="level2">
 <h2 class="anchored" data-anchor-id="part-6-feature-importance-visualization">Part 6: Feature Importance Visualization</h2>
 <p>Let’s visualize which features matter most:</p>
-<div id="96db8cc6" class="cell">
+<div id="a126424b" class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate absolute importance of each feature</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>importance <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Feature'</span>: X.columns,</span>
@@ -561,7 +561,7 @@ Understanding Our Data
 <section id="part-7-interactive-prediction-tool" class="level2">
 <h2 class="anchored" data-anchor-id="part-7-interactive-prediction-tool">Part 7: Interactive Prediction Tool</h2>
 <p>Try adjusting the sliders to see how different features affect predicted price:</p>
-<div id="68ea1a6a" class="cell">
+<div id="d88679cd" class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an interactive prediction visualization</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_prediction_surface():</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create a grid for visualization (varying square feet and distance)</span></span>

@@ -229,7 +229,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="part-1-exploring-a-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="part-1-exploring-a-dataset">Part 1: Exploring a Dataset</h2>
 <p>Let’s start by loading and exploring a real dataset about global life expectancy and GDP.</p>
-<div id="3884e1d9" class="cell">
+<div id="53374349" class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -282,7 +282,7 @@ Understanding the Data
 <section id="part-2-scatter-plots---finding-relationships" class="level2">
 <h2 class="anchored" data-anchor-id="part-2-scatter-plots---finding-relationships">Part 2: Scatter Plots - Finding Relationships</h2>
 <p>Scatter plots help us visualize relationships between two variables. Let’s explore the relationship between wealth and health:</p>
-<div id="ccbbc28d" class="cell">
+<div id="812592a0" class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a beautiful scatter plot with Seaborn</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">7</span>))</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -320,7 +320,7 @@ Understanding the Data
 <section id="part-3-interactive-visualizations-with-plotly" class="level2">
 <h2 class="anchored" data-anchor-id="part-3-interactive-visualizations-with-plotly">Part 3: Interactive Visualizations with Plotly</h2>
 <p>Static plots are great, but interactive visualizations let you explore data dynamically. Hover over the points to see details!</p>
-<div id="7289e2ab" class="cell">
+<div id="67a08961" class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an interactive bubble chart</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> px.scatter(df, </span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                 x<span class="op">=</span><span class="st">'gdp_per_capita'</span>, </span>
@@ -365,7 +365,7 @@ Understanding the Data
 <section id="part-4-bar-charts---comparing-categories" class="level2">
 <h2 class="anchored" data-anchor-id="part-4-bar-charts---comparing-categories">Part 4: Bar Charts - Comparing Categories</h2>
 <p>Bar charts are perfect for comparing values across categories. Let’s rank countries by life expectancy:</p>
-<div id="f85461c8" class="cell">
+<div id="ba8488b1" class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sort by life expectancy and create colorful bar chart</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df_sorted <span class="op">=</span> df.sort_values(<span class="st">'life_expectancy'</span>, ascending<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -394,7 +394,7 @@ Understanding the Data
 <section id="part-5-heatmaps---visualizing-correlations" class="level2">
 <h2 class="anchored" data-anchor-id="part-5-heatmaps---visualizing-correlations">Part 5: Heatmaps - Visualizing Correlations</h2>
 <p>Heatmaps use color to show patterns in data. Let’s see how all our variables relate to each other:</p>
-<div id="448530b4" class="cell">
+<div id="2e420aa9" class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate correlations between numeric variables</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>correlation_matrix <span class="op">=</span> df[[<span class="st">'life_expectancy'</span>, <span class="st">'gdp_per_capita'</span>, <span class="st">'population_millions'</span>]].corr()</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -439,7 +439,7 @@ Understanding the Data
 <section id="part-6-advanced---multi-panel-visualization" class="level2">
 <h2 class="anchored" data-anchor-id="part-6-advanced---multi-panel-visualization">Part 6: Advanced - Multi-Panel Visualization</h2>
 <p>Professional data scientists often create multi-panel figures to show multiple perspectives:</p>
-<div id="44c16951" class="cell">
+<div id="827c3aba" class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a comprehensive dashboard</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">10</span>))</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>

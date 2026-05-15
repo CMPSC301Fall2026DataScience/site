@@ -238,7 +238,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="part-1-creating-the-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="part-1-creating-the-dataset">Part 1: Creating the Dataset</h2>
-<div id="b6a881a8" class="cell">
+<div id="f8ec1eea" class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -311,7 +311,7 @@ Dataset Overview
 <section id="part-2-descriptive-statistics" class="level2">
 <h2 class="anchored" data-anchor-id="part-2-descriptive-statistics">Part 2: Descriptive Statistics</h2>
 <p>Let’s start with basic statistical summaries:</p>
-<div id="b8b3c40b" class="cell">
+<div id="f85fc797" class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate comprehensive statistics</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"📊 Descriptive Statistics"</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"="</span><span class="op">*</span><span class="dv">80</span>)</span>
@@ -358,7 +358,7 @@ Dataset Overview
 <section id="part-3-visualizing-distributions" class="level2">
 <h2 class="anchored" data-anchor-id="part-3-visualizing-distributions">Part 3: Visualizing Distributions</h2>
 <p>Let’s see how our variables are distributed:</p>
-<div id="9f9af1a9" class="cell">
+<div id="63a6e190" class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create distribution plots</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">10</span>))</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -421,7 +421,7 @@ Dataset Overview
 <section id="part-4-correlation-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="part-4-correlation-analysis">Part 4: Correlation Analysis</h2>
 <p>Which variables are related to each other?</p>
-<div id="445154e6" class="cell">
+<div id="90670d3f" class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate correlation matrix</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>correlation_matrix <span class="op">=</span> df[[<span class="st">'study_hours'</span>, <span class="st">'sleep_hours'</span>, <span class="st">'exercise_hours'</span>, </span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                          <span class="st">'attendance_pct'</span>, <span class="st">'exam_score'</span>]].corr()</span>
@@ -480,7 +480,7 @@ Dataset Overview
 <section id="part-5-scatter-plots-with-regression-lines" class="level2">
 <h2 class="anchored" data-anchor-id="part-5-scatter-plots-with-regression-lines">Part 5: Scatter Plots with Regression Lines</h2>
 <p>Let’s visualize the strongest relationships:</p>
-<div id="e1b7a65d" class="cell">
+<div id="d249e172" class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Study hours vs exam scores with regression line</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> px.scatter(df, </span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                 x<span class="op">=</span><span class="st">'study_hours'</span>, </span>
@@ -516,7 +516,7 @@ Dataset Overview
 <section id="part-6-hypothesis-testing" class="level2">
 <h2 class="anchored" data-anchor-id="part-6-hypothesis-testing">Part 6: Hypothesis Testing</h2>
 <p>Let’s test a hypothesis: Do students who study more than 20 hours/week score significantly higher?</p>
-<div id="287fbeac" class="cell">
+<div id="03465c2a" class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Split students into two groups</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>high_study <span class="op">=</span> df[df[<span class="st">'study_hours'</span>] <span class="op">&gt;</span> <span class="dv">20</span>][<span class="st">'exam_score'</span>]</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>low_study <span class="op">=</span> df[df[<span class="st">'study_hours'</span>] <span class="op">&lt;=</span> <span class="dv">20</span>][<span class="st">'exam_score'</span>]</span>
@@ -595,7 +595,7 @@ Dataset Overview
 <section id="part-7-confidence-intervals" class="level2">
 <h2 class="anchored" data-anchor-id="part-7-confidence-intervals">Part 7: Confidence Intervals</h2>
 <p>What’s the true average exam score for all students?</p>
-<div id="0fca7c2f" class="cell">
+<div id="29e9e093" class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate 95% confidence interval</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>mean_score <span class="op">=</span> df[<span class="st">'exam_score'</span>].mean()</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>std_error <span class="op">=</span> stats.sem(df[<span class="st">'exam_score'</span>])  <span class="co"># Standard error of mean</span></span>
@@ -656,7 +656,7 @@ Dataset Overview
 <section id="part-8-multiple-regression-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="part-8-multiple-regression-analysis">Part 8: Multiple Regression Analysis</h2>
 <p>Can we predict exam scores using multiple variables?</p>
-<div id="3ac6b84c" class="cell">
+<div id="8eae8965" class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> r2_score, mean_squared_error</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
