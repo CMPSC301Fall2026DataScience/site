@@ -84,6 +84,7 @@ __pycache__/
 *.ipynb_checkpoints
 *.log
 *.aux
+docs/
 
 # MacOS
 .DS_Store
