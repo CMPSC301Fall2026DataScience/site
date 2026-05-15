@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "materials/1_project_files.html",
+    "href": "materials/1_project_files.html",
+    "title": "Project Downloads",
+    "section": "",
+    "text": "CS101::Spring 2026\nUse this page to download project files, starter code, and tutorial materials.\nThe page is organized by project folder. To add a new project later, place its files in a new folder inside materials/files/, render the site again, and Quarto will publish both the page and the downloadable files."
+  },
+  {
+    "objectID": "materials/1_project_files.html#datasets",
+    "href": "materials/1_project_files.html#datasets",
+    "title": "Project Downloads",
+    "section": "Datasets",
+    "text": "Datasets\nThis project currently has 1 downloadable file(s) organized into 1 folder(s).\n\nProject Files\n\n\n\nFile\nType\nDownload\n\n\n\n\nsample_student_performance.csv\nCSV\nDownload"
+  },
+  {
+    "objectID": "materials/1_project_files.html#filesearcher",
+    "href": "materials/1_project_files.html#filesearcher",
+    "title": "Project Downloads",
+    "section": "Filesearcher",
+    "text": "Filesearcher\nThis project currently has 2 downloadable file(s) organized into 1 folder(s).\n\nProject Files\n\n\n\nFile\nType\nDownload\n\n\n\n\nmain.py\nPY\nDownload\n\n\npyproject.toml\nTOML\nDownload"
+  },
+  {
+    "objectID": "materials/1_project_files.html#myqr",
+    "href": "materials/1_project_files.html#myqr",
+    "title": "Project Downloads",
+    "section": "Myqr",
+    "text": "Myqr\nThis project currently has 7 downloadable file(s) organized into 3 folder(s).\n\nProject Files\n\n\n\nFile\nType\nDownload\n\n\n\n\npyproject.toml\nTOML\nDownload\n\n\nuv.lock\nLOCK\nDownload\n\n\n\n\n\nMyqr\nFolder: myQR/myqr\n\n\n\nFile\nType\nDownload\n\n\n\n\n__init__.py\nPY\nDownload\n\n\nfile_ops.py\nPY\nDownload\n\n\nmain.py\nPY\nDownload\n\n\nmyqr_streamlit.py\nPY\nDownload\n\n\n\n\n\nTests\nFolder: myQR/tests\n\n\n\nFile\nType\nDownload\n\n\n\n\ntest_myqr.py\nPY\nDownload"
+  }
+]
