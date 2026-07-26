@@ -25,7 +25,7 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 
 **Week of August 26, 2026**
 
-- **Getting to Know You**: [Welcome Survey](https://forms.gle/placeholder)
+- **Getting to Know You**: [Welcome Survey](https://docs.google.com/forms/d/e/1FAIpQLSejfEH5ZHKSc-wT1UrCDR2kVGEuhVid-eWlyLWH97HKd56Sng/viewform?usp=dialog)
 - **Icebreaker Activity**: Pair up with classmates and learn:
   - Names and backgrounds
   - Programming experience
