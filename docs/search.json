@@ -11,7 +11,21 @@
     "href": "live/content/welcome.html#getting-started",
     "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
     "section": "🚀 Getting Started",
-    "text": "🚀 Getting Started\nThis notebook will help you: 1. Test your Python environment 2. Load and explore data 3. Create visualizations 4. Get comfortable with Jupyter notebooks"
+    "text": "🚀 Getting Started\nThis notebook will help you: 1. Install Python packages (first-time setup) 2. Test your Python environment 3. Load and explore data 4. Create visualizations 5. Get comfortable with Jupyter notebooks"
+  },
+  {
+    "objectID": "live/content/welcome.html#installing-packages",
+    "href": "live/content/welcome.html#installing-packages",
+    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
+    "section": "📦 Installing Packages",
+    "text": "📦 Installing Packages\nJupyterLite uses micropip to install Python packages. Here’s how to install common data science packages:\nNote: The first time you install packages, it may take a minute to download. Be patient!\n\n# Install essential data science packages\nimport micropip\n\nprint(\"📦 Installing packages... (this may take a moment)\")\nawait micropip.install(['numpy', 'pandas', 'matplotlib', 'seaborn'])\nprint(\"✅ Packages installed successfully!\")"
+  },
+  {
+    "objectID": "live/content/welcome.html#installing-packages-1",
+    "href": "live/content/welcome.html#installing-packages-1",
+    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
+    "section": "📦 Installing Packages",
+    "text": "📦 Installing Packages\nJupyterLite uses micropip to install Python packages. Here’s how to install common data science packages:\nNote: The first time you install packages, it may take a minute to download. Be patient!\n\n# Install essential data science packages\nimport micropip\n\nprint(\"📦 Installing packages... (this may take a moment)\")\nawait micropip.install(['numpy', 'pandas', 'matplotlib', 'seaborn'])\nprint(\"✅ Packages installed successfully!\")"
   },
   {
     "objectID": "live/content/welcome.html#part-1-testing-python-environment",
