@@ -1,80 +1,59 @@
 [
   {
-    "objectID": "live/content/welcome.html",
-    "href": "live/content/welcome.html",
-    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
+    "objectID": "JUPYTERLITE_FIX_SUMMARY.html",
+    "href": "JUPYTERLITE_FIX_SUMMARY.html",
+    "title": "",
     "section": "",
-    "text": "You’re using JupyterLite - a full Jupyter environment running entirely in your web browser! No installation required."
+    "text": "Code"
   },
   {
-    "objectID": "live/content/welcome.html#getting-started",
-    "href": "live/content/welcome.html#getting-started",
-    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
-    "section": "🚀 Getting Started",
-    "text": "🚀 Getting Started\nThis notebook will help you: 1. Install Python packages (first-time setup) 2. Test your Python environment 3. Load and explore data 4. Create visualizations 5. Get comfortable with Jupyter notebooks"
+    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#issues-resolved",
+    "href": "JUPYTERLITE_FIX_SUMMARY.html#issues-resolved",
+    "title": "",
+    "section": "✅ Issues Resolved",
+    "text": "✅ Issues Resolved\n\n1. “Loading” Stuck Issue\nProblem: JupyterLite was showing “loading” indefinitely and never opening as a client.\nRoot Cause: Quarto was rendering the live/ directory as Quarto content, converting notebooks to HTML and preventing JupyterLite from building its app files properly.\nFix: - Removed live/** from Quarto’s render list in _quarto.yml - Updated build process to build JupyterLite AFTER Quarto rendering - Fixed build command to use the correct paths\n\n\n2. Build Configuration\nProblem: Build errors related to package fetching and configuration issues.\nFix: - Simplified configuration to use only Pyodide kernel (stable and well-supported) - Updated jupyter_lite_config.json to remove deprecated options - Fixed jupyter-lite.json runtime configuration - Updated GitHub Actions workflow to use correct build command"
   },
   {
-    "objectID": "live/content/welcome.html#installing-packages",
-    "href": "live/content/welcome.html#installing-packages",
-    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
-    "section": "📦 Installing Packages",
-    "text": "📦 Installing Packages\nJupyterLite uses micropip to install Python packages. Here’s how to install common data science packages:\nNote: The first time you install packages, it may take a minute to download. Be patient!\n\n# Install essential data science packages\nimport micropip\n\nprint(\"📦 Installing packages... (this may take a moment)\")\nawait micropip.install(['numpy', 'pandas', 'matplotlib', 'seaborn'])\nprint(\"✅ Packages installed successfully!\")"
+    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#current-configuration",
+    "href": "JUPYTERLITE_FIX_SUMMARY.html#current-configuration",
+    "title": "",
+    "section": "📦 Current Configuration",
+    "text": "📦 Current Configuration\n\nPython Support ✅\n\nKernel: Pyodide (Python 3.11+ in WebAssembly)\nPackage Installation: On-demand via micropip\nStatus: Fully functional\n\nRecommended Packages (install on-demand): - numpy - pandas - matplotlib - seaborn - plotly - scikit-learn - scipy - statsmodels\n\n\nR Support ⏳ (Planned)\nCurrent Status: Not yet implemented\nWhy R is challenging: 1. R support in JupyterLite requires xeus-r kernel compiled to WebAssembly 2. This is still experimental and requires complex setup 3. Not all R packages work in the browser environment\nCurrent Options for R: 1. Use R locally with RStudio or Jupyter + IR kernel (Recommended) 2. Wait for maturity - xeus-r support is improving but not production-ready 3. Use rpy2 - Limited R functionality callable from Python (experimental)\nFuture Implementation: When xeus-r becomes stable, we can add it by: - Installing jupyterlite-xeus packages - Creating an environment.yml file specifying R environment - Updating build configuration"
   },
   {
-    "objectID": "live/content/welcome.html#installing-packages-1",
-    "href": "live/content/welcome.html#installing-packages-1",
-    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
-    "section": "📦 Installing Packages",
-    "text": "📦 Installing Packages\nJupyterLite uses micropip to install Python packages. Here’s how to install common data science packages:\nNote: The first time you install packages, it may take a minute to download. Be patient!\n\n# Install essential data science packages\nimport micropip\n\nprint(\"📦 Installing packages... (this may take a moment)\")\nawait micropip.install(['numpy', 'pandas', 'matplotlib', 'seaborn'])\nprint(\"✅ Packages installed successfully!\")"
+    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#next-steps",
+    "href": "JUPYTERLITE_FIX_SUMMARY.html#next-steps",
+    "title": "",
+    "section": "🚀 Next Steps",
+    "text": "🚀 Next Steps\n\nTest Locally (Optional):\n./build_jupyterlite.sh\ncd docs/live && python3 -m http.server 8000\n# Open http://localhost:8000\nCommit and Push:\ngit add .\ngit commit -m \"Fix JupyterLite loading issue and update configuration\"\ngit push\nAccess JupyterLite:\n\nURL: https://CMPSC301Fall2026DataScience.github.io/site/live/\nNavbar link updated to point to local JupyterLite\n\nUsage:\n\nClick “JupyterLite” in the navbar\nCreate new notebook (File → New → Notebook)\nInstall packages in first cell:\nimport micropip\nawait micropip.install(['numpy', 'pandas', 'matplotlib'])\nStart coding!"
   },
   {
-    "objectID": "live/content/welcome.html#part-1-testing-python-environment",
-    "href": "live/content/welcome.html#part-1-testing-python-environment",
-    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
-    "section": "Part 1: Testing Python Environment",
-    "text": "Part 1: Testing Python Environment\nLet’s verify that the essential data science libraries are available:\n\n# Import core libraries\nimport sys\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\nprint(\"✅ Python Environment Test\")\nprint(\"=\"*50)\nprint(f\"Python version: {sys.version}\")\nprint(f\"NumPy version: {np.__version__}\")\nprint(f\"Pandas version: {pd.__version__}\")\nprint(\"\\n🎉 All libraries loaded successfully!\")"
+    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#files-modified",
+    "href": "JUPYTERLITE_FIX_SUMMARY.html#files-modified",
+    "title": "",
+    "section": "📁 Files Modified",
+    "text": "📁 Files Modified\n\n_quarto.yml - Excluded live/ from rendering, updated navbar link\n.github/workflows/deploy.yml - Fixed build command and dependencies\nlive/jupyter_lite_config.json - Simplified configuration\nlive/jupyter-lite.json - Updated runtime settings\nlive/requirements.txt - Created (for reference)\nlive/README.md - Updated documentation\nlive/content/welcome.ipynb - Added micropip installation demo\nbuild_jupyterlite.sh - Created local build helper script"
   },
   {
-    "objectID": "live/content/welcome.html#part-2-your-first-data-analysis",
-    "href": "live/content/welcome.html#part-2-your-first-data-analysis",
-    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
-    "section": "Part 2: Your First Data Analysis",
-    "text": "Part 2: Your First Data Analysis\nLet’s create a simple dataset and analyze it:\n\n# Create sample data\nnp.random.seed(42)\n\ndata = {\n    'Student': [f'Student {i}' for i in range(1, 11)],\n    'Math': np.random.randint(70, 100, 10),\n    'Science': np.random.randint(65, 95, 10),\n    'English': np.random.randint(75, 100, 10)\n}\n\ndf = pd.DataFrame(data)\n\nprint(\"📊 Student Grades Dataset:\")\nprint(df)\nprint(\"\\n📈 Summary Statistics:\")\nprint(df.describe())"
+    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#documentation",
+    "href": "JUPYTERLITE_FIX_SUMMARY.html#documentation",
+    "title": "",
+    "section": "📖 Documentation",
+    "text": "📖 Documentation\n\nlive/README.md - Complete JupyterLite documentation\nlive/content/welcome.ipynb - Interactive tutorial"
   },
   {
-    "objectID": "live/content/welcome.html#part-3-data-manipulation",
-    "href": "live/content/welcome.html#part-3-data-manipulation",
-    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
-    "section": "Part 3: Data Manipulation",
-    "text": "Part 3: Data Manipulation\nLet’s perform some common data operations:\n\n# Calculate average grade for each student\ndf['Average'] = df[['Math', 'Science', 'English']].mean(axis=1)\n\n# Add a grade category\ndf['Grade'] = pd.cut(df['Average'], \n                      bins=[0, 70, 80, 90, 100],\n                      labels=['C', 'B', 'A', 'A+'])\n\nprint(\"📊 Enhanced Dataset:\")\nprint(df)\n\nprint(\"\\n🏆 Top 3 Students:\")\nprint(df.nlargest(3, 'Average')[['Student', 'Average', 'Grade']])"
+    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#troubleshooting",
+    "href": "JUPYTERLITE_FIX_SUMMARY.html#troubleshooting",
+    "title": "",
+    "section": "🔍 Troubleshooting",
+    "text": "🔍 Troubleshooting\nIf JupyterLite still doesn’t load after deployment: 1. Clear browser cache and cookies 2. Check browser console for errors (F12) 3. Verify build completed successfully in GitHub Actions 4. Ensure docs/live/ directory contains index.html and lab/ folder 5. Test locally using the build script"
   },
   {
-    "objectID": "live/content/welcome.html#part-4-visualization",
-    "href": "live/content/welcome.html#part-4-visualization",
-    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
-    "section": "Part 4: Visualization",
-    "text": "Part 4: Visualization\nLet’s create a bar chart:\n\n# Create visualization\nplt.figure(figsize=(10, 6))\n\nx = range(len(df))\nwidth = 0.25\n\nplt.bar([i - width for i in x], df['Math'], width, label='Math', color='#FF6B6B')\nplt.bar(x, df['Science'], width, label='Science', color='#40C9D9')\nplt.bar([i + width for i in x], df['English'], width, label='English', color='#6BCB77')\n\nplt.xlabel('Students')\nplt.ylabel('Grades')\nplt.title('Student Performance Across Subjects', fontsize=14, fontweight='bold')\nplt.xticks(x, df['Student'], rotation=45)\nplt.legend()\nplt.grid(axis='y', alpha=0.3)\nplt.tight_layout()\nplt.show()\n\nprint(\"✅ Visualization created successfully!\")"
-  },
-  {
-    "objectID": "live/content/welcome.html#try-it-yourself",
-    "href": "live/content/welcome.html#try-it-yourself",
-    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
-    "section": "🎯 Try It Yourself!",
-    "text": "🎯 Try It Yourself!\nNow it’s your turn! Try these challenges:\n\nCalculate: Find the student with the highest Science score\nFilter: Show only students with Average &gt;= 85\nPlot: Create a line plot showing average grades\nAnalyze: What’s the correlation between Math and Science scores?\n\nUse the cell below to experiment:\n\n# Your code here!"
-  },
-  {
-    "objectID": "live/content/welcome.html#tips-for-using-jupyterlite",
-    "href": "live/content/welcome.html#tips-for-using-jupyterlite",
-    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
-    "section": "💡 Tips for Using JupyterLite",
-    "text": "💡 Tips for Using JupyterLite\n\nRun cells: Press Shift + Enter to execute a cell\nAdd cells: Click the + button in the toolbar\nCell types: Code or Markdown (for text/documentation)\nSave work: File → Download (work is stored in browser)\nRestart kernel: Kernel → Restart (clears all variables)"
-  },
-  {
-    "objectID": "live/content/welcome.html#next-steps",
-    "href": "live/content/welcome.html#next-steps",
-    "title": "🎉 Welcome to CMPSC 301 JupyterLite!",
-    "section": "📚 Next Steps",
-    "text": "📚 Next Steps\n\nExplore the Playground for more examples\nCheck out Course Materials for assignments\nVisit the Home page for course information\n\n\nHappy coding! 🚀"
+    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#future-enhancements",
+    "href": "JUPYTERLITE_FIX_SUMMARY.html#future-enhancements",
+    "title": "",
+    "section": "💡 Future Enhancements",
+    "text": "💡 Future Enhancements\n\nR Kernel Support - When xeus-r becomes stable\nAdditional Kernels - JavaScript (via xeus-javascript)\nPre-installed Packages - Package caching for faster loading\nCustom Extensions - JupyterLab extensions for specific workflows"
   },
   {
     "objectID": "playground/04_statistical_analysis.html",

@@ -6,12 +6,10 @@ project:
     - "*.md"
     - "playground/*.qmd"
     - "materials/*.qmd"
-    - "live/**"
   resources:
     - materials/files/**
     - logo.png
     - graphics/**
-    - live/requirements.txt
 
 website:
   title: "CMPSC301 Fall 2026 :: Data Science"
@@ -25,7 +23,7 @@ website:
         text: Playground
       - href: materials/0_materials.qmd
         text: Materials
-      - href: https://www.oliverbonhamcarter.com/live/lab/index.html
+      - href: live/lab/index.html
         text: JupyterLite
         target: _blank
 

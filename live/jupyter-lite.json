@@ -3,9 +3,10 @@
   "jupyter-config-data": {
     "appName": "CMPSC 301 JupyterLite",
     "appVersion": "0.1.0",
+    "appUrl": "./lab",
     "collaborative": false,
     "disabledExtensions": [],
-    "federated_extensions": [],
+    "enableMemoryStorage": true,
     "settingsStorageDrivers": ["localStorage"]
   },
   "jupyter-lite": {
