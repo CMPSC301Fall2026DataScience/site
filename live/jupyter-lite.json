@@ -8,14 +8,12 @@
     "federated_extensions": [],
     "settingsStorageDrivers": ["localStorage"]
   },
-  "piplite": {
-    "pipliteUrls": [
-      "https://pypi.org/pypi/{package_name}/json"
-    ],
-    "pipliteWheelUrl": "https://files.pythonhosted.org"
-  },
   "jupyter-lite": {
-    "app_name": "CMPSC 301 Data Science Environment",
-    "app_version": "0.1.0"
+    "litePluginSettings": {
+      "@jupyterlite/pyodide-kernel-extension:kernel": {
+        "pipliteUrls": ["https://pypi.org/pypi/{package_name}/json"],
+        "disablePyPIFallback": false
+      }
+    }
   }
 }

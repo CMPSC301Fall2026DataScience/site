@@ -10,19 +10,30 @@ JupyterLite is a Jupyter environment that runs entirely in the browser, requirin
 - Use data science libraries (pandas, numpy, matplotlib, etc.)
 - Learn and experiment without installations
 
-## 📦 Pre-installed Packages
+## 📦 Installing Packages
 
 ### Python Packages
-- **numpy**: Numerical computing
-- **pandas**: Data manipulation and analysis
-- **matplotlib**: Static plotting
-- **seaborn**: Statistical visualizations
-- **plotly**: Interactive visualizations
-- **scikit-learn**: Machine learning
-- **scipy**: Scientific computing
+JupyterLite uses Pyodide, which supports many Python packages. To install packages in your notebooks:
 
-### R Support
-R support in JupyterLite requires additional configuration with the R kernel. This is included via the xeus-r kernel.
+```python
+import micropip
+await micropip.install('package-name')
+```
+
+**Commonly available packages:**
+- numpy
+- pandas
+- matplotlib
+- seaborn
+- plotly
+- scikit-learn
+- scipy
+- statsmodels
+
+**Note:** Not all PyPI packages work in the browser. Only packages with pure Python or WASM-compatible wheels are supported.
+
+### Pre-configured Packages
+The `requirements.txt` file lists recommended packages. Users should install them on-demand using micropip as shown above.
 
 ## 🛠️ Building JupyterLite
 
@@ -48,6 +59,12 @@ Edit `jupyter-lite.json` to add packages to the PyPI environment.
 
 ### Adding Example Notebooks
 Place `.ipynb` files in `live/content/` directory.
+
+## 🔧 Configuration Files
+
+- **jupyter_lite_config.json**: Build-time configuration
+- **jupyter-lite.json**: Runtime configuration for the JupyterLite app
+- **requirements.txt**: List of recommended packages (installed on-demand by users)
 
 ### Custom Configuration
 Modify `jupyter_lite_config.json` for advanced settings.

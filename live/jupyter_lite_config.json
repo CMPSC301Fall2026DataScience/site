@@ -8,8 +8,5 @@
     ],
     "ignore_sys_prefix": false,
     "output_dir": "../docs/live"
-  },
-  "PipliteAddon": {
-    "piplite_urls": ["https://pypi.org/pypi/{package_name}/json"]
   }
 }
