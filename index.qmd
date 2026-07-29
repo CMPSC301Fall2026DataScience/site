@@ -6,7 +6,7 @@ embed-resources: true
 <center>
 **CMPSC301 :: Data Science :: Fall 2026**
 
-![](../logo.png){width=20%}
+![](./materials/graphics/logo.png){width=20%}
 </center>
 
 **Department of Computer Science**  

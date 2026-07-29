@@ -26,6 +26,7 @@ echo "🔬 Step 2: Building JupyterLite environment..."
 if ! command -v jupyter &> /dev/null; then
     echo "⚠️  Warning: Jupyter not found. Skipping JupyterLite build."
     echo "   Install with: pip install jupyterlite-core jupyterlite-pyodide-kernel"
+    pip3 install jupyterlite-core jupyterlite-pyodide-kernel
 else
     cd live
     jupyter lite build --output-dir ../docs/live
