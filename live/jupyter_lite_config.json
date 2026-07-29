@@ -10,16 +10,6 @@
     "output_dir": "../docs/live"
   },
   "PipliteAddon": {
-    "piplite_urls": ["https://pypi.org/pypi/{package_name}/json"],
-    "pypi_wheels": [
-      "numpy",
-      "pandas",
-      "matplotlib",
-      "seaborn",
-      "plotly",
-      "scikit-learn",
-      "scipy",
-      "statsmodels"
-    ]
+    "piplite_urls": ["https://pypi.org/pypi/{package_name}/json"]
   }
 }

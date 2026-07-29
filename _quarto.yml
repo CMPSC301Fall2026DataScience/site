@@ -11,6 +11,7 @@ project:
     - materials/files/**
     - logo.png
     - graphics/**
+    - live/requirements.txt
 
 website:
   title: "CMPSC301 Fall 2026 :: Data Science"
