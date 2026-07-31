@@ -1,0 +1,6 @@
+name: xeus-r-env
+channels:
+  - conda-forge
+dependencies:
+  - r-base>=4.0
+  - xeus-r

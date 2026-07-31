@@ -1,5 +1,53 @@
 # Adding R Support to JupyterLite - Setup Guide
 
+## Important: Micromamba Requirement
+
+**The R kernel requires `micromamba` to be installed.** You have two options:
+
+### Option 1: Use GitHub Actions (Recommended - No Local Setup)
+✅ **Best for most users** - No need to install micromamba locally  
+The GitHub Actions workflow has been updated to automatically build with R support.
+
+**Steps:**
+1. Commit and push your changes to GitHub
+2. GitHub Actions will automatically build with micromamba and R support
+3. Your site will deploy with both Python and R kernels working
+
+**To use this option:**
+```bash
+git add .
+git commit -m "Add R programming support to JupyterLite"
+git push origin main
+```
+
+GitHub Actions will handle the micromamba installation and R kernel build automatically.
+
+### Option 2: Build Locally with Micromamba
+If you want to build locally, you need to install micromamba first.
+
+**macOS Installation:**
+```bash
+# Using Homebrew (easiest)
+brew install micromamba
+
+# Or download directly
+curl -Ls https://micro.mamba.pm/api/micromamba/osx-64/latest | tar -xvj bin/micromamba
+sudo mv bin/micromamba /usr/local/bin/
+```
+
+**Verify Installation:**
+```bash
+micromamba --version
+```
+
+**Then build:**
+```bash
+./build_jupyterlite.sh
+quarto render
+```
+
+See [MICROMAMBA_SETUP.md](MICROMAMBA_SETUP.md) for detailed local installation instructions.
+
 ## What Was Done
 
 Your Quarto project now supports **both Python and R** programming in JupyterLite! Here's what was added:
@@ -37,26 +85,38 @@ Two example notebooks were added to demonstrate R capabilities:
 
 ### Step 1: Install Required Packages
 
-Run the build script which will automatically install dependencies:
+**Important:** Make sure you have the latest versions:
+
+```bash
+pip install --upgrade pip
+pip install --upgrade jupyterlite-core jupyterlite-pyodide-kernel jupyterlite-xeus jupyterlite
+```
+
+Or run the build script which will automatically install dependencies:
 
 ```bash
 cd /Users/obonhamcarter/Desktop/src/3_web/classes/Cs301F2026/site_301F2026
 ./build_jupyterlite.sh
 ```
 
-Or manually install:
-
-```bash
-pip install jupyterlite-core jupyterlite-pyodide-kernel jupyterlite-xeus
-```
-
 ### Step 2: Build JupyterLite
 
-The build script handles this automatically, but you can also run:
+The build script handles this automatically with the correct parameters:
 
 ```bash
-python3 -m jupyterlite_core.app build --contents live/content --output-dir docs/live
+./build_jupyterlite.sh
 ```
+
+Or manually run with R kernel support:
+
+```bash
+python3 -m jupyterlite build \
+  --contents live/content \
+  --output-dir docs/live \
+  --XeusAddon.environment_file=live/xeus-r-environment.yml
+```
+
+**Important:** The build process will download R and xeus-r WebAssembly files, which may take a few minutes on the first build.
 
 ### Step 3: Render Quarto Site
 
@@ -145,18 +205,33 @@ GitHub Pages will automatically deploy the updated site.
 - Clearing browser data will delete notebooks
 
 ### Limitations
-- Not all Python/R packages available
-- Cannot install system-level dependencies
-- Memory limitations based on browser
+- Not all Python/R p with latest versions
+pip install --upgrade pip
+pip install --upgrade jupyterlite-core jupyterlite-pyodide-kernel jupyterlite-xeus jupyterlite
 
-## Troubleshooting
+# Rebuild
+./build_jupyterlite.sh
+```
 
-### Build Issues
+### R Kernel Not Appearing
+1. Ensure `jupyterlite-xeus` is installed: `pip show jupyterlite-xeus`
+2. Check that `xeus-r-environment.yml` exists in the `live/` directory
+3. Rebuild JupyterLite with: `./build_jupyterlite.sh`
+4. Check the build output for errors related to xeus-r
+5. Verify that `docs/live/` contains kernel files after build
+6. Clear browser cache and reload
+7. Try a different browser
+
+**If R kernel still doesn't appear after rebuilding:**
+
+The xeus-r kernel requires emscripten-forge builds which may have platform-specific issues. Check the build output for warnings about missing kernel specifications. You may need to:
+
 ```bash
-# Clear previous build
-rm -rf docs/live/*
+# Check if the kernel was built
+ls -la docs/live/kernelspecs/
+```
 
-# Reinstall packages
+You should see directories for both `python` and `xr` (R) kernels.
 pip install --upgrade jupyterlite-core jupyterlite-pyodide-kernel jupyterlite-xeus
 
 # Rebuild

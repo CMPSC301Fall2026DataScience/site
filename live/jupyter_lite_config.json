@@ -8,5 +8,8 @@
     ],
     "ignore_sys_prefix": true,
     "contents": ["content"]
+  },
+  "XeusAddon": {
+    "mount_drive": false
   }
 }

@@ -7,7 +7,7 @@ echo "================================"
 # Check if jupyterlite is installed
 if ! python3 -c "import jupyterlite_core" 2>/dev/null; then
     echo "❌ JupyterLite not found. Installing..."
-    python3 -m pip install jupyterlite-core jupyterlite-pyodide-kernel jupyterlite-xeus
+    python3 -m pip install jupyterlite-core jupyterlite-pyodide-kernel jupyterlite-xeus jupyterlite
     echo "✅ JupyterLite installed"
 fi
 
@@ -26,8 +26,11 @@ echo "✅ Clean complete"
 
 # Build JupyterLite
 echo ""
-echo "🔨 Building JupyterLite..."
-python3 -m jupyterlite_core.app build --contents live/content --output-dir docs/live
+echo "🔨 Building JupyterLite with Python and R kernels..."
+python3 -m jupyterlite build \
+  --contents live/content \
+  --output-dir docs/live \
+  --XeusAddon.environment_file=live/xeus-r-environment.yml
 
 # Check if build was successful
 if [ $? -eq 0 ]; then
