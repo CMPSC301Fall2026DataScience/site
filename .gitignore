@@ -39,7 +39,7 @@ live/.jupyterlite.doit.db
 .jupyterlite.doit.db
 
 # Ignore cloned kernel repositories (installed via CI/CD)
-jupyterlite-webr-kernel/
+#jupyterlite-webr-kernel/
 
 # Ignore R artifacts
 .Rhistory
