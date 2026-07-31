@@ -20,12 +20,12 @@ JupyterLite is a Jupyter environment that runs entirely in the browser, requirin
 - Best for most data science tasks
 - No server required - runs entirely in your browser
 
-### R Kernel (xeus-r)
+### R Kernel (WebR)
 
-**xeus-r Kernel** - WebAssembly-based R
-- Core R functionality running in the browser
+**WebR Kernel** - WebAssembly-based R
+- Full R interpreter running in the browser
 - Statistical computing and data analysis
-- Base R packages and functions
+- Install R packages with webr::install()
 - Create plots and visualizations
 - No server required - runs entirely in your browser
 
@@ -60,7 +60,11 @@ To build and deploy JupyterLite:
 
 1. Install jupyterlite:
    ```bash
-   pip install jupyterlite-core jupyterlite-pyodide-kernel jupyterlite-xeus
+   pip install jupyterlite-core jupyterlite-pyodide-kernel
+   git clone https://github.com/r-wasm/jupyterlite-webr-kernel
+   cd jupyterlite-webr-kernel
+   pip install .
+   cd ..
    ```
 
 2. Build the site:
@@ -87,12 +91,44 @@ Place `.ipynb` files in `live/content/` directory.
 
 - **jupyter_lite_config.json**: Build-time configuration
 - **jupyter-lite.json**: Runtime configuration for the JupyterLite app
-- **requirements.txt**: List of recommended packages (installed on-demand by users)
-
-## 🔬 R Programming Support
-
-R support is now available via the xeus-r kernel! You can:
+- **requirements.txt**: List of recWebR kernel! You can:
 - Write and execute R code in the browser
+- Use base R functions and statistical analysis
+- Install R packages with `webr::install("package-name")`
+- Create data frames and perform data manipulation
+- Generate plots and visualizations
+- Write custom R functions
+
+### Using R in JupyterLite
+1. Create a new notebook: File → New → Notebook
+2. Select the **R (WebR)** kernel
+3. Start writing R code!
+
+### Installing R Packages
+```r
+# Install packages using WebR
+webr::install("ggplot2")
+library(ggplot2)
+```
+
+### Example R Code
+```r
+# Create a vector
+x <- c(1, 2, 3, 4, 5)
+
+# Calculate statistics
+mean(x)
+sd(x)
+
+# Create a data frame
+df <- data.frame(
+  name = c("Alice", "Bob", "Charlie"),
+  score = c(85, 92, 78)
+)
+print(df)
+```
+
+**Note:** The WebR kernel provides full R functionality. Most CRAN packages can be installed on-demand. in the browser
 - Use base R functions and statistical analysis
 - Create data frames and perform data manipulation
 - Generate plots and visualizations

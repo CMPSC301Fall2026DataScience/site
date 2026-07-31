@@ -40,13 +40,20 @@ jobs:
           pip install jupyter jupyterlite-core jupyterlite-pyodide-kernel
           pip install numpy pandas matplotlib seaborn plotly scikit-learn scipy statsmodels
 
+      - name: Install WebR kernel for JupyterLite
+        run: |
+          git clone https://github.com/r-wasm/jupyterlite-webr-kernel
+          cd jupyterlite-webr-kernel
+          pip install .
+          cd ..
+
       - name: Render Quarto site
         run: |
           quarto render
 
-      - name: Build JupyterLite
+      - name: Build JupyterLite with Python and WebR
         run: |
-          python -m jupyterlite build --contents live/content --output-dir docs/live
+          python -m jupyterlite_core.app build --contents live/content --output-dir docs/live
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

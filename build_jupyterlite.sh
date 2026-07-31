@@ -7,15 +7,20 @@ echo "================================"
 # Check if jupyterlite is installed
 if ! python3 -c "import jupyterlite_core" 2>/dev/null; then
     echo "❌ JupyterLite not found. Installing..."
-    python3 -m pip install jupyterlite-core jupyterlite-pyodide-kernel jupyterlite-xeus jupyterlite
+    python3 -m pip install jupyterlite-core jupyterlite-pyodide-kernel
     echo "✅ JupyterLite installed"
 fi
 
-# Check if xeus-r kernel is installed
-if ! python3 -c "import jupyterlite_xeus" 2>/dev/null; then
-    echo "❌ xeus kernels not found. Installing..."
-    python3 -m pip install jupyterlite-xeus
-    echo "✅ xeus kernels installed"
+# Check if WebR kernel is installed
+if ! python3 -c "import jupyterlite_webr_kernel" 2>/dev/null; then
+    echo "❌ WebR kernel not found. Installing..."
+    if [ ! -d "jupyterlite-webr-kernel" ]; then
+        git clone https://github.com/r-wasm/jupyterlite-webr-kernel
+    fi
+    cd jupyterlite-webr-kernel
+    python3 -m pip install .
+    cd ..
+    echo "✅ WebR kernel installed"
 fi
 
 # Clean previous build
@@ -26,11 +31,8 @@ echo "✅ Clean complete"
 
 # Build JupyterLite
 echo ""
-echo "🔨 Building JupyterLite with Python and R kernels..."
-python3 -m jupyterlite build \
-  --contents live/content \
-  --output-dir docs/live \
-  --XeusAddon.environment_file=live/xeus-r-environment.yml
+echo "🔨 Building JupyterLite with Python and WebR kernels..."
+python3 -m jupyterlite_core.app build --contents live/content --output-dir docs/live
 
 # Check if build was successful
 if [ $? -eq 0 ]; then
