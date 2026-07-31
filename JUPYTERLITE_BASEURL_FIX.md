@@ -14,7 +14,7 @@ When JupyterLite is deployed to a **subdirectory** on GitHub Pages (like `/site/
 
 ## Solution
 
-Added the `baseUrl` configuration to `jupyter-lite.json`:
+Added the `baseUrl` configuration to `jupyter-lite.json` using a **relative path**:
 
 ```json
 {
@@ -23,7 +23,7 @@ Added the `baseUrl` configuration to `jupyter-lite.json`:
     "appName": "CMPSC 301 JupyterLite",
     "appVersion": "0.1.0",
     "appUrl": "./lab",
-    "baseUrl": "/site/live/",    <--- Added this line
+    "baseUrl": "./",    <--- Using relative path (RECOMMENDED)
     "collaborative": false,
     "disabledExtensions": [],
     "enableMemoryStorage": true,
@@ -40,9 +40,17 @@ Added the `baseUrl` configuration to `jupyter-lite.json`:
 }
 ```
 
+### Why Relative Path?
+
+Using `"baseUrl": "./"` instead of an absolute path like `"/site/live/"` is **more flexible** because:
+- ✅ Works regardless of the exact GitHub Pages deployment path
+- ✅ Doesn't break if you rename the repository or move files
+- ✅ Works in both production and local testing environments
+- ✅ JupyterLite resolves resources relative to where it's served from
+
 ## What Changed
 
-1. **Added `baseUrl: "/site/live/"`** to `jupyter-lite.json`
+1. **Added `baseUrl: "./"`** to `jupyter-lite.json`
 2. **Rebuilt JupyterLite** with the corrected configuration
 3. **Committed and pushed** the updated build to GitHub
 
@@ -53,7 +61,51 @@ Your JupyterLite deployment structure:
 - **JupyterLite URL**: https://CMPSC301Fall2026DataScience.github.io/site/live/
 - **Lab Interface**: https://CMPSC301Fall2026DataScience.github.io/site/live/lab/
 
-The `baseUrl` of `/site/live/` tells JupyterLite it's deployed at this subdirectory path.
+## ⚠️ CRITICAL: Build Order Matters
+
+**ALWAYS** build in this order:
+
+1. **First**: Run `quarto render`
+2. **Second**: Run `jupyter lite build --output-dir docs/live`
+
+If you run Quarto render AFTER building JupyterLite, it will **wipe out** the JupyterLite files in `docs/live/`.
+
+### Use the Build Script
+
+To ensure correct build order, use the provided script:
+
+```bash
+./build_jupyterlite.sh
+```
+
+Or manually:
+
+```bash
+# 1. Render Quarto first
+quarto render
+
+# 2. Then build JupyterLite
+jupyter lite build --output-dir docs/live
+
+# 3. Commit and push
+git add docs/live jupyter-lite.json
+git commit -m "Update JupyterLite build"
+git push
+```
+
+### GitHub Actions Workflow
+
+The `.github/workflows/deploy.yml` file already has the correct build order:
+
+```yaml
+- name: Render Quarto site
+  run: |
+    quarto render
+
+- name: Build JupyterLite with Python and WebR
+  run: |
+    jupyter lite build --output-dir docs/live
+```
 
 ## Verification
 
@@ -86,19 +138,20 @@ Then open: http://localhost:8000/
 ## Why This Fix Works
 
 The `baseUrl` setting tells JupyterLite:
-- Where to find its JavaScript bundles (`/site/live/build/...`)
-- Where to load extensions from (`/site/live/lab/extensions/...`)
-- How to construct URLs for API calls (`/site/live/api/...`)
+- Where to find its JavaScript bundles (relative to current location)
+- Where to load extensions from (relative paths)
+- How to construct URLs for API calls
 - Where to find static resources (icons, manifests, etc.)
 
-Without the correct `baseUrl`, JupyterLite tries to load resources from the wrong paths (like `/build/...` instead of `/site/live/build/...`), which results in 404 errors and a broken interface.
+Using a **relative baseUrl** (`./`) means JupyterLite dynamically determines its location based on where it's served, making it portable across different deployment environments.
 
 ## Future Deployments
 
-If you ever move JupyterLite to a different path, update the `baseUrl` in `jupyter-lite.json` to match:
-- Root deployment: `"baseUrl": "/"`
-- Custom subdirectory: `"baseUrl": "/your/path/"`
-- Always include trailing slash!
+The relative baseUrl `"./"` should work for most deployments. If you need to change it:
+
+- **Relative** (recommended): `"baseUrl": "./"`
+- **Root deployment**: `"baseUrl": "/"`
+- **Custom subdirectory**: `"baseUrl": "/your/path/"` (include trailing slash!)
 
 Then rebuild with:
 ```bash
