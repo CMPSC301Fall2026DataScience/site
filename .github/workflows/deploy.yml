@@ -29,14 +29,6 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Setup Micromamba for R kernel
-        uses: mamba-org/setup-micromamba@v1
-        with:
-          micromamba-version: 'latest'
-          environment-file: live/xeus-r-environment.yml
-          cache-environment: true
-          cache-downloads: true
-
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
         with:
@@ -45,17 +37,16 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install jupyter jupyterlite-core jupyterlite-pyodide-kernel jupyterlite-xeus jupyterlite
+          pip install jupyter jupyterlite-core jupyterlite-pyodide-kernel
           pip install numpy pandas matplotlib seaborn plotly scikit-learn scipy statsmodels
 
       - name: Render Quarto site
         run: |
           quarto render
 
-      - name: Build JupyterLite with R kernel
+      - name: Build JupyterLite
         run: |
-          chmod +x build_jupyterlite.sh
-          ./build_jupyterlite.sh
+          python -m jupyterlite build --contents live/content --output-dir docs/live
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
