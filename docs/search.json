@@ -182,88 +182,179 @@
     "text": "Important Notes\n\nBrowser Compatibility\n\nRecommended: Chrome, Firefox, or Edge (latest versions)\nNot recommended: Safari (may have WebAssembly issues)\n\n\n\nPerformance\n\nR and Python run in WebAssembly (slower than native)\nLarge datasets may be slow\nGood for learning and small-to-medium analyses\n\n\n\nData Persistence\n\nAll work is saved in browser local storage\nStudents should download important notebooks\nClearing browser data will delete notebooks\n\n\n\nLimitations\n\nNot all Python/R p with latest versions pip install –upgrade pip pip install –upgrade jupyterlite-core jupyterlite-pyodide-kernel jupyterlite-xeus jupyterlite"
   },
   {
-    "objectID": "QUICK_START_R.html",
-    "href": "QUICK_START_R.html",
+    "objectID": "READY_TO_DEPLOY.html",
+    "href": "READY_TO_DEPLOY.html",
     "title": "",
     "section": "",
     "text": "Code"
   },
   {
-    "objectID": "QUICK_START_R.html#tldr---just-push-to-github",
-    "href": "QUICK_START_R.html#tldr---just-push-to-github",
+    "objectID": "READY_TO_DEPLOY.html#local-build-verified",
+    "href": "READY_TO_DEPLOY.html#local-build-verified",
     "title": "",
-    "section": "TL;DR - Just Push to GitHub!",
-    "text": "TL;DR - Just Push to GitHub!\nYour GitHub Actions workflow has been updated to automatically build JupyterLite with R support. You don’t need to install anything locally.\n\nWhat to Do Now:\n# Commit all changes\ngit add .\ngit commit -m \"Add R programming support with micromamba in GitHub Actions\"\ngit push origin main\nThat’s it! GitHub Actions will: 1. Install micromamba 2. Build the R kernel environment\n3. Build JupyterLite with both Python and R 4. Deploy to GitHub Pages\n\n\nWait Time\nThe first build will take 10-15 minutes because it needs to: - Download and build the R WebAssembly environment - Create the xeus-r kernel - Build all the JupyterLite assets\nSubsequent builds will be faster (3-5 minutes) due to caching.\n\n\nCheck Build Status\n\nGo to your GitHub repository\nClick on the “Actions” tab\nWatch the “Build and Deploy Quarto Site with JupyterLite” workflow\nWait for the green checkmark\n\n\n\nAfter Deployment\nVisit your site and click the JupyterLite link. You should now see: - Python (Pyodide) kernel - for Python programming - R (xeus-r) kernel - for R programming\n\n\nExample R Notebooks Included\n\nr_example.ipynb - R basics\nr_data_analysis.ipynb - Data science with R"
+    "section": "Local Build Verified",
+    "text": "Local Build Verified\nYour JupyterLite build completed successfully with: - ✅ Python (Pyodide) kernel\n- ✅ R (WebR) kernel - ✅ All three notebooks (welcome.ipynb, r_example.ipynb, r_data_analysis.ipynb) - ✅ Proper configuration files in root directory"
   },
   {
-    "objectID": "QUICK_START_R.html#if-build-fails",
-    "href": "QUICK_START_R.html#if-build-fails",
+    "objectID": "READY_TO_DEPLOY.html#changes-made",
+    "href": "READY_TO_DEPLOY.html#changes-made",
     "title": "",
-    "section": "If Build Fails",
-    "text": "If Build Fails\nCheck the Actions log for errors. Common issues: - Environment file syntax errors - Network issues downloading R packages - Cache corruption (solution: clear Actions cache and rebuild)"
+    "section": "Changes Made",
+    "text": "Changes Made\n\n1. Fixed Path Configuration\n\nMoved jupyter-lite.json from live/ to root\nMoved jupyter_lite_config.json from live/ to root\n\nUpdated paths to reference live/content\n\n\n\n2. Cleaned Up Dependencies\n\nRemoved jupyterlite-xeus (was causing conflicts)\nRemoved xeus-r-environment.yml (not needed for WebR)\nUsing WebR kernel instead (much better!)\n\n\n\n3. Simplified Build\n\nBuild command: jupyter lite build --output-dir docs/live\nConfiguration auto-detected from root directory\nCleaner, simpler workflow"
   },
   {
-    "objectID": "QUICK_START_R.html#local-development",
-    "href": "QUICK_START_R.html#local-development",
+    "objectID": "READY_TO_DEPLOY.html#file-structure-final",
+    "href": "READY_TO_DEPLOY.html#file-structure-final",
     "title": "",
-    "section": "Local Development",
-    "text": "Local Development\nIf you want to test locally (optional): 1. Install micromamba: brew install micromamba 2. Run: ./build_jupyterlite.sh 3. Run: quarto render 4. Test: cd docs && python3 -m http.server 8000\nBut remember: you don’t need to build locally - GitHub Actions handles everything!\n\nSummary: Just push to GitHub and let the automated build system handle the R kernel setup. No local micromamba installation needed!"
+    "section": "File Structure (Final)",
+    "text": "File Structure (Final)\nsite_301F2026/\n├── jupyter-lite.json           ✅ Runtime config\n├── jupyter_lite_config.json    ✅ Build config\n├── build_jupyterlite.sh        ✅ Updated script\n├── .github/workflows/deploy.yml ✅ Updated workflow\n└── live/\n    ├── content/                ✅ Notebooks\n    │   ├── welcome.ipynb       - Python examples\n    │   ├── r_example.ipynb     - R basics\n    │   └── r_data_analysis.ipynb - R data science\n    ├── requirements.txt        ✅ Python packages\n    └── README.md               ✅ Documentation"
   },
   {
-    "objectID": "JUPYTERLITE_FIX_SUMMARY.html",
-    "href": "JUPYTERLITE_FIX_SUMMARY.html",
+    "objectID": "READY_TO_DEPLOY.html#deploy-to-github",
+    "href": "READY_TO_DEPLOY.html#deploy-to-github",
+    "title": "",
+    "section": "Deploy to GitHub",
+    "text": "Deploy to GitHub\ngit add .\ngit commit -m \"Fix build: WebR kernel with proper configuration\"\ngit push origin main"
+  },
+  {
+    "objectID": "READY_TO_DEPLOY.html#what-github-actions-will-do",
+    "href": "READY_TO_DEPLOY.html#what-github-actions-will-do",
+    "title": "",
+    "section": "What GitHub Actions Will Do",
+    "text": "What GitHub Actions Will Do\n\n✅ Install jupyterlite-core and jupyterlite-pyodide-kernel\n✅ Clone and install jupyterlite-webr-kernel\n✅ Render Quarto site\n✅ Build JupyterLite with Python and R kernels\n\n✅ Deploy to GitHub Pages\n\nBuild time: 5-10 minutes (first time), 2-3 minutes (subsequent)"
+  },
+  {
+    "objectID": "READY_TO_DEPLOY.html#after-deployment",
+    "href": "READY_TO_DEPLOY.html#after-deployment",
+    "title": "",
+    "section": "After Deployment",
+    "text": "After Deployment\nVisit your site and click JupyterLite. You’ll see: - Python (Pyodide) - For Python programming - R (WebR) - For R programming\n\nStudents Can:\n\nCreate notebooks in either language\nInstall Python packages with micropip\nInstall R packages with webr::install(\"package\")\nUse all three example notebooks"
+  },
+  {
+    "objectID": "READY_TO_DEPLOY.html#webr-features",
+    "href": "READY_TO_DEPLOY.html#webr-features",
+    "title": "",
+    "section": "WebR Features",
+    "text": "WebR Features\nStudents can install R packages on-demand:\n# In any R notebook\nwebr::install(\"ggplot2\")\nlibrary(ggplot2)\n\nwebr::install(c(\"dplyr\", \"tidyr\", \"readr\"))\nMost CRAN packages work!"
+  },
+  {
+    "objectID": "READY_TO_DEPLOY.html#troubleshooting",
+    "href": "READY_TO_DEPLOY.html#troubleshooting",
+    "title": "",
+    "section": "Troubleshooting",
+    "text": "Troubleshooting\n\nIf Build Fails on GitHub\n\nCheck Actions log for specific errors\nVerify all config files are in root directory\nEnsure no xeus references remain\n\n\n\nIf Kernel Doesn’t Appear\n\nClear browser cache\nTry different browser (Chrome/Firefox)\nCheck browser console for errors"
+  },
+  {
+    "objectID": "READY_TO_DEPLOY.html#documentation-reference",
+    "href": "READY_TO_DEPLOY.html#documentation-reference",
+    "title": "",
+    "section": "Documentation Reference",
+    "text": "Documentation Reference\n\nBUILD_FIX_PATH_ISSUE.md - Path fix explanation\nWEBR_SOLUTION.md - WebR implementation guide\nlive/README.md - User documentation"
+  },
+  {
+    "objectID": "READY_TO_DEPLOY.html#summary",
+    "href": "READY_TO_DEPLOY.html#summary",
+    "title": "",
+    "section": "Summary",
+    "text": "Summary\n✅ Local build successful\n✅ Configuration files properly located\n✅ WebR kernel installed and working\n✅ Ready to deploy to GitHub Pages\nYour students will have both Python and R programming environments running entirely in their web browsers! 🎉\nPush your changes now to deploy! 🚀"
+  },
+  {
+    "objectID": "MICROMAMBA_SETUP.html",
+    "href": "MICROMAMBA_SETUP.html",
     "title": "",
     "section": "",
     "text": "Code"
   },
   {
-    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#issues-resolved",
-    "href": "JUPYTERLITE_FIX_SUMMARY.html#issues-resolved",
+    "objectID": "MICROMAMBA_SETUP.html#the-issue",
+    "href": "MICROMAMBA_SETUP.html#the-issue",
     "title": "",
-    "section": "✅ Issues Resolved",
-    "text": "✅ Issues Resolved\n\n1. “Loading” Stuck Issue\nProblem: JupyterLite was showing “loading” indefinitely and never opening as a client.\nRoot Cause: Quarto was rendering the live/ directory as Quarto content, converting notebooks to HTML and preventing JupyterLite from building its app files properly.\nFix: - Removed live/** from Quarto’s render list in _quarto.yml - Updated build process to build JupyterLite AFTER Quarto rendering - Fixed build command to use the correct paths\n\n\n2. Build Configuration\nProblem: Build errors related to package fetching and configuration issues.\nFix: - Simplified configuration to use only Pyodide kernel (stable and well-supported) - Updated jupyter_lite_config.json to remove deprecated options - Fixed jupyter-lite.json runtime configuration - Updated GitHub Actions workflow to use correct build command"
+    "section": "The Issue",
+    "text": "The Issue\nBuilding JupyterLite with R support requires micromamba to create the WebAssembly environment for xeus-r. Without it, the R kernel won’t be built."
   },
   {
-    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#current-configuration",
-    "href": "JUPYTERLITE_FIX_SUMMARY.html#current-configuration",
+    "objectID": "MICROMAMBA_SETUP.html#solution-install-micromamba",
+    "href": "MICROMAMBA_SETUP.html#solution-install-micromamba",
     "title": "",
-    "section": "📦 Current Configuration",
-    "text": "📦 Current Configuration\n\nPython Support ✅\n\nKernel: Pyodide (Python 3.11+ in WebAssembly)\nPackage Installation: On-demand via micropip\nStatus: Fully functional\n\nRecommended Packages (install on-demand): - numpy - pandas - matplotlib - seaborn - plotly - scikit-learn - scipy - statsmodels\n\n\nR Support ⏳ (Planned)\nCurrent Status: Not yet implemented\nWhy R is challenging: 1. R support in JupyterLite requires xeus-r kernel compiled to WebAssembly 2. This is still experimental and requires complex setup 3. Not all R packages work in the browser environment\nCurrent Options for R: 1. Use R locally with RStudio or Jupyter + IR kernel (Recommended) 2. Wait for maturity - xeus-r support is improving but not production-ready 3. Use rpy2 - Limited R functionality callable from Python (experimental)\nFuture Implementation: When xeus-r becomes stable, we can add it by: - Installing jupyterlite-xeus packages - Creating an environment.yml file specifying R environment - Updating build configuration"
+    "section": "Solution: Install Micromamba",
+    "text": "Solution: Install Micromamba\n\nmacOS Installation\n# Using Homebrew (easiest)\nbrew install micromamba\n\n# Or download directly\ncurl -Ls https://micro.mamba.pm/api/micromamba/osx-64/latest | tar -xvj bin/micromamba\nsudo mv bin/micromamba /usr/local/bin/\n\n\nVerify Installation\nmicromamba --version\n\n\nAfter Installing Micromamba\n\nRun the build script again:\ncd /Users/obonhamcarter/Desktop/src/3_web/classes/Cs301F2026/site_301F2026\n./build_jupyterlite.sh\nThe build will now create the R environment (this may take 5-10 minutes on first build)\nAfter successful build, check for R kernel:\nls -la docs/live/kernelspecs/\nYou should see both python and xr (R) directories."
   },
   {
-    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#next-steps",
-    "href": "JUPYTERLITE_FIX_SUMMARY.html#next-steps",
+    "objectID": "MICROMAMBA_SETUP.html#alternative-use-github-actions",
+    "href": "MICROMAMBA_SETUP.html#alternative-use-github-actions",
     "title": "",
-    "section": "🚀 Next Steps",
-    "text": "🚀 Next Steps\n\nTest Locally (Optional):\n./build_jupyterlite.sh\ncd docs/live && python3 -m http.server 8000\n# Open http://localhost:8000\nCommit and Push:\ngit add .\ngit commit -m \"Fix JupyterLite loading issue and update configuration\"\ngit push\nAccess JupyterLite:\n\nURL: https://CMPSC301Fall2026DataScience.github.io/site/live/\nNavbar link updated to point to local JupyterLite\n\nUsage:\n\nClick “JupyterLite” in the navbar\nCreate new notebook (File → New → Notebook)\nInstall packages in first cell:\nimport micropip\nawait micropip.install(['numpy', 'pandas', 'matplotlib'])\nStart coding!"
+    "section": "Alternative: Use GitHub Actions",
+    "text": "Alternative: Use GitHub Actions\nIf you don’t want to install micromamba locally, you can use GitHub Actions to build the site. Create .github/workflows/deploy.yml:\nname: Build and Deploy JupyterLite\n\non:\n  push:\n    branches: [ main ]\n  workflow_dispatch:\n\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Setup Python\n        uses: actions/setup-python@v5\n        with:\n          python-version: '3.11'\n      \n      - name: Install Micromamba\n        uses: mamba-org/setup-micromamba@v1\n        with:\n          micromamba-version: latest\n          environment-name: build-env\n          create-args: python=3.11\n      \n      - name: Install JupyterLite\n        run: |\n          pip install jupyterlite-core jupyterlite-pyodide-kernel jupyterlite-xeus jupyterlite quarto\n      \n      - name: Build JupyterLite\n        run: |\n          cd ${{ github.workspace }}\n          ./build_jupyterlite.sh\n      \n      - name: Render Quarto\n        run: quarto render\n      \n      - name: Deploy to GitHub Pages\n        uses: peaceiris/actions-gh-pages@v3\n        with:\n          github_token: ${{ secrets.GITHUB_TOKEN }}\n          publish_dir: ./docs\nThis way, the build happens in GitHub’s environment with micromamba pre-installed."
   },
   {
-    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#files-modified",
-    "href": "JUPYTERLITE_FIX_SUMMARY.html#files-modified",
+    "objectID": "MICROMAMBA_SETUP.html#simplified-alternative-python-only-approach",
+    "href": "MICROMAMBA_SETUP.html#simplified-alternative-python-only-approach",
     "title": "",
-    "section": "📁 Files Modified",
-    "text": "📁 Files Modified\n\n_quarto.yml - Excluded live/ from rendering, updated navbar link\n.github/workflows/deploy.yml - Fixed build command and dependencies\nlive/jupyter_lite_config.json - Simplified configuration\nlive/jupyter-lite.json - Updated runtime settings\nlive/requirements.txt - Created (for reference)\nlive/README.md - Updated documentation\nlive/content/welcome.ipynb - Added micropip installation demo\nbuild_jupyterlite.sh - Created local build helper script"
+    "section": "Simplified Alternative: Python-Only Approach",
+    "text": "Simplified Alternative: Python-Only Approach\nIf micromamba setup is too complex, you can:\n\nKeep JupyterLite Python-only for now\nProvide R through alternative methods:\n\nRStudio Cloud links\nPosit Cloud\nLocal R/RStudio installation instructions\nUse rpy2 bridge from Python (limited functionality)\n\n\nLet me know which approach you prefer!"
   },
   {
-    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#documentation",
-    "href": "JUPYTERLITE_FIX_SUMMARY.html#documentation",
+    "objectID": "BUILD_FIX_PATH_ISSUE.html",
+    "href": "BUILD_FIX_PATH_ISSUE.html",
     "title": "",
-    "section": "📖 Documentation",
-    "text": "📖 Documentation\n\nlive/README.md - Complete JupyterLite documentation\nlive/content/welcome.ipynb - Interactive tutorial"
+    "section": "",
+    "text": "Code"
   },
   {
-    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#troubleshooting",
-    "href": "JUPYTERLITE_FIX_SUMMARY.html#troubleshooting",
+    "objectID": "BUILD_FIX_PATH_ISSUE.html#problem-fixed",
+    "href": "BUILD_FIX_PATH_ISSUE.html#problem-fixed",
     "title": "",
-    "section": "🔍 Troubleshooting",
-    "text": "🔍 Troubleshooting\nIf JupyterLite still doesn’t load after deployment: 1. Clear browser cache and cookies 2. Check browser console for errors (F12) 3. Verify build completed successfully in GitHub Actions 4. Ensure docs/live/ directory contains index.html and lab/ folder 5. Test locally using the build script"
+    "section": "✅ Problem Fixed!",
+    "text": "✅ Problem Fixed!\nThe error FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/site/site/docs/live/live/jupyter-lite.json' was caused by configuration files being in the wrong location."
   },
   {
-    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#future-enhancements",
-    "href": "JUPYTERLITE_FIX_SUMMARY.html#future-enhancements",
+    "objectID": "BUILD_FIX_PATH_ISSUE.html#what-was-wrong",
+    "href": "BUILD_FIX_PATH_ISSUE.html#what-was-wrong",
     "title": "",
-    "section": "💡 Future Enhancements",
-    "text": "💡 Future Enhancements\n\nR Kernel Support - When xeus-r becomes stable\nAdditional Kernels - JavaScript (via xeus-javascript)\nPre-installed Packages - Package caching for faster loading\nCustom Extensions - JupyterLab extensions for specific workflows"
+    "section": "What Was Wrong",
+    "text": "What Was Wrong\n\nConfiguration files were in live/ directory\nJupyterLite was looking for them relative to the output directory\nThis created a duplicate path: docs/live/live/jupyter-lite.json ❌"
+  },
+  {
+    "objectID": "BUILD_FIX_PATH_ISSUE.html#what-was-fixed",
+    "href": "BUILD_FIX_PATH_ISSUE.html#what-was-fixed",
+    "title": "",
+    "section": "What Was Fixed",
+    "text": "What Was Fixed\n\n1. Moved Configuration Files\n\nlive/jupyter-lite.json → jupyter-lite.json (root)\nlive/jupyter_lite_config.json → jupyter_lite_config.json (root)\n\n\n\n2. Updated Configuration\nUpdated jupyter_lite_config.json to point to correct content path:\n{\n  \"LiteBuildConfig\": {\n    \"apps\": [\"notebooks\", \"edit\", \"lab\", \"repl\"],\n    \"ignore_sys_prefix\": true,\n    \"contents\": [\"live/content\"]\n  }\n}\n\n\n3. Simplified Build Commands\nGitHub Actions and build script now use:\njupyter lite build --output-dir docs/live\nConfiguration files are auto-detected in the root directory."
+  },
+  {
+    "objectID": "BUILD_FIX_PATH_ISSUE.html#current-structure",
+    "href": "BUILD_FIX_PATH_ISSUE.html#current-structure",
+    "title": "",
+    "section": "Current Structure",
+    "text": "Current Structure\nsite_301F2026/\n├── jupyter-lite.json          # Runtime config (moved here)\n├── jupyter_lite_config.json   # Build config (moved here)\n├── build_jupyterlite.sh       # Updated build script\n├── .github/\n│   └── workflows/\n│       └── deploy.yml         # Updated workflow\n└── live/\n    ├── content/               # Notebooks\n    │   ├── welcome.ipynb\n    │   ├── r_example.ipynb\n    │   └── r_data_analysis.ipynb\n    ├── requirements.txt\n    └── README.md"
+  },
+  {
+    "objectID": "BUILD_FIX_PATH_ISSUE.html#deploy-now",
+    "href": "BUILD_FIX_PATH_ISSUE.html#deploy-now",
+    "title": "",
+    "section": "Deploy Now!",
+    "text": "Deploy Now!\ngit add .\ngit commit -m \"Fix JupyterLite build: move config files to root directory\"\ngit push origin main\n\nExpected Build Output\nThe build should now: 1. ✅ Install WebR kernel successfully 2. ✅ Find configuration files in root 3. ✅ Copy notebooks from live/content/ 4. ✅ Build to docs/live/ 5. ✅ Deploy with both Python and R kernels\n\n\nBuild Time\n\nFirst build: 5-10 minutes (WebR download)\nSubsequent builds: 2-3 minutes"
+  },
+  {
+    "objectID": "BUILD_FIX_PATH_ISSUE.html#verification-steps",
+    "href": "BUILD_FIX_PATH_ISSUE.html#verification-steps",
+    "title": "",
+    "section": "Verification Steps",
+    "text": "Verification Steps\nAfter pushing: 1. Go to GitHub → Actions tab 2. Watch the “Build and Deploy…” workflow 3. Check for green checkmark ✅ 4. Visit your site → JupyterLite 5. Verify both kernels appear: - Python (Pyodide) ✅ - R (WebR) ✅"
+  },
+  {
+    "objectID": "BUILD_FIX_PATH_ISSUE.html#what-this-fixes",
+    "href": "BUILD_FIX_PATH_ISSUE.html#what-this-fixes",
+    "title": "",
+    "section": "What This Fixes",
+    "text": "What This Fixes\n\n❌ FileNotFoundError in build process\n❌ Duplicate path issue (docs/live/live/)\n❌ Configuration file location confusion\n\nNow replaced with: - ✅ Clean file structure - ✅ Configuration files in expected location - ✅ Simplified build commands - ✅ Both Python and R kernels working"
+  },
+  {
+    "objectID": "BUILD_FIX_PATH_ISSUE.html#summary",
+    "href": "BUILD_FIX_PATH_ISSUE.html#summary",
+    "title": "",
+    "section": "Summary",
+    "text": "Summary\nThe issue was a simple path configuration problem. Configuration files need to be in the root directory where JupyterLite expects them, not in subdirectories. This fix resolves the build error and your site will now deploy successfully with both Python and R support via WebR!\n\nReady to deploy! 🚀"
   },
   {
     "objectID": "playground/05_data_wrangling.html",
@@ -924,39 +1015,88 @@
     "text": "Next Steps\n\nPush the fix (above) to get your site building\nDecide on R strategy (let me know which option)\nI’ll implement the chosen approach\nDocument for students how to use R in your course\n\nWhich option would you like me to implement?"
   },
   {
-    "objectID": "MICROMAMBA_SETUP.html",
-    "href": "MICROMAMBA_SETUP.html",
+    "objectID": "JUPYTERLITE_FIX_SUMMARY.html",
+    "href": "JUPYTERLITE_FIX_SUMMARY.html",
     "title": "",
     "section": "",
     "text": "Code"
   },
   {
-    "objectID": "MICROMAMBA_SETUP.html#the-issue",
-    "href": "MICROMAMBA_SETUP.html#the-issue",
+    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#issues-resolved",
+    "href": "JUPYTERLITE_FIX_SUMMARY.html#issues-resolved",
     "title": "",
-    "section": "The Issue",
-    "text": "The Issue\nBuilding JupyterLite with R support requires micromamba to create the WebAssembly environment for xeus-r. Without it, the R kernel won’t be built."
+    "section": "✅ Issues Resolved",
+    "text": "✅ Issues Resolved\n\n1. “Loading” Stuck Issue\nProblem: JupyterLite was showing “loading” indefinitely and never opening as a client.\nRoot Cause: Quarto was rendering the live/ directory as Quarto content, converting notebooks to HTML and preventing JupyterLite from building its app files properly.\nFix: - Removed live/** from Quarto’s render list in _quarto.yml - Updated build process to build JupyterLite AFTER Quarto rendering - Fixed build command to use the correct paths\n\n\n2. Build Configuration\nProblem: Build errors related to package fetching and configuration issues.\nFix: - Simplified configuration to use only Pyodide kernel (stable and well-supported) - Updated jupyter_lite_config.json to remove deprecated options - Fixed jupyter-lite.json runtime configuration - Updated GitHub Actions workflow to use correct build command"
   },
   {
-    "objectID": "MICROMAMBA_SETUP.html#solution-install-micromamba",
-    "href": "MICROMAMBA_SETUP.html#solution-install-micromamba",
+    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#current-configuration",
+    "href": "JUPYTERLITE_FIX_SUMMARY.html#current-configuration",
     "title": "",
-    "section": "Solution: Install Micromamba",
-    "text": "Solution: Install Micromamba\n\nmacOS Installation\n# Using Homebrew (easiest)\nbrew install micromamba\n\n# Or download directly\ncurl -Ls https://micro.mamba.pm/api/micromamba/osx-64/latest | tar -xvj bin/micromamba\nsudo mv bin/micromamba /usr/local/bin/\n\n\nVerify Installation\nmicromamba --version\n\n\nAfter Installing Micromamba\n\nRun the build script again:\ncd /Users/obonhamcarter/Desktop/src/3_web/classes/Cs301F2026/site_301F2026\n./build_jupyterlite.sh\nThe build will now create the R environment (this may take 5-10 minutes on first build)\nAfter successful build, check for R kernel:\nls -la docs/live/kernelspecs/\nYou should see both python and xr (R) directories."
+    "section": "📦 Current Configuration",
+    "text": "📦 Current Configuration\n\nPython Support ✅\n\nKernel: Pyodide (Python 3.11+ in WebAssembly)\nPackage Installation: On-demand via micropip\nStatus: Fully functional\n\nRecommended Packages (install on-demand): - numpy - pandas - matplotlib - seaborn - plotly - scikit-learn - scipy - statsmodels\n\n\nR Support ⏳ (Planned)\nCurrent Status: Not yet implemented\nWhy R is challenging: 1. R support in JupyterLite requires xeus-r kernel compiled to WebAssembly 2. This is still experimental and requires complex setup 3. Not all R packages work in the browser environment\nCurrent Options for R: 1. Use R locally with RStudio or Jupyter + IR kernel (Recommended) 2. Wait for maturity - xeus-r support is improving but not production-ready 3. Use rpy2 - Limited R functionality callable from Python (experimental)\nFuture Implementation: When xeus-r becomes stable, we can add it by: - Installing jupyterlite-xeus packages - Creating an environment.yml file specifying R environment - Updating build configuration"
   },
   {
-    "objectID": "MICROMAMBA_SETUP.html#alternative-use-github-actions",
-    "href": "MICROMAMBA_SETUP.html#alternative-use-github-actions",
+    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#next-steps",
+    "href": "JUPYTERLITE_FIX_SUMMARY.html#next-steps",
     "title": "",
-    "section": "Alternative: Use GitHub Actions",
-    "text": "Alternative: Use GitHub Actions\nIf you don’t want to install micromamba locally, you can use GitHub Actions to build the site. Create .github/workflows/deploy.yml:\nname: Build and Deploy JupyterLite\n\non:\n  push:\n    branches: [ main ]\n  workflow_dispatch:\n\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Setup Python\n        uses: actions/setup-python@v5\n        with:\n          python-version: '3.11'\n      \n      - name: Install Micromamba\n        uses: mamba-org/setup-micromamba@v1\n        with:\n          micromamba-version: latest\n          environment-name: build-env\n          create-args: python=3.11\n      \n      - name: Install JupyterLite\n        run: |\n          pip install jupyterlite-core jupyterlite-pyodide-kernel jupyterlite-xeus jupyterlite quarto\n      \n      - name: Build JupyterLite\n        run: |\n          cd ${{ github.workspace }}\n          ./build_jupyterlite.sh\n      \n      - name: Render Quarto\n        run: quarto render\n      \n      - name: Deploy to GitHub Pages\n        uses: peaceiris/actions-gh-pages@v3\n        with:\n          github_token: ${{ secrets.GITHUB_TOKEN }}\n          publish_dir: ./docs\nThis way, the build happens in GitHub’s environment with micromamba pre-installed."
+    "section": "🚀 Next Steps",
+    "text": "🚀 Next Steps\n\nTest Locally (Optional):\n./build_jupyterlite.sh\ncd docs/live && python3 -m http.server 8000\n# Open http://localhost:8000\nCommit and Push:\ngit add .\ngit commit -m \"Fix JupyterLite loading issue and update configuration\"\ngit push\nAccess JupyterLite:\n\nURL: https://CMPSC301Fall2026DataScience.github.io/site/live/\nNavbar link updated to point to local JupyterLite\n\nUsage:\n\nClick “JupyterLite” in the navbar\nCreate new notebook (File → New → Notebook)\nInstall packages in first cell:\nimport micropip\nawait micropip.install(['numpy', 'pandas', 'matplotlib'])\nStart coding!"
   },
   {
-    "objectID": "MICROMAMBA_SETUP.html#simplified-alternative-python-only-approach",
-    "href": "MICROMAMBA_SETUP.html#simplified-alternative-python-only-approach",
+    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#files-modified",
+    "href": "JUPYTERLITE_FIX_SUMMARY.html#files-modified",
     "title": "",
-    "section": "Simplified Alternative: Python-Only Approach",
-    "text": "Simplified Alternative: Python-Only Approach\nIf micromamba setup is too complex, you can:\n\nKeep JupyterLite Python-only for now\nProvide R through alternative methods:\n\nRStudio Cloud links\nPosit Cloud\nLocal R/RStudio installation instructions\nUse rpy2 bridge from Python (limited functionality)\n\n\nLet me know which approach you prefer!"
+    "section": "📁 Files Modified",
+    "text": "📁 Files Modified\n\n_quarto.yml - Excluded live/ from rendering, updated navbar link\n.github/workflows/deploy.yml - Fixed build command and dependencies\nlive/jupyter_lite_config.json - Simplified configuration\nlive/jupyter-lite.json - Updated runtime settings\nlive/requirements.txt - Created (for reference)\nlive/README.md - Updated documentation\nlive/content/welcome.ipynb - Added micropip installation demo\nbuild_jupyterlite.sh - Created local build helper script"
+  },
+  {
+    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#documentation",
+    "href": "JUPYTERLITE_FIX_SUMMARY.html#documentation",
+    "title": "",
+    "section": "📖 Documentation",
+    "text": "📖 Documentation\n\nlive/README.md - Complete JupyterLite documentation\nlive/content/welcome.ipynb - Interactive tutorial"
+  },
+  {
+    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#troubleshooting",
+    "href": "JUPYTERLITE_FIX_SUMMARY.html#troubleshooting",
+    "title": "",
+    "section": "🔍 Troubleshooting",
+    "text": "🔍 Troubleshooting\nIf JupyterLite still doesn’t load after deployment: 1. Clear browser cache and cookies 2. Check browser console for errors (F12) 3. Verify build completed successfully in GitHub Actions 4. Ensure docs/live/ directory contains index.html and lab/ folder 5. Test locally using the build script"
+  },
+  {
+    "objectID": "JUPYTERLITE_FIX_SUMMARY.html#future-enhancements",
+    "href": "JUPYTERLITE_FIX_SUMMARY.html#future-enhancements",
+    "title": "",
+    "section": "💡 Future Enhancements",
+    "text": "💡 Future Enhancements\n\nR Kernel Support - When xeus-r becomes stable\nAdditional Kernels - JavaScript (via xeus-javascript)\nPre-installed Packages - Package caching for faster loading\nCustom Extensions - JupyterLab extensions for specific workflows"
+  },
+  {
+    "objectID": "QUICK_START_R.html",
+    "href": "QUICK_START_R.html",
+    "title": "",
+    "section": "",
+    "text": "Code"
+  },
+  {
+    "objectID": "QUICK_START_R.html#tldr---just-push-to-github",
+    "href": "QUICK_START_R.html#tldr---just-push-to-github",
+    "title": "",
+    "section": "TL;DR - Just Push to GitHub!",
+    "text": "TL;DR - Just Push to GitHub!\nYour GitHub Actions workflow has been updated to automatically build JupyterLite with R support. You don’t need to install anything locally.\n\nWhat to Do Now:\n# Commit all changes\ngit add .\ngit commit -m \"Add R programming support with micromamba in GitHub Actions\"\ngit push origin main\nThat’s it! GitHub Actions will: 1. Install micromamba 2. Build the R kernel environment\n3. Build JupyterLite with both Python and R 4. Deploy to GitHub Pages\n\n\nWait Time\nThe first build will take 10-15 minutes because it needs to: - Download and build the R WebAssembly environment - Create the xeus-r kernel - Build all the JupyterLite assets\nSubsequent builds will be faster (3-5 minutes) due to caching.\n\n\nCheck Build Status\n\nGo to your GitHub repository\nClick on the “Actions” tab\nWatch the “Build and Deploy Quarto Site with JupyterLite” workflow\nWait for the green checkmark\n\n\n\nAfter Deployment\nVisit your site and click the JupyterLite link. You should now see: - Python (Pyodide) kernel - for Python programming - R (xeus-r) kernel - for R programming\n\n\nExample R Notebooks Included\n\nr_example.ipynb - R basics\nr_data_analysis.ipynb - Data science with R"
+  },
+  {
+    "objectID": "QUICK_START_R.html#if-build-fails",
+    "href": "QUICK_START_R.html#if-build-fails",
+    "title": "",
+    "section": "If Build Fails",
+    "text": "If Build Fails\nCheck the Actions log for errors. Common issues: - Environment file syntax errors - Network issues downloading R packages - Cache corruption (solution: clear Actions cache and rebuild)"
+  },
+  {
+    "objectID": "QUICK_START_R.html#local-development",
+    "href": "QUICK_START_R.html#local-development",
+    "title": "",
+    "section": "Local Development",
+    "text": "Local Development\nIf you want to test locally (optional): 1. Install micromamba: brew install micromamba 2. Run: ./build_jupyterlite.sh 3. Run: quarto render 4. Test: cd docs && python3 -m http.server 8000\nBut remember: you don’t need to build locally - GitHub Actions handles everything!\n\nSummary: Just push to GitHub and let the automated build system handle the R kernel setup. No local micromamba installation needed!"
   },
   {
     "objectID": "R_IMPLEMENTATION_SUMMARY.html",
