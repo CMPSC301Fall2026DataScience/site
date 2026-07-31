@@ -20,6 +20,15 @@ JupyterLite is a Jupyter environment that runs entirely in the browser, requirin
 - Best for most data science tasks
 - No server required - runs entirely in your browser
 
+### R Kernel (xeus-r)
+
+**xeus-r Kernel** - WebAssembly-based R
+- Core R functionality running in the browser
+- Statistical computing and data analysis
+- Base R packages and functions
+- Create plots and visualizations
+- No server required - runs entirely in your browser
+
 ## 📦 Installing Packages
 
 ### Python Packages
@@ -51,7 +60,7 @@ To build and deploy JupyterLite:
 
 1. Install jupyterlite:
    ```bash
-   pip install jupyterlite-core jupyterlite-pyodide-kernel
+   pip install jupyterlite-core jupyterlite-pyodide-kernel jupyterlite-xeus
    ```
 
 2. Build the site:
@@ -82,12 +91,38 @@ Place `.ipynb` files in `live/content/` directory.
 
 ## 🔬 R Programming Support
 
-R support in JupyterLite is currently experimental. For R programming:
-- **Option 1**: Use R locally with RStudio or Jupyter with IR kernel
-- **Option 2**: Use rpy2 bridge from Python (limited functionality)
-- **Future**: Native R kernel support via xeus-r (when available)
+R support is now available via the xeus-r kernel! You can:
+- Write and execute R code in the browser
+- Use base R functions and statistical analysis
+- Create data frames and perform data manipulation
+- Generate plots and visualizations
+- Write custom R functions
 
-For now, we recommend Python as the primary language with the ability to call R functions through rpy2 when needed.
+### Using R in JupyterLite
+1. Create a new notebook: File → New → Notebook
+2. Select the **R** kernel (xeus-r)
+3. Start writing R code!
+
+### Example R Code
+```r
+# Create a vector
+x <- c(1, 2, 3, 4, 5)
+
+# Calculate statistics
+mean(x)
+sd(x)
+
+# Create a data frame
+df <- datayour kernel:
+   - **Python (Pyodide)** for Python programming
+   - **R (xeus-r)** for R programming
+  name = c("Alice", "Bob", "Charlie"),
+  score = c(85, 92, 78)
+)
+print(df)
+```
+
+**Note:** The xeus-r kernel provides core R functionality. Some advanced CRAN packages may not be available in the browser environment.
 
 ### Custom Configuration
 Modify `jupyter_lite_config.json` for advanced settings.

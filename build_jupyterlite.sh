@@ -7,8 +7,15 @@ echo "================================"
 # Check if jupyterlite is installed
 if ! python3 -c "import jupyterlite_core" 2>/dev/null; then
     echo "❌ JupyterLite not found. Installing..."
-    python3 -m pip install jupyterlite-core jupyterlite-pyodide-kernel
+    python3 -m pip install jupyterlite-core jupyterlite-pyodide-kernel jupyterlite-xeus
     echo "✅ JupyterLite installed"
+fi
+
+# Check if xeus-r kernel is installed
+if ! python3 -c "import jupyterlite_xeus" 2>/dev/null; then
+    echo "❌ xeus kernels not found. Installing..."
+    python3 -m pip install jupyterlite-xeus
+    echo "✅ xeus kernels installed"
 fi
 
 # Clean previous build
