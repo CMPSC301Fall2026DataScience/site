@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>🎮 Data Science Playground – CMPSC301 Fall 2026 :: Data Science</title>
+<title>r_status_update – CMPSC301 Fall 2026 :: Data Science</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -58,26 +58,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../logo.png" rel="icon" type="image/png">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-cbca5fe48b1f9954241d77e61ddb0a6c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./logo.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-cbca5fe48b1f9954241d77e61ddb0a6c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -105,67 +103,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-title','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -175,10 +115,10 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../logo.png" alt="" class="navbar-logo">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./logo.png" alt="" class="navbar-logo">
     </a>
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">CMPSC301 Fall 2026 :: Data Science</span>
     </a>
   </div>
@@ -189,19 +129,19 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../playground/00_playground.html" aria-current="page"> 
+    <a class="nav-link" href="./playground/00_playground.html"> 
 <span class="menu-text">Playground</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../materials/0_materials.html"> 
+    <a class="nav-link" href="./materials/0_materials.html"> 
 <span class="menu-text">Materials</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../live/lab/index.html" target="_blank"> 
+    <a class="nav-link" href="./live/lab/index.html" target="_blank"> 
 <span class="menu-text">JupyterLite</span></a>
   </li>  
 </ul>
@@ -220,209 +160,100 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#what-youll-explore" id="toc-what-youll-explore" class="nav-link active" data-scroll-target="#what-youll-explore">🎯 What You’ll Explore</a></li>
-  <li><a href="#featured-demonstrations" id="toc-featured-demonstrations" class="nav-link" data-scroll-target="#featured-demonstrations">🌟 Featured Demonstrations</a></li>
+  <li><a href="#r-support-status---important-update" id="toc-r-support-status---important-update" class="nav-link active" data-scroll-target="#r-support-status---important-update">R Support Status - Important Update</a>
+  <ul class="collapse">
+  <li><a href="#current-situation" id="toc-current-situation" class="nav-link" data-scroll-target="#current-situation">Current Situation</a>
+  <ul class="collapse">
+  <li><a href="#the-problem" id="toc-the-problem" class="nav-link" data-scroll-target="#the-problem">The Problem</a></li>
+  </ul></li>
+  <li><a href="#available-options" id="toc-available-options" class="nav-link" data-scroll-target="#available-options">Available Options</a>
+  <ul class="collapse">
+  <li><a href="#option-1-use-available-xeus-kernels-recommended" id="toc-option-1-use-available-xeus-kernels-recommended" class="nav-link" data-scroll-target="#option-1-use-available-xeus-kernels-recommended">Option 1: Use Available Xeus Kernels (Recommended)</a></li>
+  <li><a href="#option-2-r-through-python-rpy2" id="toc-option-2-r-through-python-rpy2" class="nav-link" data-scroll-target="#option-2-r-through-python-rpy2">Option 2: R Through Python (rpy2)</a></li>
+  <li><a href="#option-3-external-r-environment" id="toc-option-3-external-r-environment" class="nav-link" data-scroll-target="#option-3-external-r-environment">Option 3: External R Environment</a></li>
+  <li><a href="#option-4-wait-for-xeus-r-webassembly-support" id="toc-option-4-wait-for-xeus-r-webassembly-support" class="nav-link" data-scroll-target="#option-4-wait-for-xeus-r-webassembly-support">Option 4: Wait for xeus-r WebAssembly Support</a></li>
+  </ul></li>
+  <li><a href="#recommended-approach" id="toc-recommended-approach" class="nav-link" data-scroll-target="#recommended-approach">Recommended Approach</a>
+  <ul class="collapse">
+  <li><a href="#for-your-course" id="toc-for-your-course" class="nav-link" data-scroll-target="#for-your-course">For Your Course</a></li>
+  <li><a href="#updated-implementation" id="toc-updated-implementation" class="nav-link" data-scroll-target="#updated-implementation">Updated Implementation</a></li>
+  </ul></li>
+  <li><a href="#what-to-do-now" id="toc-what-to-do-now" class="nav-link" data-scroll-target="#what-to-do-now">What To Do Now</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">🎮 Data Science Playground</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
-<p class="subtitle lead">Interactive Coding Experiments</p>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><h1 class="title display-7"></h1></header><div class="quarto-title-block"><div class="quarto-title-tools-only"><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<p>Welcome to the <strong>Data Science Playground</strong>! 🚀</p>
-<p>Here you’ll find interactive demonstrations showcasing the exciting world of data science. Each experiment includes:</p>
-<ul>
-<li><strong>Live Python/R code</strong> you can run in your browser</li>
-<li><strong>Real datasets</strong> to explore and analyze</li>
-<li><strong>Visualizations</strong> that bring data to life</li>
-<li><strong>Detailed explanations</strong> of concepts and techniques</li>
-</ul>
-<p>These demonstrations give you a taste of what you’ll learn in CMPSC 301. Play around, experiment, and see what data science is all about!</p>
-<hr>
-<section id="what-youll-explore" class="level2">
-<h2 class="anchored" data-anchor-id="what-youll-explore">🎯 What You’ll Explore</h2>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Try It Live!
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Each demonstration includes interactive code cells. Click the <strong>JupyterLite</strong> tab in the navigation to access a full Python/R environment, or use the embedded code runners below!</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-For Prospective Students
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>These demonstrations showcase the types of projects and analyses you’ll create in this course. Don’t worry if some concepts are unfamiliar - that’s what the course is for! The goal is to inspire curiosity and show you the possibilities.</p>
-</div>
-</div>
-<hr>
+<section id="r-support-status---important-update" class="level1">
+<h1>R Support Status - Important Update</h1>
+<section id="current-situation" class="level2">
+<h2 class="anchored" data-anchor-id="current-situation">Current Situation</h2>
+<p>After attempting to build JupyterLite with R support, we’ve discovered that <strong>xeus-r is not yet available for WebAssembly (emscripten) platform</strong>.</p>
+<section id="the-problem" class="level3">
+<h3 class="anchored" data-anchor-id="the-problem">The Problem</h3>
+<p>The build error indicates:</p>
+<pre><code>├─ r-base &gt;=4.0 * does not exist (perhaps a typo or a missing channel);
+└─ xeus-r =* * does not exist (perhaps a typo or a missing channel).</code></pre>
+<p>This means that while xeus-r exists for native platforms, it hasn’t been compiled for WebAssembly yet, which is required for JupyterLite to run R in the browser.</p>
 </section>
-<section id="featured-demonstrations" class="level2">
-<h2 class="anchored" data-anchor-id="featured-demonstrations">🌟 Featured Demonstrations</h2>
-<p>Browse the demonstrations below to see data science in action:</p>
-
+</section>
+<section id="available-options" class="level2">
+<h2 class="anchored" data-anchor-id="available-options">Available Options</h2>
+<section id="option-1-use-available-xeus-kernels-recommended" class="level3">
+<h3 class="anchored" data-anchor-id="option-1-use-available-xeus-kernels-recommended">Option 1: Use Available Xeus Kernels (Recommended)</h3>
+<p>JupyterLite with xeus <strong>does</strong> support these kernels: - ✅ <strong>xeus-python</strong> - Alternative Python kernel - ✅ <strong>xeus-lua</strong> - Lua programming language - ✅ <strong>xeus-sqlite</strong> - SQLite database queries</p>
+<p>We can add these working kernels instead of R.</p>
+</section>
+<section id="option-2-r-through-python-rpy2" class="level3">
+<h3 class="anchored" data-anchor-id="option-2-r-through-python-rpy2">Option 2: R Through Python (rpy2)</h3>
+<p>Use the Python kernel with rpy2 to run R code: - Works in Pyodide (browser) - Limited R functionality - Requires micropip install of rpy2</p>
+</section>
+<section id="option-3-external-r-environment" class="level3">
+<h3 class="anchored" data-anchor-id="option-3-external-r-environment">Option 3: External R Environment</h3>
+<p>Provide R through alternative means: - <strong>Posit Cloud</strong> (formerly RStudio Cloud) - Free tier available - <strong>Local R/RStudio</strong> - Installation instructions for students - <strong>Google Colab</strong> - Supports R notebooks - <strong>Binder</strong> - Can run R notebooks</p>
+</section>
+<section id="option-4-wait-for-xeus-r-webassembly-support" class="level3">
+<h3 class="anchored" data-anchor-id="option-4-wait-for-xeus-r-webassembly-support">Option 4: Wait for xeus-r WebAssembly Support</h3>
+<p>Monitor xeus-r development for WebAssembly support: - Check: https://github.com/jupyter-xeus/xeus-r - Check: https://github.com/emscripten-forge/recipes</p>
+</section>
+</section>
+<section id="recommended-approach" class="level2">
+<h2 class="anchored" data-anchor-id="recommended-approach">Recommended Approach</h2>
+<section id="for-your-course" class="level3">
+<h3 class="anchored" data-anchor-id="for-your-course">For Your Course</h3>
+<p>I recommend:</p>
+<ol type="1">
+<li><strong>Keep Python-only JupyterLite</strong> (simpler, faster, works now)</li>
+<li><strong>Add rpy2 examples</strong> for basic R functionality in Python</li>
+<li><strong>Provide links to external R resources</strong> for full R programming</li>
+</ol>
+</section>
+<section id="updated-implementation" class="level3">
+<h3 class="anchored" data-anchor-id="updated-implementation">Updated Implementation</h3>
+<p>Let me update your setup to: - Remove R kernel attempts - Clean up the build process - Add documentation about R alternatives - Optionally add xeus-lua or xeus-sqlite if useful for your course</p>
+</section>
+</section>
+<section id="what-to-do-now" class="level2">
+<h2 class="anchored" data-anchor-id="what-to-do-now">What To Do Now</h2>
+<p>Would you like me to:</p>
+<p><strong>A)</strong> Remove R kernel setup and revert to Python-only JupyterLite (simplest)</p>
+<p><strong>B)</strong> Keep trying R by adding rpy2 examples for R-in-Python</p>
+<p><strong>C)</strong> Add a different xeus kernel (lua or sqlite) that actually works</p>
+<p><strong>D)</strong> Add external R resource links and instructions</p>
+<p>Please let me know which approach you prefer, and I’ll implement it immediately!</p>
 
 
 <!-- -->
 
 </section>
+</section>
 
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="list grid quarto-listing-cols-2">
-<div class="g-col-1" data-index="0" data-categories="UHl0aG9uJTJDTkxQJTJDVGV4dCUyMEFuYWx5c2lzJTJDU2VudGltZW50" data-listing-file-modified-sort="1785519765803" data-listing-reading-time-sort="13" data-listing-word-count-sort="2599">
-<a href="../playground/03_text_analysis.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-💬 Text Analytics &amp; Sentiment Analysis
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('TkxQ'); return false;">NLP</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('VGV4dCUyMEFuYWx5c2lz'); return false;">Text Analysis</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('U2VudGltZW50'); return false;">Sentiment</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Analyze text data, detect emotions, and uncover insights from reviews, tweets, and social media using natural language processing</p>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="1" data-categories="UHl0aG9uJTJDU3RhdGlzdGljcyUyQ0h5cG90aGVzaXMlMjBUZXN0aW5nJTJDQ29ycmVsYXRpb24=" data-listing-file-modified-sort="1785519765803" data-listing-reading-time-sort="12" data-listing-word-count-sort="2239">
-<a href="../playground/04_statistical_analysis.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-📈 Statistical Analysis: Finding Patterns in Data
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('U3RhdGlzdGljcw=='); return false;">Statistics</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('SHlwb3RoZXNpcyUyMFRlc3Rpbmc='); return false;">Hypothesis Testing</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Q29ycmVsYXRpb24='); return false;">Correlation</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Discover meaningful patterns, test hypotheses, and understand statistical relationships using real data</p>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="2" data-categories="UHl0aG9uJTJDVmlzdWFsaXphdGlvbiUyQ1NlYWJvcm4lMkNQbG90bHk=" data-listing-file-modified-sort="1785519765802" data-listing-reading-time-sort="8" data-listing-word-count-sort="1470">
-<a href="../playground/01_visualization.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-📊 Data Visualization Masterclass
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('VmlzdWFsaXphdGlvbg=='); return false;">Visualization</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('U2VhYm9ybg=='); return false;">Seaborn</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('UGxvdGx5'); return false;">Plotly</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Create stunning visualizations with Python and explore how colors, shapes, and layouts tell compelling data stories</p>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="3" data-categories="UHl0aG9uJTJDUGFuZGFzJTJDRGF0YSUyMENsZWFuaW5nJTJDRVRM" data-listing-file-modified-sort="1785519765804" data-listing-reading-time-sort="12" data-listing-word-count-sort="2313">
-<a href="../playground/05_data_wrangling.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-🔧 Data Wrangling: Cleaning and Transforming Messy Data
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('UGFuZGFz'); return false;">Pandas</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('RGF0YSUyMENsZWFuaW5n'); return false;">Data Cleaning</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('RVRM'); return false;">ETL</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Master the essential skills of cleaning, reshaping, and preparing real-world data for analysis</p>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="4" data-categories="UHl0aG9uJTJDTWFjaGluZSUyMExlYXJuaW5nJTJDU2Npa2l0LWxlYXJuJTJDUHJlZGljdGlvbg==" data-listing-file-modified-sort="1785519765803" data-listing-reading-time-sort="10" data-listing-word-count-sort="1998">
-<a href="../playground/02_machine_learning.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-🤖 Machine Learning: Predicting the Future
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('TWFjaGluZSUyMExlYXJuaW5n'); return false;">Machine Learning</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('U2Npa2l0LWxlYXJu'); return false;">Scikit-learn</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHJlZGljdGlvbg=='); return false;">Prediction</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Build your first machine learning model to predict trends and make data-driven decisions</p>
-</div>
-</div>
-</div></a>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -873,50 +704,85 @@ For Prospective Students
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "🎮 Data Science Playground"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Interactive Coding Experiments"</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">listing:</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">  contents:</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">    - "*.qmd"</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">    - "!00_playground.qmd"</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">  type: grid</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">  sort: "title"</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">  fields: [title, description, categories]</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">  grid-columns: 2</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> html</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>Welcome to the **Data Science Playground**! 🚀</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>Here you'll find interactive demonstrations showcasing the exciting world of data science. Each experiment includes:</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Live Python/R code** you can run in your browser</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Real datasets** to explore and analyze</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Visualizations** that bring data to life</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Detailed explanations** of concepts and techniques</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>These demonstrations give you a taste of what you'll learn in CMPSC 301. Play around, experiment, and see what data science is all about!</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="fu">## 🎯 What You'll Explore</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>:::{.callout-tip}</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="fu">## Try It Live!</span></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>Each demonstration includes interactive code cells. Click the **JupyterLite** tab in the navigation to access a full Python/R environment, or use the embedded code runners below!</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="fu">## For Prospective Students</span></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>These demonstrations showcase the types of projects and analyses you'll create in this course. Don't worry if some concepts are unfamiliar - that's what the course is for! The goal is to inspire curiosity and show you the possibilities.</span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## 🌟 Featured Demonstrations</span></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>Browse the demonstrations below to see data science in action:</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># R Support Status - Important Update</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## Current Situation</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>After attempting to build JupyterLite with R support, we've discovered that **xeus-r is not yet available for WebAssembly (emscripten) platform**.</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">### The Problem</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>The build error indicates:</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="in">├─ r-base &gt;=4.0 * does not exist (perhaps a typo or a missing channel);</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="in">└─ xeus-r =* * does not exist (perhaps a typo or a missing channel).</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>This means that while xeus-r exists for native platforms, it hasn't been compiled for WebAssembly yet, which is required for JupyterLite to run R in the browser.</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="fu">## Available Options</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">### Option 1: Use Available Xeus Kernels (Recommended)</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>JupyterLite with xeus **does** support these kernels:</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>✅ **xeus-python** - Alternative Python kernel</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>✅ **xeus-lua** - Lua programming language</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>✅ **xeus-sqlite** - SQLite database queries</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>We can add these working kernels instead of R.</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="fu">### Option 2: R Through Python (rpy2)</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>Use the Python kernel with rpy2 to run R code:</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Works in Pyodide (browser)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Limited R functionality</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Requires micropip install of rpy2</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="fu">### Option 3: External R Environment</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>Provide R through alternative means:</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Posit Cloud** (formerly RStudio Cloud) - Free tier available</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Local R/RStudio** - Installation instructions for students</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Google Colab** - Supports R notebooks</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Binder** - Can run R notebooks</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="fu">### Option 4: Wait for xeus-r WebAssembly Support</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>Monitor xeus-r development for WebAssembly support:</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Check: https://github.com/jupyter-xeus/xeus-r</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Check: https://github.com/emscripten-forge/recipes</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="fu">## Recommended Approach</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="fu">### For Your Course</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>I recommend:</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Keep Python-only JupyterLite** (simpler, faster, works now)</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Add rpy2 examples** for basic R functionality in Python</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Provide links to external R resources** for full R programming</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="fu">### Updated Implementation</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>Let me update your setup to:</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Remove R kernel attempts</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Clean up the build process</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Add documentation about R alternatives</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Optionally add xeus-lua or xeus-sqlite if useful for your course</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="fu">## What To Do Now</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>Would you like me to:</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>**A)** Remove R kernel setup and revert to Python-only JupyterLite (simplest)</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>**B)** Keep trying R by adding rpy2 examples for R-in-Python</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>**C)** Add a different xeus kernel (lua or sqlite) that actually works</span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>**D)** Add external R resource links and instructions</span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>Please let me know which approach you prefer, and I'll implement it immediately!</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
