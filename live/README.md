@@ -69,13 +69,15 @@ To build and deploy JupyterLite:
 
 2. Build the site:
    ```bash
-   python -m jupyterlite_core.app build --contents live/content --output-dir docs/live
+   jupyter lite build --output-dir docs/live
    ```
 
    Or use the provided script:
    ```bash
    ./build_jupyterlite.sh
    ```
+
+   **Note:** Configuration files (`jupyter-lite.json` and `jupyter_lite_config.json`) are in the root directory.
 
 3. The built site will be in `docs/live/` and can be served via GitHub Pages.
 

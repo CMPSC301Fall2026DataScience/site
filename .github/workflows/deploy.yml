@@ -53,7 +53,7 @@ jobs:
 
       - name: Build JupyterLite with Python and WebR
         run: |
-          python -m jupyterlite_core.app build --contents live/content --output-dir docs/live
+          jupyter lite build --output-dir docs/live
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

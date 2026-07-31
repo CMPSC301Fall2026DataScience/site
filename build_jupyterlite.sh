@@ -32,7 +32,7 @@ echo "✅ Clean complete"
 # Build JupyterLite
 echo ""
 echo "🔨 Building JupyterLite with Python and WebR kernels..."
-python3 -m jupyterlite_core.app build --contents live/content --output-dir docs/live
+jupyter lite build --output-dir docs/live
 
 # Check if build was successful
 if [ $? -eq 0 ]; then
