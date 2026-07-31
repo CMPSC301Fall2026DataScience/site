@@ -36,6 +36,10 @@ wheels/
 # Ignore JupyterLite build (keep source, ignore build)
 docs/live/.jupyterlite.doit.db
 live/.jupyterlite.doit.db
+.jupyterlite.doit.db
+
+# Ignore cloned kernel repositories (installed via CI/CD)
+jupyterlite-webr-kernel/
 
 # Ignore R artifacts
 .Rhistory
