@@ -37,7 +37,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install jupyter jupyterlite-core jupyterlite-pyodide-kernel
+          pip install jupyter
           pip install numpy pandas matplotlib seaborn plotly scikit-learn scipy statsmodels
 
       - name: Install WebR kernel for JupyterLite
@@ -46,6 +46,12 @@ jobs:
           cd jupyterlite-webr-kernel
           pip install .
           cd ..
+          # WebR kernel will install compatible jupyterlite-core version
+          
+      - name: Install JupyterLite packages
+        run: |
+          # Install or upgrade to ensure compatible versions
+          pip install --upgrade jupyterlite-core jupyterlite-pyodide-kernel
 
       - name: Render Quarto site
         run: |
@@ -53,8 +59,20 @@ jobs:
 
       - name: Build JupyterLite with Python and WebR
         run: |
-          # jupyter lite build --output-dir docs/live
-          python -m jupyterlite_core.app build --contents live/content --output-dir docs/live
+          jupyter lite build --lite-dir live --output-dir docs/live --base-url /site/live/
+          
+      - name: Fix baseUrl for GitHub Pages
+        run: |
+          python3 << 'PYTHON_SCRIPT'
+          import json
+          config_path = 'docs/live/jupyter-lite.json'
+          with open(config_path, 'r') as f:
+              config = json.load(f)
+          config['jupyter-config-data']['baseUrl'] = '/site/live/'
+          with open(config_path, 'w') as f:
+              json.dump(config, f, indent=2)
+          print("✅ baseUrl updated to '/site/live/'")
+          PYTHON_SCRIPT
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

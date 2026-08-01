@@ -28,16 +28,12 @@ if ! command -v jupyter &> /dev/null; then
     echo "   Install with: pip install jupyterlite-core jupyterlite-pyodide-kernel"
     pip3 install jupyterlite-core jupyterlite-pyodide-kernel
 else
-    cd live
-    jupyter lite build --output-dir ../docs/live --base-url /site/live/
+    jupyter lite build --lite-dir live --output-dir docs/live --base-url /site/live/
     
     if [ $? -ne 0 ]; then
         echo "❌ Error: JupyterLite build failed"
-        cd ..
         exit 1
     fi
-    
-    cd ..
     
     # Fix baseUrl for GitHub Pages subdirectory deployment
     echo ""

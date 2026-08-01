@@ -32,9 +32,7 @@ echo "✅ Clean complete"
 # Build JupyterLite
 echo ""
 echo "🔨 Building JupyterLite with Python and WebR kernels..."
-cd live
-jupyter lite build --output-dir ../docs/live --base-url /site/live/
-cd ..
+jupyter lite build --lite-dir live --output-dir docs/live --base-url /site/live/
 
 # Fix baseUrl for GitHub Pages subdirectory deployment
 echo ""
