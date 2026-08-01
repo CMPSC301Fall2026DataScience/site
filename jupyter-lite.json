@@ -1,0 +1,18 @@
+{
+  "jupyter-lite-schema-version": 0,
+  "jupyter-config-data": {
+    "baseUrl": "/live/",
+    "appName": "JupyterLite"
+  },
+  "litePluginSettings": {
+    "@jupyterlite/pyodide-kernel-extension:kernel": {
+      "pyodideUrl": "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/",
+      "pipliteWheelUrl": "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/",
+      "pipliteUrls": [
+        "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/",
+        "https://pypi.org/simple/"
+      ],
+      "disablePyPIFallback": false
+    }
+  }
+}
