@@ -40,6 +40,10 @@ jobs:
           pip install jupyter jupyterlite-core jupyterlite-pyodide-kernel
           pip install numpy pandas matplotlib seaborn plotly scikit-learn scipy statsmodels
 
+      - name: Install jupyterlite-webr-kernel and Quarto dependencies
+        run: |
+          pip install git+https://github.com/r-wasm/jupyterlite-webr-kernel
+
       - name: Render Quarto site
         run: |
           quarto render

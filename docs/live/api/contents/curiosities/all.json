@@ -2,7 +2,7 @@
   "content": [
     {
       "content": null,
-      "created": "2026-08-01T20:41:05.818920Z",
+      "created": "2026-08-01T20:55:20.334955Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
@@ -16,7 +16,7 @@
     },
     {
       "content": null,
-      "created": "2026-08-01T20:41:05.820508Z",
+      "created": "2026-08-01T20:55:20.336313Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
@@ -30,7 +30,7 @@
     },
     {
       "content": null,
-      "created": "2026-08-01T20:41:05.815723Z",
+      "created": "2026-08-01T20:55:20.331889Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
@@ -44,7 +44,7 @@
     },
     {
       "content": null,
-      "created": "2026-08-01T20:41:05.817342Z",
+      "created": "2026-08-01T20:55:20.333367Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
@@ -57,11 +57,11 @@
       "writable": true
     }
   ],
-  "created": "2026-08-01T20:41:05.819840Z",
+  "created": "2026-08-01T20:55:20.335672Z",
   "format": "json",
   "hash": null,
   "hash_algorithm": null,
-  "last_modified": "2026-08-01T20:41:05.819840Z",
+  "last_modified": "2026-08-01T20:55:20.335672Z",
   "mimetype": null,
   "name": "curiosities",
   "path": "curiosities",
