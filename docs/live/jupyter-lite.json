@@ -3,7 +3,7 @@
     "appName": "JupyterLite",
     "appUrl": "./lab",
     "appVersion": "0.6.4",
-    "baseUrl": "./",
+    "baseUrl": "/site/live/",
     "defaultKernelName": "python",
     "faviconUrl": "./lab/favicon.ico",
     "federated_extensions": [
@@ -25,7 +25,7 @@
       },
       {
         "extension": "./extension",
-        "load": "static/remoteEntry.2866309ac44967c00955.js",
+        "load": "static/remoteEntry.6be0644c8c27ba3fd92b.js",
         "name": "@r-wasm/jupyterlite-webr-kernel",
         "style": "./style"
       },
