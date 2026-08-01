@@ -23,8 +23,8 @@ website:
         text: Playground
       - href: materials/0_materials.qmd
         text: Materials
-      # - href: live/lab/index.html
-      #   text: JupyterLite
+      - href: live/lab/index.html
+        text: JupyterLite
         target: _blank
 
 format:
