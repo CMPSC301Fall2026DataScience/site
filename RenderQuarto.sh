@@ -57,16 +57,14 @@ echo "✅ WebR kernel installed successfully"
 echo ""
 echo "🚀 Step 4: Building JupyterLite environment (Python + R)..."
 
-cd live
-jupyter lite build --contents content --output-dir ../docs/live
+# Build from project root (matching GitHub Actions workflow)
+jupyter lite build --contents live/content --output-dir docs/live
 
 if [ $? -ne 0 ]; then
     echo "❌ Error: JupyterLite build failed"
-    cd ..
     exit 1
 fi
 
-cd ..
 echo "✅ JupyterLite built successfully with Python and R support"
 
 # Step 3: Report completion

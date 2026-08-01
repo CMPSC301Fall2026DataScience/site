@@ -14,3 +14,6 @@ __pycache__/
 
 # JupyterLite WebR Kernel (cloned during build)
 jupyterlite-webr-kernel/
+
+# JupyterLite config backups
+*.json.backup
