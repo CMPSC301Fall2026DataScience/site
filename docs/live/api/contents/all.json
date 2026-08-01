@@ -2,7 +2,7 @@
   "content": [
     {
       "content": null,
-      "created": "2026-08-01T21:19:49.037426Z",
+      "created": "2026-08-01T21:51:24.325454Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
@@ -16,11 +16,11 @@
     },
     {
       "content": null,
-      "created": "2026-08-01T21:19:48.966397Z",
+      "created": "2026-08-01T21:51:24.316267Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
-      "last_modified": "2026-08-01T21:19:48.966397Z",
+      "last_modified": "2026-08-01T21:51:24.316267Z",
       "mimetype": null,
       "name": "curiosities",
       "path": "curiosities",
@@ -30,11 +30,11 @@
     },
     {
       "content": null,
-      "created": "2026-08-01T21:19:48.967774Z",
+      "created": "2026-08-01T21:51:24.317049Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
-      "last_modified": "2026-08-01T21:19:48.967774Z",
+      "last_modified": "2026-08-01T21:51:24.317049Z",
       "mimetype": null,
       "name": "python_analysis",
       "path": "python_analysis",
@@ -44,7 +44,7 @@
     },
     {
       "content": null,
-      "created": "2026-08-01T21:19:49.042164Z",
+      "created": "2026-08-01T21:51:24.326195Z",
       "format": null,
       "hash": null,
       "hash_algorithm": null,
@@ -57,11 +57,11 @@
       "writable": true
     }
   ],
-  "created": "2026-08-01T21:19:49.041208Z",
+  "created": "2026-08-01T21:51:24.325871Z",
   "format": "json",
   "hash": null,
   "hash_algorithm": null,
-  "last_modified": "2026-08-01T21:19:49.041208Z",
+  "last_modified": "2026-08-01T21:51:24.325871Z",
   "mimetype": null,
   "name": "",
   "path": "",

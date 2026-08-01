@@ -22,7 +22,16 @@ echo "✅ Quarto site rendered successfully"
 echo ""
 echo "📦 Step 2: Installing JupyterLite dependencies..."
 
-# Install JupyterLite and dependencies from requirements.txt
+# Install JupyterLite with pinned versions to avoid compatibility issues
+pip3 install jupyter
+pip3 install "jupyterlite-core>=0.4.0,<0.5.0" "jupyterlite-pyodide-kernel>=0.4.0,<0.5.0"
+
+if [ $? -ne 0 ]; then
+    echo "❌ Error: Failed to install JupyterLite core packages"
+    exit 1
+fi
+
+# Install data science packages from requirements.txt
 pip3 install -r live/requirements.txt
 
 if [ $? -ne 0 ]; then
@@ -36,37 +45,34 @@ echo "✅ Dependencies installed successfully"
 echo ""
 echo "🔬 Step 3: Installing WebR kernel for R support..."
 
-# Clone and install jupyterlite-webr-kernel
-if [ ! -d "jupyterlite-webr-kernel" ]; then
-    git clone https://github.com/r-wasm/jupyterlite-webr-kernel
-fi
-
-cd jupyterlite-webr-kernel
-pip3 install .
+# Install jupyterlite-webr from PyPI
+pip3 install jupyterlite-webr
 
 if [ $? -ne 0 ]; then
     echo "❌ Error: Failed to install WebR kernel"
-    cd ..
     exit 1
 fi
 
-cd ..
 echo "✅ WebR kernel installed successfully"
 
 # Step 4: Build JupyterLite with Python and R kernels
 echo ""
 echo "🚀 Step 4: Building JupyterLite environment (Python + R)..."
 
-cd live
-jupyter lite build --contents content --output-dir ../docs/live
+# Remove any stale jupyter-lite.json from docs to prevent path conflicts
+if [ -f "docs/jupyter-lite.json" ]; then
+    echo "   Cleaning up stale config file: docs/jupyter-lite.json"
+    rm -f docs/jupyter-lite.json
+fi
+
+# Build from project root (matching GitHub Actions workflow)
+jupyter lite build --contents live/content --output-dir docs/live
 
 if [ $? -ne 0 ]; then
     echo "❌ Error: JupyterLite build failed"
-    cd ..
     exit 1
 fi
 
-cd ..
 echo "✅ JupyterLite built successfully with Python and R support"
 
 # Step 3: Report completion

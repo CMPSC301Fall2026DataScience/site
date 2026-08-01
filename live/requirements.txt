@@ -1,8 +1,5 @@
-# JupyterLite core and kernels
-jupyterlite-core
-jupyterlite-pyodide-kernel
-
-# Python packages for analysis
+# Python packages for data analysis
+# Note: JupyterLite core packages are installed separately with version constraints
 numpy
 pandas
 matplotlib
