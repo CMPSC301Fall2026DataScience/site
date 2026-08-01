@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>🎮 Data Science Playground – CMPSC301 Fall 2026 :: Data Science</title>
+<title>setup_r_support – CMPSC301 Fall 2026 :: Data Science</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,28 +20,61 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-c1fac2584b48ed01fb6e278e36375074.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-c1fac2584b48ed01fb6e278e36375074.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -69,67 +102,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-title','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -139,7 +114,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">CMPSC301 Fall 2026 :: Data Science</span>
     </a>
   </div>
@@ -150,15 +125,15 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../playground/00_playground.html" aria-current="page"> 
+    <a class="nav-link" href="./playground/00_playground.html"> 
 <span class="menu-text">Playground</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../materials/0_materials.html"> 
+    <a class="nav-link" href="./materials/0_materials.html"> 
 <span class="menu-text">Materials</span></a>
   </li>  
   <li class="nav-item">
@@ -181,207 +156,218 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#what-youll-explore" id="toc-what-youll-explore" class="nav-link active" data-scroll-target="#what-youll-explore">🎯 What You’ll Explore</a></li>
-  <li><a href="#featured-demonstrations" id="toc-featured-demonstrations" class="nav-link" data-scroll-target="#featured-demonstrations">🌟 Featured Demonstrations</a></li>
+  <li><a href="#adding-r-support-to-jupyterlite---setup-complete" id="toc-adding-r-support-to-jupyterlite---setup-complete" class="nav-link active" data-scroll-target="#adding-r-support-to-jupyterlite---setup-complete">Adding R Support to JupyterLite - Setup Complete ✅</a>
+  <ul class="collapse">
+  <li><a href="#what-was-changed" id="toc-what-was-changed" class="nav-link" data-scroll-target="#what-was-changed">What Was Changed</a>
+  <ul class="collapse">
+  <li><a href="#updated-requirements-liverequirements.txt" id="toc-updated-requirements-liverequirements.txt" class="nav-link" data-scroll-target="#updated-requirements-liverequirements.txt">1. Updated Requirements (live/requirements.txt)</a></li>
+  <li><a href="#modified-build-script-renderquarto.sh" id="toc-modified-build-script-renderquarto.sh" class="nav-link" data-scroll-target="#modified-build-script-renderquarto.sh">2. Modified Build Script (RenderQuarto.sh)</a></li>
+  <li><a href="#created-sample-r-notebook-livecontentr_example.ipynb" id="toc-created-sample-r-notebook-livecontentr_example.ipynb" class="nav-link" data-scroll-target="#created-sample-r-notebook-livecontentr_example.ipynb">3. Created Sample R Notebook (live/content/r_example.ipynb)</a></li>
+  <li><a href="#updated-documentation-livereadme.md" id="toc-updated-documentation-livereadme.md" class="nav-link" data-scroll-target="#updated-documentation-livereadme.md">4. Updated Documentation (live/README.md)</a></li>
+  </ul></li>
+  <li><a href="#how-to-build-and-deploy" id="toc-how-to-build-and-deploy" class="nav-link" data-scroll-target="#how-to-build-and-deploy">How to Build and Deploy</a>
+  <ul class="collapse">
+  <li><a href="#first-time-setup" id="toc-first-time-setup" class="nav-link" data-scroll-target="#first-time-setup">First-Time Setup</a></li>
+  <li><a href="#what-to-expect" id="toc-what-to-expect" class="nav-link" data-scroll-target="#what-to-expect">What to Expect</a></li>
+  </ul></li>
+  <li><a href="#using-r-in-jupyterlite" id="toc-using-r-in-jupyterlite" class="nav-link" data-scroll-target="#using-r-in-jupyterlite">Using R in JupyterLite</a>
+  <ul class="collapse">
+  <li><a href="#creating-a-new-r-notebook" id="toc-creating-a-new-r-notebook" class="nav-link" data-scroll-target="#creating-a-new-r-notebook">Creating a New R Notebook</a></li>
+  <li><a href="#example-r-code" id="toc-example-r-code" class="nav-link" data-scroll-target="#example-r-code">Example R Code</a></li>
+  <li><a href="#installing-r-packages" id="toc-installing-r-packages" class="nav-link" data-scroll-target="#installing-r-packages">Installing R Packages</a></li>
+  </ul></li>
+  <li><a href="#key-differences-from-hugo-setup" id="toc-key-differences-from-hugo-setup" class="nav-link" data-scroll-target="#key-differences-from-hugo-setup">Key Differences from Hugo Setup</a></li>
+  <li><a href="#testing-your-setup" id="toc-testing-your-setup" class="nav-link" data-scroll-target="#testing-your-setup">Testing Your Setup</a></li>
+  <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting">Troubleshooting</a>
+  <ul class="collapse">
+  <li><a href="#build-fails-at-webr-installation" id="toc-build-fails-at-webr-installation" class="nav-link" data-scroll-target="#build-fails-at-webr-installation">Build Fails at WebR Installation</a></li>
+  <li><a href="#r-kernel-not-showing-up" id="toc-r-kernel-not-showing-up" class="nav-link" data-scroll-target="#r-kernel-not-showing-up">R Kernel Not Showing Up</a></li>
+  <li><a href="#package-installation-issues" id="toc-package-installation-issues" class="nav-link" data-scroll-target="#package-installation-issues">Package Installation Issues</a></li>
+  </ul></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
+  <li><a href="#additional-resources" id="toc-additional-resources" class="nav-link" data-scroll-target="#additional-resources">Additional Resources</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">🎮 Data Science Playground</h1>
-<p class="subtitle lead">Interactive Coding Experiments</p>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<p>Welcome to the <strong>Data Science Playground</strong>! 🚀</p>
-<p>Here you’ll find interactive demonstrations showcasing the exciting world of data science. Each experiment includes:</p>
+<section id="adding-r-support-to-jupyterlite---setup-complete" class="level1">
+<h1>Adding R Support to JupyterLite - Setup Complete ✅</h1>
+<section id="what-was-changed" class="level2">
+<h2 class="anchored" data-anchor-id="what-was-changed">What Was Changed</h2>
+<section id="updated-requirements-liverequirements.txt" class="level3">
+<h3 class="anchored" data-anchor-id="updated-requirements-liverequirements.txt">1. Updated Requirements (<a href="live/requirements.txt">live/requirements.txt</a>)</h3>
+<p>Added JupyterLite core packages to support both Python and R kernels:</p>
+<pre><code># JupyterLite core and kernels
+jupyterlite-core
+jupyterlite-pyodide-kernel</code></pre>
+</section>
+<section id="modified-build-script-renderquarto.sh" class="level3">
+<h3 class="anchored" data-anchor-id="modified-build-script-renderquarto.sh">2. Modified Build Script (<a href="RenderQuarto.sh">RenderQuarto.sh</a>)</h3>
+<p>The build process now: 1. Renders the Quarto site 2. Installs JupyterLite dependencies 3. <strong>NEW:</strong> Clones and installs the WebR kernel for R support 4. Builds JupyterLite with both Python and R kernels</p>
+</section>
+<section id="created-sample-r-notebook-livecontentr_example.ipynb" class="level3">
+<h3 class="anchored" data-anchor-id="created-sample-r-notebook-livecontentr_example.ipynb">3. Created Sample R Notebook (<a href="live/content/r_example.ipynb">live/content/r_example.ipynb</a>)</h3>
+<p>A demonstration notebook showing: - Basic R operations - Working with vectors and statistics - Creating data frames - Simple plotting</p>
+</section>
+<section id="updated-documentation-livereadme.md" class="level3">
+<h3 class="anchored" data-anchor-id="updated-documentation-livereadme.md">4. Updated Documentation (<a href="live/README.md">live/README.md</a>)</h3>
+<p>Added information about the R kernel and how to use R packages.</p>
+</section>
+</section>
+<section id="how-to-build-and-deploy" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-build-and-deploy">How to Build and Deploy</h2>
+<section id="first-time-setup" class="level3">
+<h3 class="anchored" data-anchor-id="first-time-setup">First-Time Setup</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make the build script executable (if not already)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x RenderQuarto.sh</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the build script</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">./RenderQuarto.sh</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The script will: - Install all Python dependencies - Clone and install jupyterlite-webr-kernel - Build the site with both Python and R support - Output to <code>docs/</code> directory for GitHub Pages</p>
+</section>
+<section id="what-to-expect" class="level3">
+<h3 class="anchored" data-anchor-id="what-to-expect">What to Expect</h3>
+<p>After building, the <code>jupyterlite-webr-kernel</code> directory will be created in your project root. This is normal and contains the R kernel source. You can add it to <code>.gitignore</code> if desired.</p>
+</section>
+</section>
+<section id="using-r-in-jupyterlite" class="level2">
+<h2 class="anchored" data-anchor-id="using-r-in-jupyterlite">Using R in JupyterLite</h2>
+<section id="creating-a-new-r-notebook" class="level3">
+<h3 class="anchored" data-anchor-id="creating-a-new-r-notebook">Creating a New R Notebook</h3>
+<ol type="1">
+<li>Navigate to your JupyterLite instance</li>
+<li>Click “File” → “New” → “Notebook”</li>
+<li>Select “R (WebR)” as the kernel</li>
+<li>Start coding in R!</li>
+</ol>
+</section>
+<section id="example-r-code" class="level3">
+<h3 class="anchored" data-anchor-id="example-r-code">Example R Code</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">rnorm</span>(<span class="dv">10</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary statistics</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Simple plot</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(data<span class="sc">$</span>x, data<span class="sc">$</span>y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="installing-r-packages" class="level3">
+<h3 class="anchored" data-anchor-id="installing-r-packages">Installing R Packages</h3>
+<p>In an R notebook cell:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"ggplot2"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="key-differences-from-hugo-setup" class="level2">
+<h2 class="anchored" data-anchor-id="key-differences-from-hugo-setup">Key Differences from Hugo Setup</h2>
+<p>The Hugo code you provided has been successfully adapted:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 57%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Hugo Approach</th>
+<th>Quarto Adaptation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>hugo --minify --gc</code></td>
+<td><code>quarto render</code></td>
+</tr>
+<tr class="even">
+<td><code>pip install -r requirements.txt</code></td>
+<td><code>pip3 install -r live/requirements.txt</code></td>
+</tr>
+<tr class="odd">
+<td><code>jupyter lite build --contents files --output-dir public/live</code></td>
+<td><code>jupyter lite build --contents content --output-dir ../docs/live</code></td>
+</tr>
+</tbody>
+</table>
+<p>The core WebR kernel installation is <strong>identical</strong> between both approaches.</p>
+</section>
+<section id="testing-your-setup" class="level2">
+<h2 class="anchored" data-anchor-id="testing-your-setup">Testing Your Setup</h2>
+<ol type="1">
+<li><p><strong>Build the site:</strong></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./RenderQuarto.sh</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Open locally:</strong> Open <code>docs/index.html</code> in your browser and navigate to JupyterLite</p></li>
+<li><p><strong>Test Python:</strong></p>
 <ul>
-<li><strong>Live Python/R code</strong> you can run in your browser</li>
-<li><strong>Real datasets</strong> to explore and analyze</li>
-<li><strong>Visualizations</strong> that bring data to life</li>
-<li><strong>Detailed explanations</strong> of concepts and techniques</li>
+<li>Open <code>welcome.ipynb</code> or create a new Python notebook</li>
+<li>Run some Python code</li>
+</ul></li>
+<li><p><strong>Test R:</strong></p>
+<ul>
+<li>Open <code>r_example.ipynb</code> or create a new R notebook</li>
+<li>Select “R (WebR)” kernel</li>
+<li>Run some R code</li>
+</ul></li>
+</ol>
+</section>
+<section id="troubleshooting" class="level2">
+<h2 class="anchored" data-anchor-id="troubleshooting">Troubleshooting</h2>
+<section id="build-fails-at-webr-installation" class="level3">
+<h3 class="anchored" data-anchor-id="build-fails-at-webr-installation">Build Fails at WebR Installation</h3>
+<p>If the WebR kernel installation fails:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean up and retry</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-rf</span> jupyterlite-webr-kernel</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">./RenderQuarto.sh</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="r-kernel-not-showing-up" class="level3">
+<h3 class="anchored" data-anchor-id="r-kernel-not-showing-up">R Kernel Not Showing Up</h3>
+<ul>
+<li>Ensure the build completed without errors</li>
+<li>Check that <code>docs/live</code> contains the built JupyterLite environment</li>
+<li>Clear browser cache and reload</li>
 </ul>
-<p>These demonstrations give you a taste of what you’ll learn in CMPSC 301. Play around, experiment, and see what data science is all about!</p>
-<hr>
-<section id="what-youll-explore" class="level2">
-<h2 class="anchored" data-anchor-id="what-youll-explore">🎯 What You’ll Explore</h2>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Try It Live!
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Each demonstration includes interactive code cells. Click the <strong>JupyterLite</strong> tab in the navigation to access a full Python/R environment, or use the embedded code runners below!</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-For Prospective Students
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>These demonstrations showcase the types of projects and analyses you’ll create in this course. Don’t worry if some concepts are unfamiliar - that’s what the course is for! The goal is to inspire curiosity and show you the possibilities.</p>
-</div>
-</div>
-<hr>
 </section>
-<section id="featured-demonstrations" class="level2">
-<h2 class="anchored" data-anchor-id="featured-demonstrations">🌟 Featured Demonstrations</h2>
-<p>Browse the demonstrations below to see data science in action:</p>
-
+<section id="package-installation-issues" class="level3">
+<h3 class="anchored" data-anchor-id="package-installation-issues">Package Installation Issues</h3>
+<ul>
+<li><strong>Python:</strong> Some PyPI packages don’t have WASM wheels</li>
+<li><strong>R:</strong> Some CRAN packages may not be available in WebR yet</li>
+<li>Check package compatibility before installing</li>
+</ul>
+</section>
+</section>
+<section id="next-steps" class="level2">
+<h2 class="anchored" data-anchor-id="next-steps">Next Steps</h2>
+<ol type="1">
+<li>✅ Build your site with <code>./RenderQuarto.sh</code></li>
+<li>✅ Test both Python and R kernels locally</li>
+<li>✅ Commit changes and push to GitHub</li>
+<li>✅ GitHub Pages will serve your updated site with dual-kernel support</li>
+</ol>
+</section>
+<section id="additional-resources" class="level2">
+<h2 class="anchored" data-anchor-id="additional-resources">Additional Resources</h2>
+<ul>
+<li><a href="https://jupyterlite.readthedocs.io/">JupyterLite Documentation</a></li>
+<li><a href="https://docs.r-wasm.org/webr/latest/">WebR Project</a></li>
+<li><a href="https://github.com/r-wasm/jupyterlite-webr-kernel">WebR Kernel for JupyterLite</a></li>
+</ul>
+<hr>
+<p><strong>You now have both Python and R programming environments running entirely in the browser!</strong> 🎉</p>
 
 
 </section>
+</section>
 
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="list grid quarto-listing-cols-2">
-<div class="g-col-1" data-index="0" data-categories="UHl0aG9uJTJDTkxQJTJDVGV4dCUyMEFuYWx5c2lzJTJDU2VudGltZW50" data-listing-file-modified-sort="1785615042316" data-listing-reading-time-sort="13" data-listing-word-count-sort="2599">
-<a href="../playground/03_text_analysis.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-💬 Text Analytics &amp; Sentiment Analysis
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('TkxQ'); return false;">NLP</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('VGV4dCUyMEFuYWx5c2lz'); return false;">Text Analysis</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('U2VudGltZW50'); return false;">Sentiment</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Analyze text data, detect emotions, and uncover insights from reviews, tweets, and social media using natural language processing</p>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="1" data-categories="UHl0aG9uJTJDU3RhdGlzdGljcyUyQ0h5cG90aGVzaXMlMjBUZXN0aW5nJTJDQ29ycmVsYXRpb24=" data-listing-file-modified-sort="1785615042316" data-listing-reading-time-sort="12" data-listing-word-count-sort="2239">
-<a href="../playground/04_statistical_analysis.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-📈 Statistical Analysis: Finding Patterns in Data
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('U3RhdGlzdGljcw=='); return false;">Statistics</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('SHlwb3RoZXNpcyUyMFRlc3Rpbmc='); return false;">Hypothesis Testing</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Q29ycmVsYXRpb24='); return false;">Correlation</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Discover meaningful patterns, test hypotheses, and understand statistical relationships using real data</p>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="2" data-categories="UHl0aG9uJTJDVmlzdWFsaXphdGlvbiUyQ1NlYWJvcm4lMkNQbG90bHk=" data-listing-file-modified-sort="1785615042316" data-listing-reading-time-sort="8" data-listing-word-count-sort="1470">
-<a href="../playground/01_visualization.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-📊 Data Visualization Masterclass
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('VmlzdWFsaXphdGlvbg=='); return false;">Visualization</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('U2VhYm9ybg=='); return false;">Seaborn</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('UGxvdGx5'); return false;">Plotly</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Create stunning visualizations with Python and explore how colors, shapes, and layouts tell compelling data stories</p>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="3" data-categories="UHl0aG9uJTJDUGFuZGFzJTJDRGF0YSUyMENsZWFuaW5nJTJDRVRM" data-listing-file-modified-sort="1785615042317" data-listing-reading-time-sort="12" data-listing-word-count-sort="2313">
-<a href="../playground/05_data_wrangling.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-🔧 Data Wrangling: Cleaning and Transforming Messy Data
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('UGFuZGFz'); return false;">Pandas</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('RGF0YSUyMENsZWFuaW5n'); return false;">Data Cleaning</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('RVRM'); return false;">ETL</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Master the essential skills of cleaning, reshaping, and preparing real-world data for analysis</p>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="4" data-categories="UHl0aG9uJTJDTWFjaGluZSUyMExlYXJuaW5nJTJDU2Npa2l0LWxlYXJuJTJDUHJlZGljdGlvbg==" data-listing-file-modified-sort="1785615042316" data-listing-reading-time-sort="10" data-listing-word-count-sort="1998">
-<a href="../playground/02_machine_learning.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-🤖 Machine Learning: Predicting the Future
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('TWFjaGluZSUyMExlYXJuaW5n'); return false;">Machine Learning</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('U2Npa2l0LWxlYXJu'); return false;">Scikit-learn</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHJlZGljdGlvbg=='); return false;">Prediction</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Build your first machine learning model to predict trends and make data-driven decisions</p>
-</div>
-</div>
-</div></a>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

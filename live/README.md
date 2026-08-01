@@ -20,6 +20,17 @@ JupyterLite is a Jupyter environment that runs entirely in the browser, requirin
 - Best for most data science tasks
 - No server required - runs entirely in your browser
 
+### R Kernel (WebR)
+
+**WebR Kernel** - WebAssembly-based R
+- R programming language support in the browser
+- Access to base R and many CRAN packages
+- Statistical computing and data analysis
+- No server required - runs entirely in your browser
+
+**Using R in notebooks:**
+Create a new notebook and select "R (WebR)" as the kernel, or switch kernel from the notebook menu.
+
 ## 📦 Installing Packages
 
 ### Python Packages
@@ -42,8 +53,21 @@ await micropip.install('package-name')
 
 **Note:** Not all PyPI packages work in the browser. Only packages with pure Python or WASM-compatible wheels are supported.
 
+### R Packages
+The WebR kernel includes base R and supports many CRAN packages. To install packages in R notebooks:
+
+```r
+install.packages("package-name")
+library(package-name)
+```
+
+**Commonly available R packages:**
+- Base R (stats, graphics, utils, etc.)
+- Many CRAN packages with WASM support
+- Check WebR documentation for package compatibility
+
 ### Pre-configured Packages
-The `requirements.txt` file lists recommended packages. Users should install them on-demand using micropip as shown above.
+The `requirements.txt` file lists Python packages and JupyterLite dependencies. Users should install data science packages on-demand using micropip (Python) or install.packages (R) as shown above.
 
 ## 🛠️ Building JupyterLite
 

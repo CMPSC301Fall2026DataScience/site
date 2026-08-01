@@ -1,10 +1,13 @@
 {
   "jupyter-config-data": {
-    "appName": "JupyterLite",
+    "appName": "CMPSC 301 JupyterLite",
     "appUrl": "./lab",
-    "appVersion": "0.6.4",
+    "appVersion": "0.1.0",
     "baseUrl": "./",
+    "collaborative": false,
     "defaultKernelName": "python",
+    "disabledExtensions": [],
+    "enableMemoryStorage": true,
     "faviconUrl": "./lab/favicon.ico",
     "federated_extensions": [],
     "fileTypes": {
@@ -282,7 +285,20 @@
     },
     "fullLabextensionsUrl": "./extensions",
     "fullStaticUrl": "./build",
-    "licensesUrl": "./lab/api/licenses"
+    "licensesUrl": "./lab/api/licenses",
+    "settingsStorageDrivers": [
+      "localStorage"
+    ]
+  },
+  "jupyter-lite": {
+    "litePluginSettings": {
+      "@jupyterlite/pyodide-kernel-extension:kernel": {
+        "disablePyPIFallback": false,
+        "pipliteUrls": [
+          "https://pypi.org/pypi/{package_name}/json"
+        ]
+      }
+    }
   },
   "jupyter-lite-schema-version": 0
 }

@@ -11,3 +11,6 @@
 # Python
 __pycache__/
 .venv
+
+# JupyterLite WebR Kernel (cloned during build)
+jupyterlite-webr-kernel/
