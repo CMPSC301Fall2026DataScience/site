@@ -50,7 +50,7 @@ jobs:
 
       - name: Build JupyterLite
         run: |
-          python -m jupyterlite_core.app build --contents live/content --output-dir docs/live
+          cd live && python -m jupyterlite_core.app build --output-dir ../docs/live
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
