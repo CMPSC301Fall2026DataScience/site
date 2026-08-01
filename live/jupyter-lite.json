@@ -4,7 +4,6 @@
     "appName": "CMPSC 301 JupyterLite",
     "appVersion": "0.1.0",
     "appUrl": "./lab",
-    "baseUrl": "/site/live/",
     "collaborative": false,
     "disabledExtensions": [],
     "enableMemoryStorage": true,

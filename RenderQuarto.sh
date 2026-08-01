@@ -28,31 +28,16 @@ if ! command -v jupyter &> /dev/null; then
     echo "   Install with: pip install jupyterlite-core jupyterlite-pyodide-kernel"
     pip3 install jupyterlite-core jupyterlite-pyodide-kernel
 else
-    jupyter lite build --lite-dir live --output-dir docs/live --base-url /site/live/
+    cd live
+    jupyter lite build --output-dir ../docs/live
     
     if [ $? -ne 0 ]; then
         echo "❌ Error: JupyterLite build failed"
+        cd ..
         exit 1
     fi
     
-    # Fix baseUrl for GitHub Pages subdirectory deployment
-    echo ""
-    echo "🔧 Fixing baseUrl for GitHub Pages deployment..."
-    python3 << 'PYTHON_SCRIPT'
-import json
-
-config_path = 'docs/live/jupyter-lite.json'
-with open(config_path, 'r') as f:
-    config = json.load(f)
-
-config['jupyter-config-data']['baseUrl'] = '/site/live/'
-
-with open(config_path, 'w') as f:
-    json.dump(config, f, indent=2)
-
-print("✅ baseUrl updated to '/site/live/'")
-PYTHON_SCRIPT
-    
+    cd ..
     echo "✅ JupyterLite built successfully"
 fi
 

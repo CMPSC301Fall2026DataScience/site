@@ -13,17 +13,16 @@ project:
 
 website:
   title: "CMPSC301 Fall 2026 :: Data Science"
-  favicon: logo.png
   navbar:
-    logo: logo.png
     left:
       - href: index.qmd
         text: Home
+      # - about.qmd
       - href: playground/00_playground.qmd
         text: Playground
       - href: materials/0_materials.qmd
         text: Materials
-      - href: live/lab/index.html
+      - href: https://www.oliverbonhamcarter.com/live/lab/index.html
         text: JupyterLite
         target: _blank
 
@@ -31,17 +30,9 @@ format:
   html:
     theme:
       - cosmo
-      - custom.scss
+      - brand
     css: styles.css
     toc: true
-    code-copy: true
-    code-fold: false
-    code-tools: true
 
-execute:
-  freeze: auto
-  echo: true
-  warning: false
-  message: false
-  eval: false
-  enabled: false
+
+
