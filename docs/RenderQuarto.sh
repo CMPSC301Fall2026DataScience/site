@@ -24,7 +24,8 @@ echo "📦 Step 2: Installing JupyterLite dependencies..."
 
 # Install JupyterLite with pinned versions to avoid compatibility issues
 pip3 install jupyter
-pip3 install "jupyterlite-core>=0.4.0,<0.5.0" "jupyterlite-pyodide-kernel>=0.4.0,<0.5.0"
+# pip3 install "jupyterlite-core>=0.4.0,<0.5.0" "jupyterlite-pyodide-kernel>=0.4.0,<0.5.0"
+pip3 install "jupyterlite-core jupyterlite-pyodide-kernel
 
 if [ $? -ne 0 ]; then
     echo "❌ Error: Failed to install JupyterLite core packages"
@@ -66,7 +67,8 @@ if [ -f "docs/jupyter-lite.json" ]; then
 fi
 
 # Build from project root (matching GitHub Actions workflow)
-jupyter lite build --contents live/content --output-dir docs/live
+#jupyter lite build --contents live/content --output-dir docs/live
+# jupyter lite build
 
 if [ $? -ne 0 ]; then
     echo "❌ Error: JupyterLite build failed"

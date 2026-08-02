@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.31">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -34,14 +34,15 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-c1fac2584b48ed01fb6e278e36375074.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -113,7 +114,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -227,7 +228,7 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Try It Live!
+<span class="screen-reader-only">Tip</span>Try It Live!
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -240,7 +241,7 @@ Try It Live!
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-For Prospective Students
+<span class="screen-reader-only">Note</span>For Prospective Students
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -259,7 +260,7 @@ For Prospective Students
 
 <div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
 <div class="list grid quarto-listing-cols-2">
-<div class="g-col-1" data-index="0" data-categories="UHl0aG9uJTJDTkxQJTJDVGV4dCUyMEFuYWx5c2lzJTJDU2VudGltZW50" data-listing-file-modified-sort="1785615042316" data-listing-reading-time-sort="13" data-listing-word-count-sort="2599">
+<div class="g-col-1" data-index="0" data-categories="UHl0aG9uJTJDTkxQJTJDVGV4dCUyMEFuYWx5c2lzJTJDU2VudGltZW50" data-listing-file-modified-sort="1785631029704" data-listing-reading-time-sort="13" data-listing-word-count-sort="2599">
 <a href="../playground/03_text_analysis.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <div class="card-body post-contents">
@@ -283,7 +284,7 @@ For Prospective Students
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="1" data-categories="UHl0aG9uJTJDU3RhdGlzdGljcyUyQ0h5cG90aGVzaXMlMjBUZXN0aW5nJTJDQ29ycmVsYXRpb24=" data-listing-file-modified-sort="1785615042316" data-listing-reading-time-sort="12" data-listing-word-count-sort="2239">
+<div class="g-col-1" data-index="1" data-categories="UHl0aG9uJTJDU3RhdGlzdGljcyUyQ0h5cG90aGVzaXMlMjBUZXN0aW5nJTJDQ29ycmVsYXRpb24=" data-listing-file-modified-sort="1785631029704" data-listing-reading-time-sort="12" data-listing-word-count-sort="2239">
 <a href="../playground/04_statistical_analysis.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <div class="card-body post-contents">
@@ -307,7 +308,7 @@ For Prospective Students
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="2" data-categories="UHl0aG9uJTJDVmlzdWFsaXphdGlvbiUyQ1NlYWJvcm4lMkNQbG90bHk=" data-listing-file-modified-sort="1785615042316" data-listing-reading-time-sort="8" data-listing-word-count-sort="1470">
+<div class="g-col-1" data-index="2" data-categories="UHl0aG9uJTJDVmlzdWFsaXphdGlvbiUyQ1NlYWJvcm4lMkNQbG90bHk=" data-listing-file-modified-sort="1785631029704" data-listing-reading-time-sort="8" data-listing-word-count-sort="1470">
 <a href="../playground/01_visualization.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <div class="card-body post-contents">
@@ -331,7 +332,7 @@ For Prospective Students
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="3" data-categories="UHl0aG9uJTJDUGFuZGFzJTJDRGF0YSUyMENsZWFuaW5nJTJDRVRM" data-listing-file-modified-sort="1785615042317" data-listing-reading-time-sort="12" data-listing-word-count-sort="2313">
+<div class="g-col-1" data-index="3" data-categories="UHl0aG9uJTJDUGFuZGFzJTJDRGF0YSUyMENsZWFuaW5nJTJDRVRM" data-listing-file-modified-sort="1785631029705" data-listing-reading-time-sort="12" data-listing-word-count-sort="2313">
 <a href="../playground/05_data_wrangling.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <div class="card-body post-contents">
@@ -355,7 +356,7 @@ For Prospective Students
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="4" data-categories="UHl0aG9uJTJDTWFjaGluZSUyMExlYXJuaW5nJTJDU2Npa2l0LWxlYXJuJTJDUHJlZGljdGlvbg==" data-listing-file-modified-sort="1785615042316" data-listing-reading-time-sort="10" data-listing-word-count-sort="1998">
+<div class="g-col-1" data-index="4" data-categories="UHl0aG9uJTJDTWFjaGluZSUyMExlYXJuaW5nJTJDU2Npa2l0LWxlYXJuJTJDUHJlZGljdGlvbg==" data-listing-file-modified-sort="1785631029704" data-listing-reading-time-sort="10" data-listing-word-count-sort="1998">
 <a href="../playground/02_machine_learning.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <div class="card-body post-contents">
@@ -433,13 +434,14 @@ For Prospective Students
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

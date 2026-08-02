@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>setup_r_support – CMPSC301 Fall 2026 :: Data Science</title>
+<title>quickstart – CMPSC301 Fall 2026 :: Data Science</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -157,36 +157,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#adding-r-support-to-jupyterlite---setup-complete" id="toc-adding-r-support-to-jupyterlite---setup-complete" class="nav-link active" data-scroll-target="#adding-r-support-to-jupyterlite---setup-complete">Adding R Support to JupyterLite - Setup Complete ✅</a>
+  <li><a href="#jupyterlite-fix---quick-start" id="toc-jupyterlite-fix---quick-start" class="nav-link active" data-scroll-target="#jupyterlite-fix---quick-start">✅ JUPYTERLITE FIX - QUICK START</a>
   <ul class="collapse">
-  <li><a href="#what-was-changed" id="toc-what-was-changed" class="nav-link" data-scroll-target="#what-was-changed">What Was Changed</a>
+  <li><a href="#what-was-fixed" id="toc-what-was-fixed" class="nav-link" data-scroll-target="#what-was-fixed">What Was Fixed</a></li>
+  <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification ✅</a></li>
+  <li><a href="#deploy-to-github-pages" id="toc-deploy-to-github-pages" class="nav-link" data-scroll-target="#deploy-to-github-pages">Deploy to GitHub Pages</a></li>
+  <li><a href="#files-changed" id="toc-files-changed" class="nav-link" data-scroll-target="#files-changed">Files Changed</a></li>
+  <li><a href="#testing-after-deploy" id="toc-testing-after-deploy" class="nav-link" data-scroll-target="#testing-after-deploy">Testing After Deploy</a>
   <ul class="collapse">
-  <li><a href="#updated-requirements-liverequirements.txt" id="toc-updated-requirements-liverequirements.txt" class="nav-link" data-scroll-target="#updated-requirements-liverequirements.txt">1. Updated Requirements (live/requirements.txt)</a></li>
-  <li><a href="#modified-build-script-renderquarto.sh" id="toc-modified-build-script-renderquarto.sh" class="nav-link" data-scroll-target="#modified-build-script-renderquarto.sh">2. Modified Build Script (RenderQuarto.sh)</a></li>
-  <li><a href="#created-sample-r-notebook-livecontentr_example.ipynb" id="toc-created-sample-r-notebook-livecontentr_example.ipynb" class="nav-link" data-scroll-target="#created-sample-r-notebook-livecontentr_example.ipynb">3. Created Sample R Notebook (live/content/r_example.ipynb)</a></li>
-  <li><a href="#updated-documentation-livereadme.md" id="toc-updated-documentation-livereadme.md" class="nav-link" data-scroll-target="#updated-documentation-livereadme.md">4. Updated Documentation (live/README.md)</a></li>
+  <li><a href="#python-notebook" id="toc-python-notebook" class="nav-link" data-scroll-target="#python-notebook">Python Notebook</a></li>
+  <li><a href="#r-notebook" id="toc-r-notebook" class="nav-link" data-scroll-target="#r-notebook">R Notebook</a></li>
   </ul></li>
-  <li><a href="#how-to-build-and-deploy" id="toc-how-to-build-and-deploy" class="nav-link" data-scroll-target="#how-to-build-and-deploy">How to Build and Deploy</a>
-  <ul class="collapse">
-  <li><a href="#first-time-setup" id="toc-first-time-setup" class="nav-link" data-scroll-target="#first-time-setup">First-Time Setup</a></li>
-  <li><a href="#what-to-expect" id="toc-what-to-expect" class="nav-link" data-scroll-target="#what-to-expect">What to Expect</a></li>
-  </ul></li>
-  <li><a href="#using-r-in-jupyterlite" id="toc-using-r-in-jupyterlite" class="nav-link" data-scroll-target="#using-r-in-jupyterlite">Using R in JupyterLite</a>
-  <ul class="collapse">
-  <li><a href="#creating-a-new-r-notebook" id="toc-creating-a-new-r-notebook" class="nav-link" data-scroll-target="#creating-a-new-r-notebook">Creating a New R Notebook</a></li>
-  <li><a href="#example-r-code" id="toc-example-r-code" class="nav-link" data-scroll-target="#example-r-code">Example R Code</a></li>
-  <li><a href="#installing-r-packages" id="toc-installing-r-packages" class="nav-link" data-scroll-target="#installing-r-packages">Installing R Packages</a></li>
-  </ul></li>
-  <li><a href="#key-differences-from-hugo-setup" id="toc-key-differences-from-hugo-setup" class="nav-link" data-scroll-target="#key-differences-from-hugo-setup">Key Differences from Hugo Setup</a></li>
-  <li><a href="#testing-your-setup" id="toc-testing-your-setup" class="nav-link" data-scroll-target="#testing-your-setup">Testing Your Setup</a></li>
-  <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting">Troubleshooting</a>
-  <ul class="collapse">
-  <li><a href="#build-fails-at-webr-installation" id="toc-build-fails-at-webr-installation" class="nav-link" data-scroll-target="#build-fails-at-webr-installation">Build Fails at WebR Installation</a></li>
-  <li><a href="#r-kernel-not-showing-up" id="toc-r-kernel-not-showing-up" class="nav-link" data-scroll-target="#r-kernel-not-showing-up">R Kernel Not Showing Up</a></li>
-  <li><a href="#package-installation-issues" id="toc-package-installation-issues" class="nav-link" data-scroll-target="#package-installation-issues">Package Installation Issues</a></li>
-  </ul></li>
-  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
-  <li><a href="#additional-resources" id="toc-additional-resources" class="nav-link" data-scroll-target="#additional-resources">Additional Resources</a></li>
+  <li><a href="#documentation" id="toc-documentation" class="nav-link" data-scroll-target="#documentation">Documentation</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -197,172 +179,112 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="adding-r-support-to-jupyterlite---setup-complete" class="level1">
-<h1>Adding R Support to JupyterLite - Setup Complete ✅</h1>
-<section id="what-was-changed" class="level2">
-<h2 class="anchored" data-anchor-id="what-was-changed">What Was Changed</h2>
-<section id="updated-requirements-liverequirements.txt" class="level3">
-<h3 class="anchored" data-anchor-id="updated-requirements-liverequirements.txt">1. Updated Requirements (<a href="live/requirements.txt">live/requirements.txt</a>)</h3>
-<p>Added JupyterLite core packages to support both Python and R kernels:</p>
-<pre><code># JupyterLite core and kernels
-jupyterlite-core
-jupyterlite-pyodide-kernel</code></pre>
+<section id="jupyterlite-fix---quick-start" class="level1">
+<h1>✅ JUPYTERLITE FIX - QUICK START</h1>
+<section id="what-was-fixed" class="level2">
+<h2 class="anchored" data-anchor-id="what-was-fixed">What Was Fixed</h2>
+<p><strong>Problem:</strong> JupyterLite opened but showed no kernels (neither Python nor R)</p>
+<p><strong>Root Causes:</strong> 1. Duplicate <code>jupyter-lite.json</code> files causing nested path errors 2. Package version incompatibilities 3. Incorrect package name (<code>jupyterlite-webr-kernel</code> vs <code>jupyterlite-webr</code>)</p>
+<p><strong>Solution:</strong> - ✅ Removed duplicate config files - ✅ Pinned compatible package versions - ✅ Fixed package names - ✅ Added cleanup step before building</p>
+<hr>
 </section>
-<section id="modified-build-script-renderquarto.sh" class="level3">
-<h3 class="anchored" data-anchor-id="modified-build-script-renderquarto.sh">2. Modified Build Script (<a href="RenderQuarto.sh">RenderQuarto.sh</a>)</h3>
-<p>The build process now: 1. Renders the Quarto site 2. Installs JupyterLite dependencies 3. <strong>NEW:</strong> Clones and installs the WebR kernel for R support 4. Builds JupyterLite with both Python and R kernels</p>
+<section id="verification" class="level2">
+<h2 class="anchored" data-anchor-id="verification">Verification ✅</h2>
+<p><strong>Local build completed successfully:</strong></p>
+<pre><code>✅ JupyterLite built successfully with Python and R support
+✨ Build completed successfully!</code></pre>
+<p><strong>Kernels installed and verified:</strong> - ✅ Python kernel: <code>@jupyterlite/pyodide-kernel-extension</code> - ✅ R kernel: <code>@r-wasm/jupyterlite-webr-kernel</code></p>
+<hr>
 </section>
-<section id="created-sample-r-notebook-livecontentr_example.ipynb" class="level3">
-<h3 class="anchored" data-anchor-id="created-sample-r-notebook-livecontentr_example.ipynb">3. Created Sample R Notebook (<a href="live/content/r_example.ipynb">live/content/r_example.ipynb</a>)</h3>
-<p>A demonstration notebook showing: - Basic R operations - Working with vectors and statistics - Creating data frames - Simple plotting</p>
+<section id="deploy-to-github-pages" class="level2">
+<h2 class="anchored" data-anchor-id="deploy-to-github-pages">Deploy to GitHub Pages</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Commit all changes</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add .</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Fix JupyterLite dual-kernel setup"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push origin main</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Wait for GitHub Actions to complete (2-3 minutes)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Monitor at: https://github.com/CMPSC301Fall2026DataScience/site/actions</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Visit your site</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># https://cmpsc301fall2026datascience.github.io/site/</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Click "JupyterLite" link</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Create a new notebook</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># File → New → Notebook</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># You should see:</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">#   - Python (Pyodide)</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   - R (WebR)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
 </section>
-<section id="updated-documentation-livereadme.md" class="level3">
-<h3 class="anchored" data-anchor-id="updated-documentation-livereadme.md">4. Updated Documentation (<a href="live/README.md">live/README.md</a>)</h3>
-<p>Added information about the R kernel and how to use R packages.</p>
-</section>
-</section>
-<section id="how-to-build-and-deploy" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-build-and-deploy">How to Build and Deploy</h2>
-<section id="first-time-setup" class="level3">
-<h3 class="anchored" data-anchor-id="first-time-setup">First-Time Setup</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make the build script executable (if not already)</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x RenderQuarto.sh</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the build script</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">./RenderQuarto.sh</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The script will: - Install all Python dependencies - Clone and install jupyterlite-webr-kernel - Build the site with both Python and R support - Output to <code>docs/</code> directory for GitHub Pages</p>
-</section>
-<section id="what-to-expect" class="level3">
-<h3 class="anchored" data-anchor-id="what-to-expect">What to Expect</h3>
-<p>After building, the <code>jupyterlite-webr-kernel</code> directory will be created in your project root. This is normal and contains the R kernel source. You can add it to <code>.gitignore</code> if desired.</p>
-</section>
-</section>
-<section id="using-r-in-jupyterlite" class="level2">
-<h2 class="anchored" data-anchor-id="using-r-in-jupyterlite">Using R in JupyterLite</h2>
-<section id="creating-a-new-r-notebook" class="level3">
-<h3 class="anchored" data-anchor-id="creating-a-new-r-notebook">Creating a New R Notebook</h3>
-<ol type="1">
-<li>Navigate to your JupyterLite instance</li>
-<li>Click “File” → “New” → “Notebook”</li>
-<li>Select “R (WebR)” as the kernel</li>
-<li>Start coding in R!</li>
-</ol>
-</section>
-<section id="example-r-code" class="level3">
-<h3 class="anchored" data-anchor-id="example-r-code">Example R Code</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">rnorm</span>(<span class="dv">10</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary statistics</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Simple plot</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(data<span class="sc">$</span>x, data<span class="sc">$</span>y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="installing-r-packages" class="level3">
-<h3 class="anchored" data-anchor-id="installing-r-packages">Installing R Packages</h3>
-<p>In an R notebook cell:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"ggplot2"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="key-differences-from-hugo-setup" class="level2">
-<h2 class="anchored" data-anchor-id="key-differences-from-hugo-setup">Key Differences from Hugo Setup</h2>
-<p>The Hugo code you provided has been successfully adapted:</p>
+<section id="files-changed" class="level2">
+<h2 class="anchored" data-anchor-id="files-changed">Files Changed</h2>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 42%">
-<col style="width: 57%">
-</colgroup>
 <thead>
 <tr class="header">
-<th>Hugo Approach</th>
-<th>Quarto Adaptation</th>
+<th>File</th>
+<th>Change</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>hugo --minify --gc</code></td>
-<td><code>quarto render</code></td>
+<td><code>jupyter-lite.json</code></td>
+<td>Merged configs</td>
 </tr>
 <tr class="even">
-<td><code>pip install -r requirements.txt</code></td>
-<td><code>pip3 install -r live/requirements.txt</code></td>
+<td><code>live/jupyter-lite.json</code></td>
+<td>Removed (backed up)</td>
 </tr>
 <tr class="odd">
-<td><code>jupyter lite build --contents files --output-dir public/live</code></td>
-<td><code>jupyter lite build --contents content --output-dir ../docs/live</code></td>
+<td><code>RenderQuarto.sh</code></td>
+<td>Fixed build process</td>
+</tr>
+<tr class="even">
+<td><code>.github/workflows/deploy.yml</code></td>
+<td>Fixed package versions</td>
+</tr>
+<tr class="odd">
+<td><code>live/requirements.txt</code></td>
+<td>Removed JupyterLite packages</td>
+</tr>
+<tr class="even">
+<td><code>.gitignore</code></td>
+<td>Added build artifacts</td>
 </tr>
 </tbody>
 </table>
-<p>The core WebR kernel installation is <strong>identical</strong> between both approaches.</p>
+<hr>
 </section>
-<section id="testing-your-setup" class="level2">
-<h2 class="anchored" data-anchor-id="testing-your-setup">Testing Your Setup</h2>
-<ol type="1">
-<li><p><strong>Build the site:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./RenderQuarto.sh</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
-<li><p><strong>Open locally:</strong> Open <code>docs/index.html</code> in your browser and navigate to JupyterLite</p></li>
-<li><p><strong>Test Python:</strong></p>
+<section id="testing-after-deploy" class="level2">
+<h2 class="anchored" data-anchor-id="testing-after-deploy">Testing After Deploy</h2>
+<section id="python-notebook" class="level3">
+<h3 class="anchored" data-anchor-id="python-notebook">Python Notebook</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># In a Python notebook</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> micropip</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> micropip.install(<span class="st">'pandas'</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Python kernel works!"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="r-notebook" class="level3">
+<h3 class="anchored" data-anchor-id="r-notebook">R Notebook</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># In an R notebook (select "R (WebR)" kernel)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(x)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"R kernel works!"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="documentation" class="level2">
+<h2 class="anchored" data-anchor-id="documentation">Documentation</h2>
 <ul>
-<li>Open <code>welcome.ipynb</code> or create a new Python notebook</li>
-<li>Run some Python code</li>
-</ul></li>
-<li><p><strong>Test R:</strong></p>
-<ul>
-<li>Open <code>r_example.ipynb</code> or create a new R notebook</li>
-<li>Select “R (WebR)” kernel</li>
-<li>Run some R code</li>
-</ul></li>
-</ol>
-</section>
-<section id="troubleshooting" class="level2">
-<h2 class="anchored" data-anchor-id="troubleshooting">Troubleshooting</h2>
-<section id="build-fails-at-webr-installation" class="level3">
-<h3 class="anchored" data-anchor-id="build-fails-at-webr-installation">Build Fails at WebR Installation</h3>
-<p>If the WebR kernel installation fails:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean up and retry</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-rf</span> jupyterlite-webr-kernel</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">./RenderQuarto.sh</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="r-kernel-not-showing-up" class="level3">
-<h3 class="anchored" data-anchor-id="r-kernel-not-showing-up">R Kernel Not Showing Up</h3>
-<ul>
-<li>Ensure the build completed without errors</li>
-<li>Check that <code>docs/live</code> contains the built JupyterLite environment</li>
-<li>Clear browser cache and reload</li>
-</ul>
-</section>
-<section id="package-installation-issues" class="level3">
-<h3 class="anchored" data-anchor-id="package-installation-issues">Package Installation Issues</h3>
-<ul>
-<li><strong>Python:</strong> Some PyPI packages don’t have WASM wheels</li>
-<li><strong>R:</strong> Some CRAN packages may not be available in WebR yet</li>
-<li>Check package compatibility before installing</li>
-</ul>
-</section>
-</section>
-<section id="next-steps" class="level2">
-<h2 class="anchored" data-anchor-id="next-steps">Next Steps</h2>
-<ol type="1">
-<li>✅ Build your site with <code>./RenderQuarto.sh</code></li>
-<li>✅ Test both Python and R kernels locally</li>
-<li>✅ Commit changes and push to GitHub</li>
-<li>✅ GitHub Pages will serve your updated site with dual-kernel support</li>
-</ol>
-</section>
-<section id="additional-resources" class="level2">
-<h2 class="anchored" data-anchor-id="additional-resources">Additional Resources</h2>
-<ul>
-<li><a href="https://jupyterlite.readthedocs.io/">JupyterLite Documentation</a></li>
-<li><a href="https://docs.r-wasm.org/webr/latest/">WebR Project</a></li>
-<li><a href="https://github.com/r-wasm/jupyterlite-webr-kernel">WebR Kernel for JupyterLite</a></li>
+<li><strong>Complete Fix Details:</strong> See <a href="./KERNEL_FIX_COMPLETE.html">KERNEL_FIX_COMPLETE.md</a></li>
+<li><strong>R Setup Guide:</strong> See <a href="./SETUP_R_SUPPORT.html">SETUP_R_SUPPORT.md</a></li>
 </ul>
 <hr>
-<p><strong>You now have both Python and R programming environments running entirely in the browser!</strong> 🎉</p>
+<p><strong>Ready to commit and deploy!</strong> 🚀</p>
 
 
 </section>
