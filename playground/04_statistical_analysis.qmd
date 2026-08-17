@@ -32,6 +32,31 @@ You're a data analyst for a university studying factors that affect student succ
 
 ---
 
+## Part 0: Setting Up Dependencies
+
+```python
+# Install required packages for data analytics
+
+import piplite
+await piplite.install(['seaborn', 'matplotlib', 'pandas', 'numpy', 'scipy', 'plotly'])
+print("Packages installed successfully!")
+print("You can now import and use: seaborn, matplotlib, pandas, numpy, scipy, plotly")
+
+# Test imports
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import scipy.stats as stats
+
+print("All packages imported successfully!")
+print(f"NumPy version: {np.__version__}")
+print(f"Pandas version: {pd.__version__}")
+print(f"Matplotlib version: {plt.matplotlib.__version__}")
+print(f"Seaborn version: {sns.__version__}")
+```
+
 ## Part 1: Creating the Dataset
 
 ```{python}
