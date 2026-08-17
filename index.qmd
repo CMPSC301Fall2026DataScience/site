@@ -43,23 +43,15 @@ To Be Announced, TBA Lab
 
 Welcome to **CMPSC 301: Data Science**! This course provides a comprehensive introduction to the principles, techniques, and applications of data science. You'll learn how to collect, clean, analyze, visualize, and interpret data using modern computational tools and statistical methods.
 
-
-
 ## Course Description
 
-A continuation of CMPSC 100 with an emphasis on implementing, using, and
-evaluating the computational structures needed to efficiently store and retrieve
-digital data. Participating in hands-on activities that often require teamwork,
-students create data structures and algorithms whose correctness and performance
-they study through proofs and experimentation. Students continue to refine their
-ability to organize and document a program's source code so that it effectively
-communicates with the intended users and maintainers. During a weekly laboratory
-session, students use state-of-the-art technology to complete projects,
-reporting on their results through both written documents and oral
-presentations.
+CMPSC-301 Data Science (4 Credits)
 
-- Prerequisite: CMPSC 100 or permission of the instructor.
-- Distribution Requirements: **QR**, **SP**.
+* A study of computational methods of data analysis with an emphasis on understanding and reflecting on the social, cultural, and political issues surrounding data and its interrogation. Participating in hands-on activities that often require teamwork, students study, design, and implement analytics software and learn how to build predictive models with foundational machine learning algorithms to extract knowledge from various sources of data. Students also investigate the biases, discriminatory views, and stereotypes that may be present during the collection and analysis of data, reflecting on the ethical implications of using the resulting machine learning techniques. During a weekly laboratory session, students use Industry-grade open source statistical software to complete projects, reporting on their findings through both written documents and oral presentations. Students are invited to use their own departmentally approved laptop in this course; a limited number of laptops are available for use during class and lab sessions. Prerequisite: CMPSC*101 or CMPSC*102. Distribution Requirements: QR, PD.
+
+**Requisites**
+* CMPSC101 or CMPSC102 - Must be completed prior to taking this course.
+
 
 ## Distribution Requirements
  
