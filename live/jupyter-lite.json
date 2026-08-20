@@ -9,15 +9,12 @@
     "enableMemoryStorage": true,
     "settingsStorageDrivers": ["localStorage"]
   },
-  "litePluginSettings": {
-    "@jupyterlite/pyodide-kernel-extension:kernel": {
-      "pyodideUrl": "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/",
-      "pipliteWheelUrl": "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/",
-      "pipliteUrls": [
-        "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/",
-        "https://pypi.org/pypi/{package_name}/json"
-      ],
-      "disablePyPIFallback": false
+  "jupyter-lite": {
+    "litePluginSettings": {
+      "@jupyterlite/pyodide-kernel-extension:kernel": {
+        "pipliteUrls": ["https://pypi.org/pypi/{package_name}/json"],
+        "disablePyPIFallback": false
+      }
     }
   }
 }
