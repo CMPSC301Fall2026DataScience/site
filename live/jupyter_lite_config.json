@@ -7,6 +7,7 @@
       "repl"
     ],
     "ignore_sys_prefix": true,
-    "contents": ["content"]
+    "contents": ["content"],
+    "output_dir": "../docs/live"
   }
 }
