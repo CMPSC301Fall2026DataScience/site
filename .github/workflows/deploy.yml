@@ -34,16 +34,11 @@ jobs:
         with:
           version: 'release'
 
-      - name: Install Python dependencies with pinned versions
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install jupyter
-          pip install jupyterlite-core jupyterlite-pyodide-kernel
+          pip install jupyter jupyterlite-core jupyterlite-pyodide-kernel
           pip install numpy pandas matplotlib seaborn plotly scikit-learn scipy statsmodels
-
-      - name: Install jupyterlite-webr
-        run: |
-          pip install jupyterlite-webr
 
       - name: Render Quarto site
         run: |
@@ -51,8 +46,6 @@ jobs:
 
       - name: Build JupyterLite
         run: |
-          # Remove any stale jupyter-lite.json from docs to prevent path conflicts
-          rm -f docs/jupyter-lite.json
           python -m jupyterlite_core.app build --contents live/content --output-dir docs/live
 
       - name: Upload artifact
