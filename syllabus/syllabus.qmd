@@ -6,14 +6,14 @@ embed-resources: true
 <center>
 **CMPSC301 :: Data Science :: Fall 2026**
 
-![](../logo.png){width=20%}
+![](../graphics/logo.png){width=20%}
 </center>
 
 **Department of Computer Science**  
 **Allegheny College**  
 **Fall 2026**
 
-### 👨‍🏫 Instructor Information
+### Instructor Information
 
 * **Instructor:** Dr. Oliver Bonham-Carter (Note: said and written as *Bonham-Carter*, not *Carter*)  
 
@@ -23,7 +23,7 @@ embed-resources: true
 
 * **Office:** Alden Hall 203 
 
-### 📅 Class Schedule
+### Class Schedule
 
 - **Lecture:** 
 M/W/F 10:00 AM - 10:50 AM
@@ -62,7 +62,7 @@ A study of computational methods of data analysis with an emphasis on understand
 
 ---
 
-### 🎯 Learning Objectives
+### Learning Objectives
 
 By the end of this course, you will develop technical skills in programming in R and Python to be able to complete the following types of tasks:
 
@@ -105,7 +105,7 @@ ___
 
 ## Course Structure
 
-### 📖 Topics Covered
+### Topics Covered
 
 1. **Introduction to Data Science** - Tools, workflows, and ethical considerations
 2. **Data Collection & Cleaning** - Web scraping, APIs, data wrangling
@@ -120,7 +120,7 @@ ___
 11. **Data Ethics & Privacy** - Responsible data science practices
 12. **Final Project** - Apply data science to a real-world problem
 
-### 🛠️ Tools & Technologies
+### Tools & Technologies
 
 We will be using the following technologies in class.
 
@@ -169,7 +169,6 @@ The following books are helpful for writing for Computer Science and STEM.
 
 - Writing for Computer Science (Second Edition). Justin Zobel. Springer ISBN-10: 1852338024 and ISBN-13:978-1852338022, 270 pages, 2004. References to the textbook are abbreviated as "WFCS".
 
-
 ### Grading
 
 #### Grading Scale
@@ -213,7 +212,7 @@ The grade that a student receives in this class will be based on the following c
 ---
 
 <center>
-![](graphics/levelup.png)
+![](../graphics/levelup.png)
 </center>
 
 ### Final Deliverable
@@ -224,7 +223,14 @@ The grade that a student receives in this class will be based on the following c
   
 ---
 
-## Assignment Policies
+## Policies
+
+<center>
+![](../graphics/values.png)
+</cneter>
+
+
+This class is governed by the [Allegheny College Honor Code](https://www.allegheny.edu/academics/honor-code/) and the policies of the [Department of Computer and Information Science Policies](https://www.cis.allegheny.edu/teaching/policies/). All students are expected to adhere to these policies.
 
 ### _Assignment Submission_
 
@@ -252,7 +258,6 @@ It is important for the students of the course to learn how to program. Generati
 ### _Attendance_
 
 Students are expected to come to class **prepared, on time, and to stay engaged** for the duration of the class period. This includes both class and lab sessions. This behavior is core to our [shared departmental values](https://www.cis.allegheny.edu/teaching/policies/) and is in addition to the college’s attendance policy.
-
 
 #### _Lateness_
 
@@ -412,30 +417,5 @@ The instructor may make updates or changes to this document at any time as neede
 until term grades are due. Changes will be announced to the class.
 
 ---
-
-<!-- ## Grading & Assessment
-
-Your grade will be determined by the following components:
-
-| Component | Weight | Description |
-|-----------|--------|-------------|
-| **Weekly Labs** | 40% | Hands-on programming assignments |
-| **Participation and Activities** | 20% | Attendance and short assessments on key concepts |
-| **Exams** | 20% | Assessment of knowledge and skills |
-| **Final Project** | 20% | Comprehensive data science project | -->
-<!-- 
-
-## Course Calendar
-
-### 🗓️ Important Dates
-
-- **First Day of Class:** August 26, 2026
-- **Labor Day (No Class):** September 7, 2026
-- **Fall Break:** October 12-13, 2026
-- **Midterm Project Due:** October 23, 2026
-- **Thanksgiving Break:** November 25-29, 2026
-- **Final Project Presentations:** December 8-10, 2026
-- **Final Project Due:** December 15, 2026
- -->
 
 *This syllabus is subject to change. Updates will be announced in class and on the course website.*

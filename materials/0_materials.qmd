@@ -1,12 +1,12 @@
 ---
-title: "📚 Course Materials"
+title: "Course Materials"
 subtitle: "Slides, Assignments, and Resources"
 ---
 
 <center>
 **CMPSC301 :: Data Science**
 
-![](../logo.png){width=20%}
+![](../graphics/logo.png){width=20%}
 </center>
 
 ---
@@ -21,7 +21,7 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 
 ---
 
-## W1. Welcome to Data Science! 🎉
+## W1. Welcome to Data Science! 
 
 **Week of August 26, 2026**
 
@@ -61,7 +61,7 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 
 ---
 
-## 📖 Recommended Resources
+## Recommended Resources
 
 ### Free Online Books
 - [Python for Data Analysis](https://wesmckinney.com/book/) by Wes McKinney
@@ -80,7 +80,7 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 
 ---
 
-## 🆘 Need Help?
+## Need Help?
 
 - **Office Hours**: Monday/Wednesday 2-4 PM, Thursday 1-3 PM
 - **Discord**: Real-time chat with classmates and instructors
