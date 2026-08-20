@@ -23,8 +23,6 @@ embed-resources: true
 
 ### Meeting Times
 
-### Meeting Times
-
 <!-- add a line drop -->
 <center>
 &#x200B;
