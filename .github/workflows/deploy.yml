@@ -19,7 +19,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,7 +27,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -35,20 +35,14 @@ jobs:
           version: 'release'
 
       - name: Install JupyterLite and kernels
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install \
-            "jupyterlite-core>=0.4.0,<0.6.0" \
-            "jupyterlab>=4.0.0,<5.0.0" \
-            "jupyterlite-pyodide-kernel>=0.4.0,<0.6.0" \
-            "jupyterlite-webr>=0.5.0,<0.6.0"
+        run: pip install -r live/requirements.txt
 
-      - name: Render Quarto site
+      - name: Render Quarto site to docs/
         run: quarto render
 
-      - name: Build JupyterLite with Python and R kernels
+      - name: Build JupyterLite (Python + R) into docs/live
         working-directory: live
-        run: jupyter lite build --contents content --output-dir ../docs/live
+        run: jupyter lite build --output-dir ../docs/live
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -59,11 +53,11 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
-    
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    
+
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

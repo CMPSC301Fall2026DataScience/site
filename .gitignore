@@ -12,14 +12,9 @@
 __pycache__/
 .venv
 
-# JupyterLite WebR Kernel (cloned during build)
-jupyterlite-webr-kernel/
-
-# JupyterLite config backups
-*.json.backup
-
-# JupyterLite build artifacts that cause conflicts
-docs/jupyter-lite.json
+# JupyterLite build cache (must never be committed: a stale cache makes
+# `jupyter lite build` skip steps and silently ship a site with no kernels)
+.jupyterlite.doit.db
 
 # if using GitHub actions, build projects to docs/ folder at GitHub Pages
 docs/

@@ -1,13 +1,5 @@
 {
   "LiteBuildConfig": {
-    "apps": [
-      "notebooks",
-      "edit", 
-      "lab",
-      "repl"
-    ],
-    "ignore_sys_prefix": true,
-    "contents": ["content"],
-    "piplite_urls": ["https://pypi.org/pypi/{package_name}/json"]
+    "contents": ["content"]
   }
 }

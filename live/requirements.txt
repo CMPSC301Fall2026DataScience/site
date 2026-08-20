@@ -1,10 +1,12 @@
-# Python packages for data analysis
-# Note: JupyterLite core packages are installed separately with version constraints
-numpy
-pandas
-matplotlib
-seaborn
-plotly
-scikit-learn
-scipy
-statsmodels
+# Build-time requirements for the JupyterLite site in ../docs/live
+#
+# These are installed on the machine that RUNS `jupyter lite build`.
+# They are NOT the packages available inside the browser: Python packages
+# come from Pyodide/micropip and R packages from webR at runtime.
+#
+# All four must stay on the same minor line (0.6.x) -- jupyterlite-webr
+# is the laggard and currently caps the stack at jupyterlite-core < 0.7.
+
+jupyterlite-core[lab]==0.6.4
+jupyterlite-pyodide-kernel==0.6.1
+jupyterlite-webr==0.6.0

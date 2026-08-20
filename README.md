@@ -40,9 +40,10 @@ Visit the deployed site at: `https://YOUR-USERNAME.github.io/YOUR-REPO/`
 
 3. **Install Python dependencies** (for JupyterLite):
    ```bash
-   pip install jupyterlite-core jupyterlite-pyodide-kernel
-   pip install numpy pandas matplotlib seaborn plotly scikit-learn scipy
+   pip install -r live/requirements.txt
    ```
+   The pins in that file must stay together — see
+   [JUPYTERLITE_SETUP.md](JUPYTERLITE_SETUP.md) §3.
 
 4. **Render the site**:
    ```bash
@@ -145,19 +146,21 @@ Edit `styles.css` and update the CSS variables in `:root`:
 
 ### Modifying JupyterLite Packages
 
-Edit `live/jupyter_lite_config.json` and add packages to `pypi_wheels`:
+Packages are installed by students at runtime, in the browser — there is no
+build-time package list. In a Python notebook:
 
-```json
-{
-  "PipliteAddon": {
-    "pypi_wheels": [
-      "numpy",
-      "pandas",
-      "your-package-here"
-    ]
-  }
-}
+```python
+import micropip
+await micropip.install("your-package-here")
 ```
+
+In an R notebook:
+
+```r
+install.packages("your-package-here")
+```
+
+See [live/README.md](live/README.md) for details.
 
 ## 🚀 Deployment to GitHub Pages
 
@@ -226,7 +229,8 @@ This course website is open source. Feel free to use and adapt it for your own c
 
 - **Technical Issues**: Open an issue on GitHub
 - **Course Questions**: Contact the instructor via email or Discord
-- **JupyterLite Problems**: See `live/README.md` for troubleshooting
+- **JupyterLite Problems**: See [live/README.md](live/README.md), or
+  [JUPYTERLITE_SETUP.md](JUPYTERLITE_SETUP.md) for the full build/troubleshooting guide
 
 ## ✨ Credits
 
