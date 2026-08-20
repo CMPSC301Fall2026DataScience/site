@@ -23,7 +23,7 @@ website:
       - href: materials/0_materials.qmd
         text: Materials
       # - href: https://dodatascience.com/live
-      - href: https://www.oliverbonhamcarter.com/live
+      - href: https://dodatascience.com/live/
         text: JupyterLite
         target: _blank
 
