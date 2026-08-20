@@ -37,8 +37,13 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install jupyter jupyterlite-core jupyterlite-pyodide-kernel
+          pip install jupyter jupyterlite-core jupyterlite-pyodide-kernel notebook jupyterlite-p5-kernel jupyterlab-fasta jupyterlab-geojson jupyterlab-night jupyterlab_miami_nights 
           pip install numpy pandas matplotlib seaborn plotly scikit-learn scipy statsmodels
+
+      - name: Install jupyterlite-webr-kernal
+        run: |
+          pip install jupyterlite-webr-kernel
+
 
       - name: Render Quarto site
         run: |
