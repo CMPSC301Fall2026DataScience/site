@@ -46,8 +46,9 @@ jobs:
           quarto render
 
       - name: Build JupyterLite
+        working-directory: live
         run: |
-          python -m jupyterlite_core.app build --contents live/content --output-dir docs/live
+          python -m jupyterlite_core.app build --contents content --output-dir ../docs/live
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
