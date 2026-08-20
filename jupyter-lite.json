@@ -1,7 +1,6 @@
 {
   "jupyter-lite-schema-version": 0,
   "jupyter-config-data": {
-    "baseUrl": "/live/",
     "appName": "CMPSC 301 JupyterLite",
     "appVersion": "0.1.0",
     "appUrl": "./lab",
