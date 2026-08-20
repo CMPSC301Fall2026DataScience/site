@@ -8,6 +8,6 @@
     ],
     "ignore_sys_prefix": true,
     "contents": ["content"],
-    "output_dir": "../docs/live"
+    "piplite_urls": ["https://pypi.org/pypi/{package_name}/json"]
   }
 }

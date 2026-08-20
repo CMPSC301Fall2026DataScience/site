@@ -14,6 +14,9 @@
       "@jupyterlite/pyodide-kernel-extension:kernel": {
         "pipliteUrls": ["https://pypi.org/pypi/{package_name}/json"],
         "disablePyPIFallback": false
+      },
+      "@jupyterlite/webr-kernel-extension:kernel": {
+        "enabled": true
       }
     }
   }
