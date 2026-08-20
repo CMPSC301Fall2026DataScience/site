@@ -1,3 +1,5 @@
+# Python packages for data analysis
+# Note: JupyterLite core packages are installed separately with version constraints
 numpy
 pandas
 matplotlib
