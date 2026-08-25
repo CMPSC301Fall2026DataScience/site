@@ -27,12 +27,11 @@ embed-resources: true
 </center>
 
 - **Lecture:** 
-M/W/F 10:00 AM - 10:50 AM
+Mondays, Wednesdays and Fridays 10:00 AM - 10:50 AM
 25 August 2026 - 10 December 2026
   - **Location:** Alden Hall 101
 
-- **Lab:** Friday, 2:30 PM - 4:00 PM
-Th 2:30 PM - 4:00 PM
+- **Lab:** Thursday, 2:30 PM - 4:00 PM
 25 August 2026 - 10 December 2026
   - **Location:** Alden Hall 101
 
