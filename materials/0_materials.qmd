@@ -21,20 +21,34 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 
 ---
 
-## W1. Welcome to Data Science! 
+## W1. Welcome Week!
 
-**Week of August 26, 2026**
-
+- [Syllabus](https://dodatascience.com)
 - **Getting to Know You**: [Welcome Survey](https://docs.google.com/forms/d/e/1FAIpQLSejfEH5ZHKSc-wT1UrCDR2kVGEuhVid-eWlyLWH97HKd56Sng/viewform?usp=dialog)
-- **Icebreaker Activity**: Pair up with classmates and learn:
-  - Names and backgrounds
-  - Programming experience
-  - Favorite data visualization you've seen
-  - A dataset you'd love to analyze
-  - Career interests in data science
-- **Important**: Join our GitHub Organization (check your email!)
-- **Discord**: Make sure you're in the course Discord server!
+- **Getting to know your neighbor** Pair-up with another person in the class to ask the following interview questions. Write down their answers -- you will be introducing them during next class using several of the below personal facts.
 
+- Get to know your peer by asking the following questions
+  - What is your name, and what would you like us to know about you?
+  - Where is home?
+  - What is your favorite part about life at Allegheny College so far?
+  - What experience, if any, do you have with programming, statistics, mathematics, or working with data?
+  - What is one thing you hope to learn or be able to do by the end of this course?
+  
+- Installing necessary software for the course (if anyone needs help!) 
+  - [Python](https://www.python.org/)
+  - [Visual Studio Code](https://code.visualstudio.com/download) 
+  - [GitHub](https://github.com/git-guides/install-git)
+  - [Pipx](https://pipx.pypa.io/stable/installation/)
+  - [Discord](https://discord.com/download)
+
+- Shared values activity
+  - The Department's [Shared Values](https://www.cis.allegheny.edu/teaching/policies/)
+
+<!-- ## W2. Reviewing Python -->
+<!-- - Be sure to join the class' GitHub Organization (check your email!) -->
+<!-- - Be sure that you are in the Discord channel for the course. If you are not in the Discord channel, please let me know! Also, please use your real names in the channel (otherwise  I will not be able to identify you). -->
+
+<!-- 
 ### Materials
 - **Lecture 01**: Introduction to Data Science
   - Slides (Coming soon!)
@@ -48,7 +62,7 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
   - GitHub Classroom Link (Coming soon!)
   - Installing Python, R, Jupyter, VS Code
   - Testing your installation
-  - First data exploration
+  - First data exploration -->
 
 
 <!-- - **Activity 01**: Installing Essential Tools and Solving the Maze
@@ -58,34 +72,6 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
   - [Visual Studio Code](https://code.visualstudio.com/download) 
   - [GitHub](https://github.com/git-guides/install-git)
   - [Pipx](https://pipx.pypa.io/stable/installation/) -->
-
----
-
-## Recommended Resources
-
-### Free Online Books
-- [Python for Data Analysis](https://wesmckinney.com/book/) by Wes McKinney
-- [R for Data Science](https://r4ds.had.co.nz/) by Hadley Wickham
-- [Introduction to Statistical Learning](https://www.statlearning.com/)
-
-### Online Courses
-- [Kaggle Learn](https://www.kaggle.com/learn)
-- [Google's Machine Learning Crash Course](https://developers.google.com/machine-learning/crash-course)
-- [Fast.ai](https://www.fast.ai/)
-
-### Practice Platforms
-- [Kaggle Competitions](https://www.kaggle.com/competitions)
-- [DataCamp](https://www.datacamp.com/)
-- [LeetCode](https://leetcode.com/) (for coding practice)
-
----
-
-## Need Help?
-
-- **Office Hours**: Monday/Wednesday 2-4 PM, Thursday 1-3 PM
-- **Discord**: Real-time chat with classmates and instructors
-- **GitHub Discussions**: Post questions about assignments
-- **Email**: [instructor@allegheny.edu](mailto:instructor@allegheny.edu)
 
 ---
 
