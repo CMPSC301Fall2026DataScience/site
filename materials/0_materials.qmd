@@ -41,8 +41,15 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
   - [Pipx](https://pipx.pypa.io/stable/installation/)
   - [Discord](https://discord.com/download)
 
+---
+
 - Shared values activity
   - The Department's [Shared Values](https://www.cis.allegheny.edu/teaching/policies/)
+
+- News Analyses
+  - [What Article Is This?](1_activity.html)
+
+
 
 <!-- ## W2. Reviewing Python -->
 <!-- - Be sure to join the class' GitHub Organization (check your email!) -->

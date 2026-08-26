@@ -1,0 +1,46 @@
+---
+title: "News Analyses"
+subtitle: "What Article Is This?"
+---
+
+You do really need much information to make informed decisions. Sometimes, just a few words can give you a lot of information about the context of an article. 
+
+
+In this activity, you will be given lists of words from four different news articles. Your task is to determine which list of words corresponds to which original article. You will need to read the words carefully and think about the context in which they might appear. Write down your responses! Once you are finished, please address the questions below. 
+
+Work in groups as you complete this activity. You may use the internet to help you find the original articles, but you must cite your sources.
+
+## Data Sets
+
+Dataset 1
+![](files/activity_1/1_data.txt)
+Dataset 2
+![](files/activity_1/2_data.txt)
+Dataset 3
+![](files/activity_1/3_data.txt)
+Dataset 4
+![](files/activity_1/4_data.txt)
+
+## Word Analysis Questions
+
+Below are five questions to answer to help you analyze the articles and the words you have been given. Please answer each question in complete sentences.
+
+1. What are the subjects of each article? Explain your reasoning for each match.
+2. What are the main topics or themes of each article based on the words provided in the datasets?
+3. How do the words in each dataset help you understand the context of the articles? Provide specific examples from the datasets to support your answer.
+4. Were there any words that were particularly surprising or unexpected in any of the datasets? If so, which ones and why?
+5. How might the information in these articles be relevant to current events or issues in society today? Discuss any connections you can make between the articles and contemporary topics or debates.
+
+Ethical Discussion Questions
+
+1. When analyzing news articles, it is important to consider the ethical implications of the information presented. How can we ensure that we are interpreting the articles accurately and responsibly? Discuss any strategies or approaches you would use to critically evaluate the content of the articles and avoid spreading misinformation.
+
+2. How can we be mindful of potential biases in the articles and the datasets provided? What steps can we take to identify and address any biases that may be present in the reporting or the selection of words?
+
+3. Can personal information be used to idenfity individuals in similar ways such as based on internet searches, social media activity, or other digital footprints? Discuss the ethical considerations of using personal information in this manner and how it relates to privacy concerns in the digital age.
+
+4. How can we ensure that the information we gather from news articles is accurate and reliable? What steps can we take to verify the credibility of sources and cross-check information?
+
+5. What are some potential consequences of misinterpreting or misrepresenting the information in news articles? How can we mitigate these risks and promote responsible journalism and media literacy?
+
+---
