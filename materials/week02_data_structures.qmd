@@ -1,0 +1,1294 @@
+---
+title: "Week 2: R Fundamentals Part 2"
+subtitle: "Data Structures & Advanced Concepts"
+author: "CS301 - Data Science with R"
+date: "Fall 2026"
+format:
+  revealjs:
+    theme: white
+    highlight-style: github
+    code-block-background: true
+    code-block-border-left: "#31BAE9"
+    slide-number: true
+    chalkboard: true
+    scrollable: true
+    transition: none
+    css: custom_ds.css
+    width: 1200
+    height: 800
+    margin: 0.05
+---
+
+# Welcome Back! 🎉
+
+::: {.callout-tip icon="true"}
+## Today's Journey
+
+* 📋 **Lists** — Flexible containers for mixed data
+* 📊 **Matrices** — Two-dimensional numeric data
+* 🗂️ **Data Frames** — The heart of data science in R
+* 📁 **Reading Data** — Getting data into R (CSV files)
+* 🎮 **Interactive Tools** — Build data frames & matrices visually!
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**Last week:** Variables & Vectors | **This week:** Complex data structures! 🏗️
+:::
+
+---
+
+# Quick Recap: Vectors 📊
+
+```r
+# Remember vectors? All elements same type
+numbers <- c(1, 2, 3, 4, 5)
+names <- c("Alice", "Bob", "Carol")
+flags <- c(TRUE, FALSE, TRUE)
+
+# Vectorized operations
+numbers * 2         # 2 4 6 8 10
+mean(numbers)       # 3
+numbers[numbers > 3] # 4 5
+```
+
+::: {.callout-important}
+**Today's Challenge:** What if we need to store different types together? Or organize data in 2D? That's where lists, matrices, and data frames come in! 🚀
+:::
+
+---
+
+# Part 1: Lists - The Flexible Container
+
+---
+
+## What Are Lists?
+
+::: {.callout-note icon="false"}
+## Lists: R's Swiss Army Knife 🔧
+
+Lists can hold **different types** of data, even other lists!
+:::
+
+::: {.columns}
+::: {.column}
+**Creating Lists**
+
+```r
+# Simple list
+person <- list(
+  name = "Alice",
+  age = 25,
+  scores = c(90, 85, 92),
+  passed = TRUE
+)
+
+# Access by name
+person$name      # "Alice"
+person$age       # 25
+person$scores    # 90 85 92
+
+# Access by index
+person[[1]]      # "Alice"
+person[[3]]      # 90 85 92
+```
+:::
+
+::: {.column}
+**Why Lists?**
+
+```r
+# Vectors force one type
+mixed_vec <- c(1, "two", TRUE)
+mixed_vec
+# "1" "two" "TRUE" - all character!
+
+# Lists preserve types
+mixed_list <- list(1, "two", TRUE)
+mixed_list[[1]]  # numeric: 1
+mixed_list[[2]]  # character: "two"
+mixed_list[[3]]  # logical: TRUE
+
+# Lists can be nested!
+nested <- list(
+  data = list(x = 1:5, y = 6:10),
+  meta = list(source = "experiment")
+)
+```
+:::
+:::
+
+---
+
+## Interactive: List Builder 🎮
+
+```{=html}
+<!-- Global copy to clipboard function -->
+<script>
+function copyToClipboard(elementId, buttonElement) {
+  const element = document.getElementById(elementId);
+  const text = element.textContent;
+  
+  navigator.clipboard.writeText(text).then(function() {
+    // Visual feedback
+    const originalText = buttonElement.innerHTML;
+    buttonElement.innerHTML = '✓ Copied!';
+    buttonElement.classList.add('copied');
+    
+    setTimeout(function() {
+      buttonElement.innerHTML = originalText;
+      buttonElement.classList.remove('copied');
+    }, 2000);
+  }).catch(function(err) {
+    console.error('Failed to copy:', err);
+    buttonElement.innerHTML = '❌ Error';
+    setTimeout(function() {
+      buttonElement.innerHTML = '📋 Copy';
+    }, 2000);
+  });
+}
+</script>
+
+<div class="interactive-tool">
+  <h3>🔧 Interactive List Creator</h3>
+  
+  <div id="list-elements-container">
+    <div class="list-element" data-id="0">
+      <div style="display: grid; grid-template-columns: 1fr 1fr 2fr auto; gap: 8px; margin: 8px 0;">
+        <input type="text" class="element-name" placeholder="name" value="name">
+        <select class="element-type">
+          <option value="character">Text</option>
+          <option value="numeric">Number</option>
+          <option value="logical">Logical</option>
+          <option value="vector">Vector</option>
+        </select>
+        <input type="text" class="element-value" placeholder="value" value="Alice">
+        <button onclick="removeListElement(0)" style="padding: 4px 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;">✕</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="tool-buttons">
+    <button class="tool-button secondary" onclick="addListElement()">➕ Add Element</button>
+    <button class="tool-button" onclick="generateListCode()">Generate Code</button>
+    <button class="tool-button secondary" onclick="showListOperations()">Show Operations</button>
+    <button class="tool-button secondary" onclick="clearListTool()">Clear</button>
+  </div>
+  
+  <div class="tool-output-container">
+    <button class="copy-button" onclick="copyToClipboard('list-output', this)">📋 Copy</button>
+    <div class="tool-output" id="list-output">Add elements and click "Generate Code"!</div>
+  </div>
+</div>
+
+<script>
+let listElementCount = 1;
+
+function addListElement() {
+  const container = document.getElementById('list-elements-container');
+  const newId = listElementCount++;
+  
+  const div = document.createElement('div');
+  div.className = 'list-element';
+  div.setAttribute('data-id', newId);
+  div.innerHTML = `
+    <div style="display: grid; grid-template-columns: 1fr 1fr 2fr auto; gap: 8px; margin: 8px 0;">
+      <input type="text" class="element-name" placeholder="element${newId}">
+      <select class="element-type">
+        <option value="character">Text</option>
+        <option value="numeric">Number</option>
+        <option value="logical">Logical</option>
+        <option value="vector">Vector</option>
+      </select>
+      <input type="text" class="element-value" placeholder="value">
+      <button onclick="removeListElement(${newId})" style="padding: 4px 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;">✕</button>
+    </div>
+  `;
+  
+  container.appendChild(div);
+}
+
+function removeListElement(id) {
+  const element = document.querySelector(`.list-element[data-id="${id}"]`);
+  if (element && document.querySelectorAll('.list-element').length > 1) {
+    element.remove();
+  }
+}
+
+function generateListCode() {
+  const elements = document.querySelectorAll('.list-element');
+  
+  if (elements.length === 0) {
+    document.getElementById('list-output').textContent = "❌ Add at least one element!";
+    return;
+  }
+  
+  let code = `# Creating a list\n`;
+  code += `my_list <- list(\n`;
+  
+  const items = [];
+  elements.forEach((elem, idx) => {
+    const name = elem.querySelector('.element-name').value || `elem${idx+1}`;
+    const type = elem.querySelector('.element-type').value;
+    const value = elem.querySelector('.element-value').value;
+    
+    if (!value) return;
+    
+    let formattedValue;
+    if (type === 'character') {
+      formattedValue = `"${value}"`;
+    } else if (type === 'numeric') {
+      formattedValue = value;
+    } else if (type === 'logical') {
+      formattedValue = value.toUpperCase();
+    } else if (type === 'vector') {
+      formattedValue = `c(${value})`;
+    }
+    
+    items.push(`  ${name} = ${formattedValue}`);
+  });
+  
+  code += items.join(',\n');
+  code += `\n)\n\n`;
+  
+  code += `# Accessing elements\n`;
+  if (items.length > 0) {
+    const firstName = items[0].split('=')[0].trim();
+    code += `my_list$${firstName}      # By name\n`;
+    code += `my_list[[1]]          # By index\n`;
+    code += `my_list[["${firstName}"]]  # By name (alternative)\n\n`;
+  }
+  
+  code += `# List information\n`;
+  code += `names(my_list)        # Get element names\n`;
+  code += `length(my_list)       # Number of elements: ${items.length}\n`;
+  code += `str(my_list)          # Structure of list`;
+  
+  document.getElementById('list-output').textContent = code;
+}
+
+function showListOperations() {
+  let code = `# Common List Operations\n\n`;
+  code += `# Adding elements\n`;
+  code += `my_list$new_element <- 100\n`;
+  code += `my_list <- c(my_list, list(another = "value"))\n\n`;
+  
+  code += `# Removing elements\n`;
+  code += `my_list$unwanted <- NULL\n`;
+  code += `my_list[[3]] <- NULL\n\n`;
+  
+  code += `# Modifying elements\n`;
+  code += `my_list$age <- 26  # Update\n\n`;
+  
+  code += `# Combining lists\n`;
+  code += `list1 <- list(a = 1, b = 2)\n`;
+  code += `list2 <- list(c = 3, d = 4)\n`;
+  code += `combined <- c(list1, list2)\n\n`;
+  
+  code += `# Converting to vectors\n`;
+  code += `unlist(my_list)  # Flatten to vector\n\n`;
+  
+  code += `# Applying functions\n`;
+  code += `lapply(my_list, class)  # Class of each element`;
+  
+  document.getElementById('list-output').textContent = code;
+}
+
+function clearListTool() {
+  document.getElementById('list-elements-container').innerHTML = `
+    <div class="list-element" data-id="0">
+      <div style="display: grid; grid-template-columns: 1fr 1fr 2fr auto; gap: 8px; margin: 8px 0;">
+        <input type="text" class="element-name" placeholder="name" value="name">
+        <select class="element-type">
+          <option value="character">Text</option>
+          <option value="numeric">Number</option>
+          <option value="logical">Logical</option>
+          <option value="vector">Vector</option>
+        </select>
+        <input type="text" class="element-value" placeholder="value" value="Alice">
+        <button onclick="removeListElement(0)" style="padding: 4px 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;">✕</button>
+      </div>
+    </div>
+  `;
+  listElementCount = 1;
+  document.getElementById('list-output').textContent = 'Add elements and click "Generate Code"!';
+}
+</script>
+```
+
+---
+
+# Part 2: Matrices - 2D Numeric Data
+
+---
+
+## Creating Matrices
+
+::: {.callout-note icon="false"}
+## Matrices: Rows × Columns of Numbers 🎯
+
+Matrices are 2-dimensional arrays of **the same type** (usually numeric)
+:::
+
+::: {.columns}
+::: {.column}
+**By Values**
+
+```r
+# Create matrix from vector
+m <- matrix(
+  1:12,           # Data
+  nrow = 3,       # 3 rows
+  ncol = 4        # 4 columns
+)
+
+m
+#      [,1] [,2] [,3] [,4]
+# [1,]    1    4    7   10
+# [2,]    2    5    8   11
+# [3,]    3    6    9   12
+
+# Fill by row instead
+matrix(1:12, nrow=3, byrow=TRUE)
+#      [,1] [,2] [,3] [,4]
+# [1,]    1    2    3    4
+# [2,]    5    6    7    8
+# [3,]    9   10   11   12
+```
+:::
+
+::: {.column}
+**By Binding Vectors**
+
+```r
+# Column binding
+c1 <- c(1, 2, 3)
+c2 <- c(4, 5, 6)
+cbind(c1, c2)
+#      c1 c2
+# [1,]  1  4
+# [2,]  2  5
+# [3,]  3  6
+
+# Row binding
+r1 <- c(1, 2, 3)
+r2 <- c(4, 5, 6)
+rbind(r1, r2)
+#    [,1] [,2] [,3]
+# r1    1    2    3
+# r2    4    5    6
+```
+:::
+:::
+
+---
+
+## Matrix Operations
+
+```r
+# Create sample matrices
+A <- matrix(1:6, nrow=2, ncol=3)
+B <- matrix(7:12, nrow=2, ncol=3)
+
+# Element-wise operations
+A + B                # Add corresponding elements
+A * B                # Multiply corresponding elements
+A / B                # Divide corresponding elements
+
+# Matrix multiplication (dimensions must match!)
+C <- matrix(1:6, nrow=3, ncol=2)
+A %*% C              # True matrix multiplication
+
+# Transpose
+t(A)                 # Flip rows and columns
+
+# Other operations
+nrow(A)              # Number of rows: 2
+ncol(A)              # Number of columns: 3
+dim(A)               # Dimensions: 2 3
+```
+
+---
+
+## Accessing Matrix Elements
+
+```r
+# Create matrix
+m <- matrix(1:12, nrow=3, ncol=4)
+
+# Single element
+m[1, 2]              # Row 1, Column 2: 4
+m[3, 4]              # Row 3, Column 4: 12
+
+# Entire row or column
+m[1, ]               # First row: 1 4 7 10
+m[, 2]               # Second column: 4 5 6
+
+# Multiple rows/columns
+m[1:2, ]             # Rows 1-2
+m[, c(1, 3)]         # Columns 1 and 3
+
+# Submatrix
+m[1:2, 2:3]          # Top-left 2×2 of middle columns
+
+# With row/column names
+colnames(m) <- c("A", "B", "C", "D")
+rownames(m) <- c("X", "Y", "Z")
+m["X", "B"]          # Access by name: 4
+```
+
+---
+
+## Interactive: Matrix Builder 🎮
+
+```{=html}
+<div class="interactive-tool">
+  <h3>🎯 Matrix Creator & Visualizer</h3>
+  
+  <div class="tool-controls">
+    <div class="control-group">
+      <label>Number of Rows:</label>
+      <input type="number" id="matrix-rows" value="3" min="1" max="6">
+    </div>
+    
+    <div class="control-group">
+      <label>Number of Columns:</label>
+      <input type="number" id="matrix-cols" value="4" min="1" max="6">
+    </div>
+    
+    <div class="control-group">
+      <label>Fill Method:</label>
+      <select id="matrix-fill">
+        <option value="sequence">Sequence (1, 2, 3...)</option>
+        <option value="random">Random (1-100)</option>
+        <option value="custom">Custom Values</option>
+      </select>
+    </div>
+    
+    <div class="control-group" id="custom-values-group" style="display: none;">
+      <label>Values (comma-separated):</label>
+      <input type="text" id="matrix-values" placeholder="1,2,3,4,5,6...">
+    </div>
+    
+    <div class="control-group">
+      <label>Fill Direction:</label>
+      <select id="matrix-direction">
+        <option value="column">By Column (default)</option>
+        <option value="row">By Row</option>
+      </select>
+    </div>
+  </div>
+  
+  <div class="tool-buttons">
+    <button class="tool-button" onclick="createMatrix()">Create Matrix</button>
+    <button class="tool-button secondary" onclick="showMatrixOperations()">Show Operations</button>
+    <button class="tool-button secondary" onclick="clearMatrixTool()">Clear</button>
+  </div>
+  
+  <div class="tool-output-container">
+    <button class="copy-button" onclick="copyToClipboard('matrix-output', this)">📋 Copy</button>
+    <div class="tool-output" id="matrix-output">Configure and click "Create Matrix"!</div>
+  </div>
+</div>
+
+<script>
+document.getElementById('matrix-fill').addEventListener('change', function() {
+  document.getElementById('custom-values-group').style.display = 
+    this.value === 'custom' ? 'block' : 'none';
+});
+
+function createMatrix() {
+  const rows = parseInt(document.getElementById('matrix-rows').value);
+  const cols = parseInt(document.getElementById('matrix-cols').value);
+  const fill = document.getElementById('matrix-fill').value;
+  const direction = document.getElementById('matrix-direction').value;
+  
+  if (rows < 1 || cols < 1 || rows > 6 || cols > 6) {
+    document.getElementById('matrix-output').textContent = 
+      "❌ Please enter valid dimensions (1-6)!";
+    return;
+  }
+  
+  let values = [];
+  const totalElements = rows * cols;
+  
+  if (fill === 'sequence') {
+    values = Array.from({length: totalElements}, (_, i) => i + 1);
+  } else if (fill === 'random') {
+    values = Array.from({length: totalElements}, () => Math.floor(Math.random() * 100) + 1);
+  } else if (fill === 'custom') {
+    const customStr = document.getElementById('matrix-values').value;
+    values = customStr.split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x));
+    
+    if (values.length !== totalElements) {
+      document.getElementById('matrix-output').textContent = 
+        `❌ Need exactly ${totalElements} values for ${rows}×${cols} matrix!`;
+      return;
+    }
+  }
+  
+  // Create matrix visualization
+  let matrix;
+  if (direction === 'column') {
+    matrix = Array(rows).fill(0).map(() => Array(cols).fill(0));
+    let idx = 0;
+    for (let col = 0; col < cols; col++) {
+      for (let row = 0; row < rows; row++) {
+        matrix[row][col] = values[idx++];
+      }
+    }
+  } else {
+    matrix = Array(rows).fill(0).map(() => Array(cols).fill(0));
+    let idx = 0;
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        matrix[row][col] = values[idx++];
+      }
+    }
+  }
+  
+  // Generate code
+  let code = `# Creating a ${rows}×${cols} matrix\n`;
+  code += `m <- matrix(\n`;
+  code += `  c(${values.join(', ')}),\n`;
+  code += `  nrow = ${rows},\n`;
+  code += `  ncol = ${cols}`;
+  
+  if (direction === 'row') {
+    code += `,\n  byrow = TRUE`;
+  }
+  
+  code += `\n)\n\n`;
+  
+  // Show matrix
+  code += `# Result:\n`;
+  code += `#      `;
+  for (let col = 0; col < cols; col++) {
+    code += `[,${col+1}]`.padEnd(6);
+  }
+  code += `\n`;
+  
+  for (let row = 0; row < rows; row++) {
+    code += `# [${row+1},] `;
+    for (let col = 0; col < cols; col++) {
+      code += `${matrix[row][col]}`.padEnd(6);
+    }
+    code += `\n`;
+  }
+  
+  code += `\n# Matrix dimensions: ${rows} rows × ${cols} columns`;
+  
+  document.getElementById('matrix-output').textContent = code;
+}
+
+function showMatrixOperations() {
+  const rows = parseInt(document.getElementById('matrix-rows').value);
+  const cols = parseInt(document.getElementById('matrix-cols').value);
+  
+  let code = `# Matrix Operations Guide\n\n`;
+  code += `# Accessing elements\n`;
+  code += `m[1, 2]              # Element at row 1, col 2\n`;
+  code += `m[1, ]               # Entire first row\n`;
+  code += `m[, 2]               # Entire second column\n`;
+  code += `m[1:2, ]             # First two rows\n\n`;
+  
+  code += `# Matrix information\n`;
+  code += `dim(m)               # Dimensions: ${rows} ${cols}\n`;
+  code += `nrow(m)              # Number of rows: ${rows}\n`;
+  code += `ncol(m)              # Number of columns: ${cols}\n`;
+  code += `length(m)            # Total elements: ${rows * cols}\n\n`;
+  
+  code += `# Statistical operations\n`;
+  code += `rowSums(m)           # Sum of each row\n`;
+  code += `colSums(m)           # Sum of each column\n`;
+  code += `rowMeans(m)          # Mean of each row\n`;
+  code += `colMeans(m)          # Mean of each column\n\n`;
+  
+  code += `# Transformations\n`;
+  code += `t(m)                 # Transpose\n`;
+  code += `m * 2                # Multiply all by 2\n`;
+  code += `m + 10               # Add 10 to all\n\n`;
+  
+  code += `# Adding row/column names\n`;
+  code += `rownames(m) <- c("R1", "R2", ...)\n`;
+  code += `colnames(m) <- c("C1", "C2", ...)`;
+  
+  document.getElementById('matrix-output').textContent = code;
+}
+
+function clearMatrixTool() {
+  document.getElementById('matrix-rows').value = '3';
+  document.getElementById('matrix-cols').value = '4';
+  document.getElementById('matrix-fill').selectedIndex = 0;
+  document.getElementById('matrix-direction').selectedIndex = 0;
+  document.getElementById('matrix-values').value = '';
+  document.getElementById('custom-values-group').style.display = 'none';
+  document.getElementById('matrix-output').textContent = 'Configure and click "Create Matrix"!';
+}
+</script>
+```
+
+---
+
+# Part 3: Data Frames - The Star of R! ⭐
+
+---
+
+## What Are Data Frames?
+
+::: {.callout-important icon="false"}
+**Data Frames: Excel-like Tables in R** 📊
+
+Think of data frames as spreadsheets:
+- **Rows** = observations/cases
+- **Columns** = variables (can be different types!)
+- Each column is actually a vector
+:::
+
+```r
+# Creating a data frame
+students <- data.frame(
+  name = c("Alice", "Bob", "Carol", "David"),
+  age = c(20, 22, 21, 23),
+  score = c(85, 92, 78, 95),
+  passed = c(TRUE, TRUE, TRUE, TRUE)
+)
+
+students
+#     name age score passed
+# 1  Alice  20    85   TRUE
+# 2    Bob  22    92   TRUE
+# 3  Carol  21    78   TRUE
+# 4  David  23    95   TRUE
+```
+
+---
+
+## Why Data Frames Are Amazing
+
+::: {.columns}
+::: {.column}
+**Mixed Data Types** 🎨
+
+```r
+# Different types per column!
+df <- data.frame(
+  id = 1:3,
+  name = c("A", "B", "C"),
+  value = c(10.5, 20.3, 15.7),
+  flag = c(T, F, T)
+)
+
+# Check types
+str(df)
+# 'data.frame': 3 obs of 4 vars
+#  $ id   : int  1 2 3
+#  $ name : chr  "A" "B" "C"
+#  $ value: num  10.5 20.3 15.7
+#  $ flag : logi  TRUE FALSE TRUE
+```
+:::
+
+::: {.column}
+**Easy Access** 🎯
+
+```r
+# Access columns
+df$name          # Vector of names
+df[, "value"]    # Same as above
+df[[2]]          # Second column
+
+# Access rows
+df[1, ]          # First row
+df[c(1,3), ]     # Rows 1 and 3
+
+# Subset
+df[df$value > 15, ]
+# Rows where value > 15
+
+# Single cell
+df[2, 3]         # Row 2, Column 3
+```
+:::
+:::
+
+---
+
+## Interactive: Data Frame Creator 🎮
+
+```{=html}
+<div class="interactive-tool">
+  <h3>📊 Build Your Own Data Frame!</h3>
+  
+  <div style="margin: 10px 0;">
+    <label style="font-weight: bold;">Quick Start:</label>
+    <select id="df-template" onchange="loadDataFrameTemplate()">
+      <option value="">-- Custom --</option>
+      <option value="students">Students Dataset</option>
+      <option value="sales">Sales Data</option>
+      <option value="experiments">Experiment Results</option>
+    </select>
+  </div>
+  
+  <div id="df-columns-container">
+    <div class="df-column" data-id="0">
+      <div style="display: grid; grid-template-columns: 1.5fr 1fr 3fr auto; gap: 8px; margin: 8px 0; align-items: center;">
+        <input type="text" class="df-col-name" placeholder="col_name" value="id">
+        <select class="df-col-type">
+          <option value="integer">Integer</option>
+          <option value="numeric">Numeric</option>
+          <option value="character">Character</option>
+          <option value="logical">Logical</option>
+        </select>
+        <input type="text" class="df-col-values" placeholder="values (comma-separated)" value="1, 2, 3">
+        <button onclick="removeDFColumn(0)" style="padding: 4px 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;">✕</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="tool-buttons">
+    <button class="tool-button secondary" onclick="addDFColumn()">➕ Add Column</button>
+    <button class="tool-button" onclick="generateDataFrameCode()">Generate Code</button>
+    <button class="tool-button secondary" onclick="showDFOperations()">Show Operations</button>
+    <button class="tool-button secondary" onclick="clearDFTool()">Clear</button>
+  </div>
+  
+  <div class="tool-output-container">
+    <button class="copy-button" onclick="copyToClipboard('df-output', this)">📋 Copy</button>
+    <div class="tool-output" id="df-output">Configure columns and click "Generate Code"!</div>
+  </div>
+</div>
+
+<script>
+let dfColumnCount = 1;
+
+const dfTemplates = {
+  students: [
+    {name: "name", type: "character", values: "Alice, Bob, Carol, David"},
+    {name: "age", type: "integer", values: "20, 22, 21, 23"},
+    {name: "score", type: "numeric", values: "85.5, 92.3, 78.9, 95.1"},
+    {name: "passed", type: "logical", values: "TRUE, TRUE, TRUE, TRUE"}
+  ],
+  sales: [
+    {name: "product", type: "character", values: "Widget, Gadget, Doohickey"},
+    {name: "quantity", type: "integer", values: "150, 200, 75"},
+    {name: "price", type: "numeric", values: "19.99, 24.50, 12.75"},
+    {name: "in_stock", type: "logical", values: "TRUE, TRUE, FALSE"}
+  ],
+  experiments: [
+    {name: "trial", type: "integer", values: "1, 2, 3, 4, 5"},
+    {name: "treatment", type: "character", values: "A, B, A, B, Control"},
+    {name: "result", type: "numeric", values: "7.2, 8.1, 7.5, 8.3, 6.9"},
+    {name: "success", type: "logical", values: "TRUE, TRUE, TRUE, TRUE, FALSE"}
+  ]
+};
+
+function loadDataFrameTemplate() {
+  const template = document.getElementById('df-template').value;
+  if (!template) return;
+  
+  const data = dfTemplates[template];
+  const container = document.getElementById('df-columns-container');
+  container.innerHTML = '';
+  dfColumnCount = 0;
+  
+  data.forEach(col => {
+    const id = dfColumnCount++;
+    const div = document.createElement('div');
+    div.className = 'df-column';
+    div.setAttribute('data-id', id);
+    div.innerHTML = `
+      <div style="display: grid; grid-template-columns: 1.5fr 1fr 3fr auto; gap: 8px; margin: 8px 0; align-items: center;">
+        <input type="text" class="df-col-name" value="${col.name}">
+        <select class="df-col-type">
+          <option value="integer" ${col.type === 'integer' ? 'selected' : ''}>Integer</option>
+          <option value="numeric" ${col.type === 'numeric' ? 'selected' : ''}>Numeric</option>
+          <option value="character" ${col.type === 'character' ? 'selected' : ''}>Character</option>
+          <option value="logical" ${col.type === 'logical' ? 'selected' : ''}>Logical</option>
+        </select>
+        <input type="text" class="df-col-values" value="${col.values}">
+        <button onclick="removeDFColumn(${id})" style="padding: 4px 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;">✕</button>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function addDFColumn() {
+  const container = document.getElementById('df-columns-container');
+  const newId = dfColumnCount++;
+  
+  const div = document.createElement('div');
+  div.className = 'df-column';
+  div.setAttribute('data-id', newId);
+  div.innerHTML = `
+    <div style="display: grid; grid-template-columns: 1.5fr 1fr 3fr auto; gap: 8px; margin: 8px 0; align-items: center;">
+      <input type="text" class="df-col-name" placeholder="col${newId}">
+      <select class="df-col-type">
+        <option value="integer">Integer</option>
+        <option value="numeric">Numeric</option>
+        <option value="character">Character</option>
+        <option value="logical">Logical</option>
+      </select>
+      <input type="text" class="df-col-values" placeholder="1, 2, 3">
+      <button onclick="removeDFColumn(${newId})" style="padding: 4px 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;">✕</button>
+    </div>
+  `;
+  
+  container.appendChild(div);
+}
+
+function removeDFColumn(id) {
+  const element = document.querySelector(`.df-column[data-id="${id}"]`);
+  if (element && document.querySelectorAll('.df-column').length > 1) {
+    element.remove();
+  }
+}
+
+function generateDataFrameCode() {
+  const columns = document.querySelectorAll('.df-column');
+  
+  if (columns.length === 0) {
+    document.getElementById('df-output').textContent = "❌ Add at least one column!";
+    return;
+  }
+  
+  let code = `# Creating a data frame\n`;
+  code += `df <- data.frame(\n`;
+  
+  const colDefs = [];
+  const colData = {};
+  let maxLength = 0;
+  
+  columns.forEach((col, idx) => {
+    const name = col.querySelector('.df-col-name').value || `col${idx+1}`;
+    const type = col.querySelector('.df-col-type').value;
+    const valuesStr = col.querySelector('.df-col-values').value;
+    
+    if (!valuesStr) return;
+    
+    const values = valuesStr.split(',').map(v => v.trim());
+    maxLength = Math.max(maxLength, values.length);
+    colData[name] = {type, values};
+    
+    let formattedValues;
+    if (type === 'character') {
+      formattedValues = values.map(v => `"${v}"`).join(', ');
+    } else if (type === 'logical') {
+      formattedValues = values.map(v => v.toUpperCase()).join(', ');
+    } else {
+      formattedValues = values.join(', ');
+    }
+    
+    colDefs.push(`  ${name} = c(${formattedValues})`);
+  });
+  
+  code += colDefs.join(',\n');
+  code += `\n)\n\n`;
+  
+  // Show data frame
+  code += `# Result (first few rows):\n`;
+  code += `#   `;
+  Object.keys(colData).forEach(name => {
+    code += name.padEnd(12);
+  });
+  code += `\n`;
+  
+  for (let i = 0; i < Math.min(maxLength, 4); i++) {
+    code += `# ${(i+1)} `;
+    Object.keys(colData).forEach(name => {
+      const val = colData[name].values[i] || 'NA';
+      code += val.padEnd(12);
+    });
+    code += `\n`;
+  }
+  
+  code += `\n# Data frame: ${maxLength} observations, ${Object.keys(colData).length} variables`;
+  
+  document.getElementById('df-output').textContent = code;
+}
+
+function showDFOperations() {
+  let code = `# Essential Data Frame Operations\n\n`;
+  code += `# Viewing data\n`;
+  code += `head(df)              # First 6 rows\n`;
+  code += `tail(df)              # Last 6 rows\n`;
+  code += `View(df)              # Open in viewer (RStudio)\n`;
+  code += `str(df)               # Structure summary\n`;
+  code += `summary(df)           # Statistical summary\n\n`;
+  
+  code += `# Accessing columns\n`;
+  code += `df$column_name        # By name (vector)\n`;
+  code += `df[["column_name"]]   # By name (alternative)\n`;
+  code += `df[, 2]               # By index\n`;
+  code += `df[, c("col1", "col2")] # Multiple columns\n\n`;
+  
+  code += `# Subsetting rows\n`;
+  code += `df[1:3, ]             # Rows 1-3\n`;
+  code += `df[df$age > 20, ]     # Conditional\n`;
+  code += `subset(df, age > 20)  # Using subset()\n\n`;
+  
+  code += `# Adding columns\n`;
+  code += `df$new_col <- values\n`;
+  code += `df <- cbind(df, new_col)\n\n`;
+  
+  code += `# Removing columns\n`;
+  code += `df$unwanted <- NULL\n`;
+  code += `df <- df[, -3]        # Remove 3rd column\n\n`;
+  
+  code += `# Dimensions\n`;
+  code += `nrow(df)              # Number of rows\n`;
+  code += `ncol(df)              # Number of columns\n`;
+  code += `dim(df)               # Both dimensions`;
+  
+  document.getElementById('df-output').textContent = code;
+}
+
+function clearDFTool() {
+  document.getElementById('df-template').selectedIndex = 0;
+  document.getElementById('df-columns-container').innerHTML = `
+    <div class="df-column" data-id="0">
+      <div style="display: grid; grid-template-columns: 1.5fr 1fr 3fr auto; gap: 8px; margin: 8px 0; align-items: center;">
+        <input type="text" class="df-col-name" placeholder="col_name" value="id">
+        <select class="df-col-type">
+          <option value="integer">Integer</option>
+          <option value="numeric">Numeric</option>
+          <option value="character">Character</option>
+          <option value="logical">Logical</option>
+        </select>
+        <input type="text" class="df-col-values" placeholder="values (comma-separated)" value="1, 2, 3">
+        <button onclick="removeDFColumn(0)" style="padding: 4px 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;">✕</button>
+      </div>
+    </div>
+  `;
+  dfColumnCount = 1;
+  document.getElementById('df-output').textContent = 'Configure columns and click "Generate Code"!';
+}
+</script>
+```
+
+---
+
+# Part 4: Reading Data Files 📁
+
+---
+
+## Reading CSV Files
+
+::: {.callout-tip icon="true"}
+## CSV: Comma-Separated Values 📄
+
+Most common format for sharing data!
+:::
+
+```r
+# Reading a CSV file
+data <- read.csv("mydata.csv")
+
+# Common options
+data <- read.csv(
+  "mydata.csv",
+  header = TRUE,        # First row is column names
+  sep = ",",            # Separator (comma)
+  stringsAsFactors = FALSE,  # Keep strings as text
+  na.strings = c("NA", "")   # What counts as missing?
+)
+
+# Quick peek
+head(data)              # First 6 rows
+summary(data)           # Statistical summary
+
+# Using tidyverse (better!)
+library(readr)
+data <- read_csv("mydata.csv")  # Smarter defaults!
+```
+
+---
+
+## Built-in Datasets in R 🎁
+
+::: {.callout-note icon="false"}
+## R Comes with Practice Data!
+
+Perfect for learning and testing
+:::
+
+::: {.columns}
+::: {.column}
+**Loading Built-in Data**
+
+```r
+# See all available datasets
+data()
+
+# Load specific datasets
+data(mtcars)    # Car data
+data(iris)      # Flower measurements
+data(diamonds)  # Diamond prices
+data(airquality) # Air quality
+
+# Explore
+head(mtcars)
+str(iris)
+summary(diamonds)
+```
+:::
+
+::: {.column}
+**Popular Datasets**
+
+* `mtcars` — 32 cars, 11 variables
+* `iris` — 150 flowers, 5 variables
+* `diamonds` — 50k+ diamonds
+* `airquality` — NYC air quality
+* `ChickWeight` — Chick growth
+* `ToothGrowth` — Tooth growth
+* `USArrests` — Crime statistics
+* `faithful` — Old Faithful geyser
+:::
+:::
+
+---
+
+# Quick Challenge! 🧠
+
+## Challenge 1: Data Frame Access
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">What's the best way to access the "age" column in a data frame called `students`?</div>
+  
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkDFQuiz(this, false)">students[age]</div>
+    <div class="quiz-option" onclick="checkDFQuiz(this, true)">students$age</div>
+    <div class="quiz-option" onclick="checkDFQuiz(this, false)">students.age</div>
+    <div class="quiz-option" onclick="checkDFQuiz(this, false)">students->age</div>
+  </div>
+  
+  <div id="df-quiz-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkDFQuiz(element, isCorrect) {
+  document.querySelectorAll('.quiz-option').forEach(opt => {
+    opt.classList.remove('correct', 'incorrect');
+  });
+  
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+  
+  const feedback = document.getElementById('df-quiz-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  
+  if (isCorrect) {
+    feedback.textContent = '✅ Correct! The $ operator is the most common and readable way to access columns by name.';
+  } else {
+    feedback.textContent = '❌ Not quite! Use the $ operator: students$age. Square brackets need quotes: students[["age"]]';
+  }
+}
+</script>
+```
+
+---
+
+## Challenge 2: Matrix Dimensions
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">What are the dimensions of: <code>matrix(1:12, nrow=4)</code>?</div>
+  
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkMatrixQuiz(this, false)">3 rows × 4 columns</div>
+    <div class="quiz-option" onclick="checkMatrixQuiz(this, true)">4 rows × 3 columns</div>
+    <div class="quiz-option" onclick="checkMatrixQuiz(this, false)">12 rows × 1 column</div>
+    <div class="quiz-option" onclick="checkMatrixQuiz(this, false)">1 row × 12 columns</div>
+  </div>
+  
+  <div id="matrix-quiz-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkMatrixQuiz(element, isCorrect) {
+  document.querySelectorAll('#matrix-quiz-feedback').forEach(f => f.previousElementSibling.querySelectorAll('.quiz-option').forEach(opt => {
+    opt.classList.remove('correct', 'incorrect');
+  }));
+  
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+  
+  const feedback = document.getElementById('matrix-quiz-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  
+  if (isCorrect) {
+    feedback.textContent = '✅ Correct! 12 elements ÷ 4 rows = 3 columns. Matrices fill by column by default.';
+  } else {
+    feedback.textContent = '❌ Try again! With nrow=4 and 12 elements, you get 4 rows and 3 columns.';
+  }
+}
+</script>
+```
+
+---
+
+## Challenge 3: List vs Data Frame
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">When should you use a list instead of a data frame?</div>
+  
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkListQuiz(this, false)">When all elements are the same length</div>
+    <div class="quiz-option" onclick="checkListQuiz(this, true)">When storing different-length vectors or complex objects</div>
+    <div class="quiz-option" onclick="checkListQuiz(this, false)">When all data is numeric</div>
+    <div class="quiz-option" onclick="checkListQuiz(this, false)">Lists and data frames are identical</div>
+  </div>
+  
+  <div id="list-quiz-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkListQuiz(element, isCorrect) {
+  document.querySelectorAll('#list-quiz-feedback').forEach(f => f.previousElementSibling.querySelectorAll('.quiz-option').forEach(opt => {
+    opt.classList.remove('correct', 'incorrect');
+  }));
+  
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+  
+  const feedback = document.getElementById('list-quiz-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  
+  if (isCorrect) {
+    feedback.textContent = '✅ Correct! Lists are flexible — perfect for storing models, mixed objects, or different-length vectors.';
+  } else {
+    feedback.textContent = '❌ Not quite! Lists are best when you need flexibility: different lengths, nested structures, or model outputs.';
+  }
+}
+</script>
+```
+
+---
+
+## Challenge 4: Code Writing
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    <strong>Write code</strong> to create a data frame with columns: name (character), score (numeric), passed (logical) for 3 students.
+    <button class="tool-button" onclick="showDataFrameChallenge()" style="margin-top: 10px;">Show Solution</button>
+  </div>
+  
+  <div id="df-challenge-solution" style="display: none; margin-top: 15px;">
+    <div class="quiz-feedback correct">
+      <strong>Solution:</strong><br>
+      <code style="display: block; background: #f5f5f5; padding: 10px; margin-top: 8px; border-radius: 4px;">
+students <- data.frame(<br>
+&nbsp;&nbsp;name = c("Alice", "Bob", "Carol"),<br>
+&nbsp;&nbsp;score = c(92, 78, 85),<br>
+&nbsp;&nbsp;passed = c(TRUE, TRUE, TRUE)<br>
+)<br>
+<br>
+# View it<br>
+students
+      </code>
+    </div>
+  </div>
+</div>
+
+<script>
+function showDataFrameChallenge() {
+  const solution = document.getElementById('df-challenge-solution');
+  solution.style.display = 'block';
+  event.target.textContent = '✓ Solution Shown';
+  event.target.disabled = true;
+}
+</script>
+```
+
+---
+
+# Comparing Data Structures 📊
+
+| Structure | Dimensions | Same Type? | Use Case |
+|-----------|------------|------------|----------|
+| **Vector** | 1D | ✅ Yes | Single variable |
+| **List** | 1D | ❌ No | Mixed types, complex objects |
+| **Matrix** | 2D | ✅ Yes | Numeric calculations |
+| **Data Frame** | 2D | ❌ No | **Most data analysis** |
+
+::: {.callout-important}
+**Key Insight:** Data frames are your go-to for most data science work! They're like spreadsheets with superpowers. 💪
+:::
+
+---
+
+# Recap & Next Week 🎯
+
+::: {.callout-tip icon="true"}
+## What We Learned Today
+
+✅ Lists — Flexible containers for mixed data  
+✅ Matrices — 2D numeric arrays  
+✅ Data Frames — The heart of R data analysis  
+✅ Reading CSV files  
+✅ Interactive tools for building data structures
+:::
+
+::: {.callout-important}
+## For Next Class: Data Manipulation with dplyr
+
+📚 **Practice:** Create data frames, explore built-in datasets  
+💻 **Install:** `install.packages("tidyverse")`  
+🔮 **Preview:** We'll learn the powerful dplyr verbs for data wrangling!
+:::
+
+---
+
+# Quick Reference: Data Structures 📋
+
+::: {.columns}
+::: {.column}
+**Lists**
+```r
+list(a=1, b="text")
+my_list$name
+my_list[[1]]
+```
+
+**Matrices**
+```r
+matrix(1:12, nrow=3)
+m[2, 3]
+rowSums(m)
+```
+:::
+
+::: {.column}
+**Data Frames**
+```r
+data.frame(x=1:3, y=4:6)
+df$column
+df[1, ]
+subset(df, x > 2)
+```
+
+**Reading Files**
+```r
+read.csv("file.csv")
+read.table("file.txt")
+# tidyverse
+read_csv("file.csv")
+```
+:::
+:::
+
+---
+
+# Thank You! See You Next Week! 🚀
+
+::: {style="text-align: center; font-size: 1.2em; color: #27AE60; margin-top: 50px;"}
+**Practice with the interactive tools!**
+
+Try creating your own data frames with real or imaginary data. The more you experiment, the more comfortable you'll become! 💪
+
+**Next time:** Data manipulation with dplyr — the game changer! 🎮
+:::

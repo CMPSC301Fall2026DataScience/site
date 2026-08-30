@@ -50,6 +50,10 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
   - [What Article Is This?](1_activity.html)
 
 
+## W2. Introduction to R Basics
+
+- **R Fundamentals, Part 1** 
+  - <a href="week01_intro_r_basics.html" target="_blank">Slides</a>
 
 <!-- ## W2. Reviewing Python -->
 <!-- - Be sure to join the class' GitHub Organization (check your email!) -->
