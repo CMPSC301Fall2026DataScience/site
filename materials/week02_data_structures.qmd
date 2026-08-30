@@ -1208,12 +1208,18 @@ function showDataFrameChallenge() {
 
 # Comparing Data Structures 📊
 
+
+::: {.callout}
+
+
 | Structure | Dimensions | Same Type? | Use Case |
 |-----------|------------|------------|----------|
 | **Vector** | 1D | ✅ Yes | Single variable |
 | **List** | 1D | ❌ No | Mixed types, complex objects |
 | **Matrix** | 2D | ✅ Yes | Numeric calculations |
 | **Data Frame** | 2D | ❌ No | **Most data analysis** |
+
+:::
 
 ::: {.callout-important}
 **Key Insight:** Data frames are your go-to for most data science work! They're like spreadsheets with superpowers. 💪
@@ -1283,7 +1289,141 @@ read_csv("file.csv")
 
 ---
 
-# Thank You! See You Next Week! 🚀
+# SunSpots Dataset Analysis 🌞
+
+
+::: {.callout}
+We are going to analyze a dataset called `Sunspots` which contains monthly sunspot numbers from 1749 to 1983. This dataset is built into R and is a classic example of time series data. We'll explore its structure, visualize the data, and perform some basic time series analysis.
+:::
+
+<center>
+![](graphics/sunSpots.png){width=50%}
+</center>
+
+# Articulating the Research Question
+
+::: {.callout-important}
+
+- Is there a pattern of any kind in this data?
+- Is there something periodic about the sunspot data?
+- Can we collect come evidence of a pattern in the data?
+- Could we use this pattern to predict?
+- What does a pattern look like in the data?
+
+:::
+
+
+# Sunspots Analysis Code
+
+```r
+
+
+rm(list = ls()) # clear out the variables from memory to make a clean execution of the code.
+
+# If you want to remove all previous plots and clear the console, run the following two lines.
+graphics.off() # clear out all plots from previous work.
+
+cat("\014") # clear the console
+
+
+if(!require('tidyverse')) {
+  install.packages('tidyverse')
+  library('tidyverse')
+}
+
+
+# Load the built-in sunspots dataset (monthly data from 1749 to 1983)
+data(sunspots)
+
+# 1. View basic information about the time series
+print(start(sunspots))  # Start year/month
+print(end(sunspots))    # End year/month
+print(frequency(sunspots)) # 12 observations per year (monthly)
+
+# 2. Plot the full time series
+plot(sunspots, 
+     main = "Monthly Sunspot Numbers (1749–1983)", 
+     ylab = "Number of Sunspots", 
+     xlab = "Year", 
+     col = "blue")
+
+# 3. Subset a smaller window to clearly see the 11-year solar cycle
+# Let's look at 10 cycles from 1870 to 1970
+sunspots_subset <- window(sunspots, start = c(1870, 1), end = c(1970, 12))
+
+plot(sunspots_subset, 
+     main = "Sunspot Cycles (1870–1970)", 
+     ylab = "Sunspot Count", 
+     xlab = "Year", 
+     col = "darkred")
+
+# 4. Decompose the time series into trend, seasonal, and random components
+# Using additive decomposition (frequency = 12)
+sunspots_decomp <- decompose(sunspots_subset)
+plot(sunspots_decomp)
+
+# 5. Fit a simple Holt-Winters exponential smoothing or autoregressive model
+# (Requires forecast package, or use base AR: ar(sunspots_subset))
+fit <- ar(sunspots_subset)
+print(fit$order) # Shows the optimal autoregressive lag order
+
+```
+
+
+
+# Activity by Month Visualization
+
+```r
+
+
+# Convert the time series to a data frame for custom ggplot grouping
+df <- data.frame(
+  Year = as.numeric(time(sunspots_subset)),
+  Month = factor(cycle(sunspots_subset), labels = month.abb),
+  Count = as.numeric(sunspots_subset)
+)
+
+ggplot(df, aes(x = Year, y = Count)) +
+  geom_line(color = "steelblue") +
+  facet_wrap(~ Month, ncol = 4) +
+  labs(title = "Sunspot Activity Split by Calendar Month",
+       x = "Year",
+       y = "Sunspot Count") +
+  theme_light()
+```
+
+# Month Visualization Output
+<center>
+![](graphics/sunspots_byMonths.png){width=70%}
+</center>
+
+
+# Activity by Year Visualization
+
+```r
+
+# Create 5-year groupings to see macro-cycles
+df$YearGroup <- cut(df$Year, breaks = seq(1920, 1975, by = 5), right = FALSE)
+
+ggplot(df, aes(x = YearGroup, y = Count, fill = YearGroup)) +
+  geom_boxplot(alpha = 0.7, show.legend = FALSE) +
+  scale_fill_viridis_d(option = "plasma") +
+  labs(title = "Distribution of Sunspot Counts in 5-Year Blocks",
+       x = "Year Interval",
+       y = "Sunspot Count Distribution") +
+  theme_minimal()
+
+```
+
+# Year Visualization Output
+
+<center>
+![](graphics/sunspots_byYears.png){width=70%}
+</center>
+
+---
+
+<!-- # Thank You! See You Next Week! 🚀
 
 ::: {style="text-align: center; font-size: 1.2em; color: #27AE60; margin-top: 50px;"}
 **Practice with the interactive tools!**
@@ -1291,4 +1431,4 @@ read_csv("file.csv")
 Try creating your own data frames with real or imaginary data. The more you experiment, the more comfortable you'll become! 💪
 
 **Next time:** Data manipulation with dplyr — the game changer! 🎮
-:::
+::: -->
