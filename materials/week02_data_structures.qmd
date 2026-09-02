@@ -2,7 +2,7 @@
 title: "Week 2: R Fundamentals Part 2"
 subtitle: "Data Structures & Advanced Concepts"
 author: "CS301 - Data Science with R"
-date: "Fall 2026"
+# date: "Fall 2026"
 format:
   revealjs:
     theme: white

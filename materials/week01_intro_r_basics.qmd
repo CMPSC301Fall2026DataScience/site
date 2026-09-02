@@ -286,7 +286,7 @@ RStudio gives you:
 ![](graphics/install_R.png){width=50%}
 </center>
 
-## Your RStudeo Environment
+## Your RStudio Environment
 
 <center>
 ![](graphics/rstudio_screen.png){width=100%}

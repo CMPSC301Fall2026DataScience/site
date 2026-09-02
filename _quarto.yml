@@ -13,6 +13,7 @@ project:
 
 website:
   title: "CMPSC301 Fall 2026 :: Data Science"
+  favicon: graphics/logo.png
   navbar:
     left:
       - href: index.qmd

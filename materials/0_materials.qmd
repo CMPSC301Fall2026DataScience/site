@@ -52,8 +52,11 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 
 ## W2. Introduction to R Basics
 
-- **R Fundamentals, Part 1** 
+- **R Fundamentals, Part 1 (Installing R and RStudio, Variables, and Basic Operations)** 
   - <a href="week01_intro_r_basics.html" target="_blank">Slides</a>
+
+- **Week 2: R Fundamentals Part 2 (Data Structures & Advanced Concepts)**
+  - <a href="week02_data_structures.html" target="_blank">Slides</a>
 
 <!-- ## W2. Reviewing Python -->
 <!-- - Be sure to join the class' GitHub Organization (check your email!) -->
