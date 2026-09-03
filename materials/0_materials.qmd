@@ -55,7 +55,12 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **R Fundamentals, Part 1 (Installing R and RStudio, Variables, and Basic Operations)** 
   - <a href="week01_intro_r_basics.html" target="_blank">Slides</a>
 
-- **Week 2: R Fundamentals Part 2 (Data Structures & Advanced Concepts)**
+- Lab 1: RStudio and R Basics
+  - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/lab01/accept" target="_blank">Lab01</a>
+
+## W3. R Fundamentals Part 2 (Data Structures & Advanced Concepts)
+
+- **R Fundamentals Part 2 (Data Structures & Advanced Concepts)**
   - <a href="week02_data_structures.html" target="_blank">Slides</a>
 
 <!-- ## W2. Reviewing Python -->
