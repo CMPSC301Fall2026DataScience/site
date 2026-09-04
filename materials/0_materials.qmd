@@ -55,42 +55,18 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **R Fundamentals, Part 1 (Installing R and RStudio, Variables, and Basic Operations)** 
   - <a href="week01_intro_r_basics.html" target="_blank">Slides</a>
 
-- Lab 1: RStudio and R Basics
+- **Lab 1**: RStudio and R Basics
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/lab01/accept" target="_blank">Lab01</a>
+
+- **Activity 1**: Variables and Probability
+  - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/activity01/accept" target="_blank">Activity01</a>  
 
 ## W3. R Fundamentals Part 2 (Data Structures & Advanced Concepts)
 
 - **R Fundamentals Part 2 (Data Structures & Advanced Concepts)**
   - <a href="week02_data_structures.html" target="_blank">Slides</a>
 
-<!-- ## W2. Reviewing Python -->
-<!-- - Be sure to join the class' GitHub Organization (check your email!) -->
-<!-- - Be sure that you are in the Discord channel for the course. If you are not in the Discord channel, please let me know! Also, please use your real names in the channel (otherwise  I will not be able to identify you). -->
 
-<!-- 
-### Materials
-- **Lecture 01**: Introduction to Data Science
-  - Slides (Coming soon!)
-  - What is data science?
-  - The data science workflow
-  - Tools and technologies
-  - Career paths
-
-### Assignments
-- **Activity 01**: Setting Up Your Data Science Environment
-  - GitHub Classroom Link (Coming soon!)
-  - Installing Python, R, Jupyter, VS Code
-  - Testing your installation
-  - First data exploration -->
-
-
-<!-- - **Activity 01**: Installing Essential Tools and Solving the Maze
-  - [GitHub Classroom Link](https://classroom.github.com/a/WIB5VCnJ)
-- Installing necessary software for the course (if anyone needs help!) 
-  - [Python](https://www.python.org/)
-  - [Visual Studio Code](https://code.visualstudio.com/download) 
-  - [GitHub](https://github.com/git-guides/install-git)
-  - [Pipx](https://pipx.pypa.io/stable/installation/) -->
 
 ---
 
