@@ -1416,6 +1416,25 @@ legend("topright",
        bty = "n")
 ```
 
+## A More Complex Plot with Built-In Data (Output)
+
+```{r}
+# One color for each iris species
+iris_colors <- c("tomato", "goldenrod", "steelblue")[as.numeric(iris$Species)]
+
+# plot.data.frame() creates a scatterplot matrix for the four measurements
+plot(iris[1:4],
+     main = "Relationships Among Iris Measurements",
+     pch = 19,
+     col = iris_colors)
+
+legend("topright",
+       legend = levels(iris$Species),
+       col = c("tomato", "goldenrod", "steelblue"),
+       pch = 19,
+       bty = "n")
+```
+
 ---
 
 ## Interactive: `plot()` Code Generator
