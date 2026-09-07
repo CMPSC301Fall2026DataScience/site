@@ -1,0 +1,946 @@
+---
+title: "SlideDeck 3: Data Manipulation & Cleaning"
+subtitle: "Mastering dplyr for Data Wrangling"
+author: "CS301 - Data Science with R"
+date: "Fall 2026"
+format:
+  revealjs:
+    theme: white
+    highlight-style: github
+    code-block-background: true
+    code-block-border-left: "#31BAE9"
+    slide-number: true
+    chalkboard: true
+    scrollable: true
+    transition: none
+    css: custom_ds.css
+    width: 1200
+    height: 800
+    margin: 0.05
+---
+
+
+# What's on for today?
+
+::: {.callout-tip icon="true"}
+## Today's Mission: Data Wrangling
+
+* 📦 **Tidyverse** — The modern R ecosystem
+* 🔀 **The Pipe** — %>% operator for readable code
+* 🔧 **dplyr Verbs** — select, filter, mutate, arrange, summarize
+* 🧹 **Data Cleaning** — Handling missing data
+* 🎮 **Interactive Tools** — dplyr pipeline builder!
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**Transform messy data into insights!** 
+:::
+
+---
+
+# The Tidyverse Revolution 
+
+::: {.callout-important icon="false"}
+**Tidyverse: R's Modern Data Science Toolkit**
+
+A collection of packages designed to work together seamlessly!
+:::
+
+```r
+# Install once
+install.packages("tidyverse")
+
+# Load in every session
+library(tidyverse)
+
+# What you get:
+# ✅ dplyr    — Data manipulation
+# ✅ ggplot2  — Visualization
+# ✅ tidyr    — Data tidying
+# ✅ readr    — Reading data
+# ✅ purrr    — Functional programming
+# ✅ tibble   — Modern data frames
+# ✅ stringr  — String manipulation
+# ✅ forcats  — Factor handling
+```
+
+---
+
+# The Pipe Operator: %>% 
+
+::: {.callout-note icon="false"}
+## Make Your Code Read Like a Story!
+
+The pipe %>% passes output from one function to the next
+:::
+
+::: {.columns}
+::: {.column}
+**Without Pipes**
+
+```r
+# Nested (hard to read)
+result <- arrange(
+            filter(
+              select(mtcars, mpg, hp, cyl),
+              hp > 100
+            ),
+            desc(mpg)
+          )
+
+# Or many temp variables
+temp1 <- select(mtcars, mpg, hp, cyl)
+temp2 <- filter(temp1, hp > 100)
+result <- arrange(temp2, desc(mpg))
+```
+:::
+
+::: {.column}
+**With Pipes**
+
+```r
+# Clean, readable!
+result <- mtcars %>%
+  select(mpg, hp, cyl) %>%
+  filter(hp > 100) %>%
+  arrange(desc(mpg))
+
+# Reads like instructions:
+# 1. Take mtcars
+# 2. Select these columns
+# 3. Keep only hp > 100
+# 4. Sort by mpg descending
+```
+:::
+:::
+
+::: {.callout-tip}
+**Keyboard shortcut:** Cmd/Ctrl + Shift + M = %>%
+:::
+
+---
+
+# The dplyr Verbs 🔧
+
+::: {style="text-align: center; font-size: 1.1em; color: #2E86C1; font-weight: bold;"}
+Six powerful functions that solve 90% of data manipulation tasks!
+:::
+
+| Verb | Purpose | Example |
+|------|---------|---------|
+| `select()` | Choose columns | `select(data, name, age)` |
+| `filter()` | Choose rows | `filter(data, age > 18)` |
+| `mutate()` | Create/modify columns | `mutate(data, age_squared = age^2)` |
+| `arrange()` | Sort rows | `arrange(data, desc(age))` |
+| `summarize()` | Aggregate data | `summarize(data, mean_age = mean(age))` |
+| `group_by()` | Group for operations | `group_by(data, category)` |
+
+---
+
+# 1. select() — Choose Columns
+
+::: {.callout-note icon="false"}
+## Pick the columns you need
+:::
+
+```r
+# Load example data
+library(tidyverse)
+data(mtcars)
+
+# Select specific columns
+mtcars %>% select(mpg, cyl, hp)
+
+# Select range of columns
+mtcars %>% select(mpg:hp)
+
+# Select by pattern
+mtcars %>% select(starts_with("m"))    # mpg
+mtcars %>% select(ends_with("p"))      # hp, disp
+mtcars %>% select(contains("ar"))      # gear, carb
+
+# Exclude columns
+mtcars %>% select(-wt, -qsec)
+
+# Reorder columns
+mtcars %>% select(hp, mpg, everything())
+
+# Rename while selecting
+mtcars %>% select(miles_per_gallon = mpg, horsepower = hp)
+```
+
+---
+
+# 2. filter() — Choose Rows
+
+::: {.callout-note icon="false"}
+## Keep only rows that meet conditions
+:::
+
+```r
+# Simple filter
+mtcars %>% filter(mpg > 20)
+
+# Multiple conditions (AND)
+mtcars %>% filter(mpg > 20, cyl == 4)
+mtcars %>% filter(mpg > 20 & cyl == 4)
+
+# OR conditions
+mtcars %>% filter(cyl == 4 | cyl == 6)
+mtcars %>% filter(cyl %in% c(4, 6))
+
+# Complex conditions
+mtcars %>% filter(
+  mpg > 20,
+  cyl %in% c(4, 6),
+  hp < 100
+)
+
+# Pattern matching
+library(datasets)
+data(iris)
+iris %>% filter(grepl("setosa", Species))
+
+# Missing values
+data %>% filter(is.na(column))      # Keep NAs
+data %>% filter(!is.na(column))     # Remove NAs
+```
+
+---
+
+# 3. mutate() — Create/Modify Columns
+
+::: {.callout-note icon="false"}
+## Add or change variables
+:::
+
+```r
+# Create new column
+mtcars %>% 
+  mutate(hp_per_cyl = hp / cyl)
+
+# Multiple new columns
+mtcars %>%
+  mutate(
+    kml = mpg * 0.425,           # Convert to km/L
+    hp_per_cyl = hp / cyl,
+    is_powerful = hp > 150
+  )
+
+# Use newly created columns
+mtcars %>%
+  mutate(
+    hp_per_cyl = hp / cyl,
+    rating = ifelse(hp_per_cyl > 50, "High", "Low")
+  )
+
+# Modify existing column
+mtcars %>%
+  mutate(mpg = round(mpg, 0))
+
+# Conditional mutation
+mtcars %>%
+  mutate(
+    efficiency = case_when(
+      mpg > 25 ~ "High",
+      mpg > 20 ~ "Medium",
+      TRUE ~ "Low"
+    )
+  )
+```
+
+---
+
+# 4. arrange() — Sort Rows
+
+::: {.callout-note icon="false"}
+## Order your data
+:::
+
+```r
+# Sort ascending (default)
+mtcars %>% arrange(mpg)
+
+# Sort descending
+mtcars %>% arrange(desc(mpg))
+
+# Multiple columns
+mtcars %>% arrange(cyl, desc(mpg))
+
+# Useful with other verbs
+mtcars %>%
+  filter(hp > 100) %>%
+  select(mpg, hp, cyl) %>%
+  arrange(desc(mpg))
+
+# Top N
+mtcars %>%
+  arrange(desc(mpg)) %>%
+  head(5)  # Top 5 most efficient
+
+# Bottom N
+mtcars %>%
+  arrange(mpg) %>%
+  head(5)  # 5 least efficient
+```
+
+---
+
+# 5. summarize() — Aggregate Data
+
+::: {.callout-note icon="false"}
+## Calculate summary statistics
+:::
+
+```r
+# Single summary
+mtcars %>%
+  summarize(mean_mpg = mean(mpg))
+
+# Multiple summaries
+mtcars %>%
+  summarize(
+    avg_mpg = mean(mpg),
+    sd_mpg = sd(mpg),
+    min_mpg = min(mpg),
+    max_mpg = max(mpg),
+    count = n()
+  )
+
+# Useful functions in summarize()
+data %>%
+  summarize(
+    mean = mean(x),
+    median = median(x),
+    sd = sd(x),
+    min = min(x),
+    max = max(x),
+    sum = sum(x),
+    n = n(),                    # Count rows
+    n_distinct = n_distinct(x)  # Count unique values
+  )
+```
+
+---
+
+# 6. group_by() — Group Operations
+
+::: {.callout-important icon="false"}
+**The Game Changer!** 🎯
+
+`group_by()` + `summarize()` = Super powerful analysis
+:::
+
+```r
+# Group by cylinder and summarize
+mtcars %>%
+  group_by(cyl) %>%
+  summarize(
+    count = n(),
+    avg_mpg = mean(mpg),
+    avg_hp = mean(hp)
+  )
+#   cyl count avg_mpg avg_hp
+#   4      11    26.7   82.6
+#   6       7    19.7  122.3
+#   8      14    15.1  209.2
+
+# Multiple grouping variables
+mtcars %>%
+  group_by(cyl, gear) %>%
+  summarize(avg_mpg = mean(mpg))
+
+# Group + mutate (add group stats to each row)
+mtcars %>%
+  group_by(cyl) %>%
+  mutate(
+    mean_mpg_by_cyl = mean(mpg),
+    diff_from_mean = mpg - mean_mpg_by_cyl
+  )
+```
+
+---
+
+## Interactive: dplyr Pipeline Builder
+
+```{=html}
+<!-- Global copy to clipboard function -->
+<script>
+function copyToClipboard(elementId, buttonElement) {
+  const element = document.getElementById(elementId);
+  const text = element.textContent;
+  
+  navigator.clipboard.writeText(text).then(function() {
+    // Visual feedback
+    const originalText = buttonElement.innerHTML;
+    buttonElement.innerHTML = '✓ Copied!';
+    buttonElement.classList.add('copied');
+    
+    setTimeout(function() {
+      buttonElement.innerHTML = originalText;
+      buttonElement.classList.remove('copied');
+    }, 2000);
+  }).catch(function(err) {
+    console.error('Failed to copy:', err);
+    buttonElement.innerHTML = '❌ Error';
+    setTimeout(function() {
+      buttonElement.innerHTML = '📋 Copy';
+    }, 2000);
+  });
+}
+</script>
+
+<div class="interactive-tool">
+  <h3>🔧 Build Your dplyr Pipeline!</h3>
+  
+  <div class="tool-controls">
+    <div class="control-group">
+      <label>Dataset:</label>
+      <select id="dplyr-data">
+        <option value="mtcars">mtcars (cars)</option>
+        <option value="iris">iris (flowers)</option>
+        <option value="diamonds">diamonds</option>
+      </select>
+    </div>
+  </div>
+  
+  <div id="pipeline-steps">
+    <div class="pipeline-step" style="background: #f8f9fa; padding: 10px; margin: 8px 0; border-radius: 4px; border-left: 4px solid #3498db;">
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <select class="step-verb" onchange="updateStepInputs(this)" style="padding: 4px; font-size: 0.9em;">
+          <option value="select">select()</option>
+          <option value="filter">filter()</option>
+          <option value="mutate">mutate()</option>
+          <option value="arrange">arrange()</option>
+          <option value="group_by">group_by()</option>
+          <option value="summarize">summarize()</option>
+        </select>
+        <input type="text" class="step-args" placeholder="arguments" style="flex: 1; padding: 4px; font-size: 0.9em;">
+        <button onclick="removeStep(this)" style="padding: 4px 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;">✕</button>
+      </div>
+      <div class="step-hint" style="font-size: 0.75em; color: #666; margin-top: 4px;">
+        Example: mpg, cyl, hp
+      </div>
+    </div>
+  </div>
+  
+  <div class="tool-buttons">
+    <button class="tool-button secondary" onclick="addPipelineStep()">➕ Add Step</button>
+    <button class="tool-button" onclick="generatePipelineCode()">Generate Code</button>
+    <button class="tool-button secondary" onclick="showPipelineExamples()">Examples</button>
+    <button class="tool-button secondary" onclick="clearPipelineTool()">Clear</button>
+  </div>
+  
+  <div class="tool-output-container">
+    <button class="copy-button" onclick="copyToClipboard('pipeline-output', this)">📋 Copy</button>
+    <div class="tool-output" id="pipeline-output">Build your pipeline and click "Generate Code"!</div>
+  </div>
+</div>
+
+<script>
+const stepHints = {
+  select: "Column names: mpg, cyl, hp or mpg:hp",
+  filter: "Condition: mpg > 20 or cyl == 4",
+  mutate: "new_col = expression: kml = mpg * 0.425",
+  arrange: "Column names: mpg or desc(mpg)",
+  group_by: "Grouping columns: cyl, gear",
+  summarize: "name = function(col): avg = mean(mpg)"
+};
+
+function updateStepInputs(select) {
+  const step = select.closest('.pipeline-step');
+  const hint = step.querySelector('.step-hint');
+  const verb = select.value;
+  hint.textContent = 'Example: ' + stepHints[verb];
+}
+
+function addPipelineStep() {
+  const container = document.getElementById('pipeline-steps');
+  const div = document.createElement('div');
+  div.className = 'pipeline-step';
+  div.style = 'background: #f8f9fa; padding: 10px; margin: 8px 0; border-radius: 4px; border-left: 4px solid #3498db;';
+  div.innerHTML = `
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <select class="step-verb" onchange="updateStepInputs(this)" style="padding: 4px; font-size: 0.9em;">
+        <option value="select">select()</option>
+        <option value="filter">filter()</option>
+        <option value="mutate">mutate()</option>
+        <option value="arrange">arrange()</option>
+        <option value="group_by">group_by()</option>
+        <option value="summarize">summarize()</option>
+      </select>
+      <input type="text" class="step-args" placeholder="arguments" style="flex: 1; padding: 4px; font-size: 0.9em;">
+      <button onclick="removeStep(this)" style="padding: 4px 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;">✕</button>
+    </div>
+    <div class="step-hint" style="font-size: 0.75em; color: #666; margin-top: 4px;">
+      Example: mpg, cyl, hp
+    </div>
+  `;
+  container.appendChild(div);
+}
+
+function removeStep(button) {
+  const step = button.closest('.pipeline-step');
+  if (document.querySelectorAll('.pipeline-step').length > 1) {
+    step.remove();
+  }
+}
+
+function generatePipelineCode() {
+  const dataset = document.getElementById('dplyr-data').value;
+  const steps = document.querySelectorAll('.pipeline-step');
+  
+  let code = `library(tidyverse)\n\n`;
+  code += `# Load data\n`;
+  code += `data(${dataset})\n\n`;
+  code += `# Pipeline\n`;
+  code += `result <- ${dataset} %>%\n`;
+  
+  const lines = [];
+  steps.forEach((step, idx) => {
+    const verb = step.querySelector('.step-verb').value;
+    const args = step.querySelector('.step-args').value.trim();
+    
+    if (args) {
+      lines.push(`  ${verb}(${args})`);
+    }
+  });
+  
+  if (lines.length === 0) {
+    document.getElementById('pipeline-output').textContent = 
+      "❌ Add arguments to at least one step!";
+    return;
+  }
+  
+  code += lines.join(' %>%\n');
+  code += `\n\n# View result\n`;
+  code += `result\n`;
+  code += `# Or: View(result) in RStudio`;
+  
+  document.getElementById('pipeline-output').textContent = code;
+}
+
+function showPipelineExamples() {
+  let code = `# Common dplyr Pipeline Patterns\n\n`;
+  
+  code += `# Example 1: Filter, select, arrange\n`;
+  code += `mtcars %>%\n`;
+  code += `  filter(mpg > 20) %>%\n`;
+  code += `  select(mpg, cyl, hp) %>%\n`;
+  code += `  arrange(desc(mpg))\n\n`;
+  
+  code += `# Example 2: Create new column, filter on it\n`;
+  code += `mtcars %>%\n`;
+  code += `  mutate(hp_per_cyl = hp / cyl) %>%\n`;
+  code += `  filter(hp_per_cyl > 50) %>%\n`;
+  code += `  select(mpg, hp_per_cyl)\n\n`;
+  
+  code += `# Example 3: Group and summarize\n`;
+  code += `mtcars %>%\n`;
+  code += `  group_by(cyl) %>%\n`;
+  code += `  summarize(\n`;
+  code += `    count = n(),\n`;
+  code += `    avg_mpg = mean(mpg),\n`;
+  code += `    avg_hp = mean(hp)\n`;
+  code += `  )\n\n`;
+  
+  code += `# Example 4: Complex pipeline\n`;
+  code += `iris %>%\n`;
+  code += `  filter(Sepal.Length > 5) %>%\n`;
+  code += `  mutate(Sepal.Area = Sepal.Length * Sepal.Width) %>%\n`;
+  code += `  group_by(Species) %>%\n`;
+  code += `  summarize(\n`;
+  code += `    count = n(),\n`;
+  code += `    avg_area = mean(Sepal.Area)\n`;
+  code += `  ) %>%\n`;
+  code += `  arrange(desc(avg_area))`;
+  
+  document.getElementById('pipeline-output').textContent = code;
+}
+
+function clearPipelineTool() {
+  document.getElementById('pipeline-steps').innerHTML = `
+    <div class="pipeline-step" style="background: #f8f9fa; padding: 10px; margin: 8px 0; border-radius: 4px; border-left: 4px solid #3498db;">
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <select class="step-verb" onchange="updateStepInputs(this)" style="padding: 4px; font-size: 0.9em;">
+          <option value="select">select()</option>
+          <option value="filter">filter()</option>
+          <option value="mutate">mutate()</option>
+          <option value="arrange">arrange()</option>
+          <option value="group_by">group_by()</option>
+          <option value="summarize">summarize()</option>
+        </select>
+        <input type="text" class="step-args" placeholder="arguments" style="flex: 1; padding: 4px; font-size: 0.9em;">
+        <button onclick="removeStep(this)" style="padding: 4px 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;">✕</button>
+      </div>
+      <div class="step-hint" style="font-size: 0.75em; color: #666; margin-top: 4px;">
+        Example: mpg, cyl, hp
+      </div>
+    </div>
+  `;
+  document.getElementById('pipeline-output').textContent = 'Build your pipeline and click "Generate Code"!';
+}
+</script>
+```
+
+---
+
+# Data Cleaning: Missing Values
+
+::: {.callout-important icon="false"}
+**Real Data is Messy!**
+
+Learn to handle NA (Not Available) values
+:::
+
+```r
+# Checking for missing values
+is.na(data$column)           # Logical vector
+sum(is.na(data$column))      # Count NAs
+any(is.na(data))             # Any NAs?
+complete.cases(data)         # Rows with no NAs
+
+# Remove rows with ANY NA
+data_clean <- na.omit(data)
+data_clean <- data[complete.cases(data), ]
+
+# Remove rows with NA in specific column
+data_clean <- data %>% filter(!is.na(column_name))
+
+# Replace NA with value
+data %>%
+  mutate(column = replace_na(column, 0))
+
+# Replace NA with mean
+data %>%
+  mutate(column = ifelse(is.na(column), mean(column, na.rm=TRUE), column))
+```
+
+---
+
+# String Manipulation
+
+```r
+library(stringr)
+
+# Common string operations
+data %>%
+  mutate(
+    upper_name = str_to_upper(name),
+    lower_name = str_to_lower(name),
+    name_length = str_length(name),
+    contains_a = str_detect(name, "a"),
+    replaced = str_replace(name, "old", "new"),
+    extracted = str_extract(name, "[A-Z]+")
+  )
+
+# Pattern matching
+data %>%
+  filter(str_detect(column, "pattern"))
+
+# Combining strings
+data %>%
+  mutate(full_name = str_c(first_name, last_name, sep = " "))
+```
+
+---
+
+# Putting It All Together: Real Example
+
+```r
+# Analyze mtcars comprehensively
+analysis <- mtcars %>%
+  # Add row names as a column
+  rownames_to_column("car_name") %>%
+  
+  # Create new variables
+  mutate(
+    efficiency = case_when(
+      mpg > 25 ~ "High",
+      mpg > 20 ~ "Medium",
+      TRUE ~ "Low"
+    ),
+    hp_per_cyl = hp / cyl,
+    weight_class = ifelse(wt > 3.5, "Heavy", "Light")
+  ) %>%
+  
+  # Filter to powerful cars
+  filter(hp > 100) %>%
+  
+  # Select relevant columns
+  select(car_name, mpg, hp, hp_per_cyl, efficiency, weight_class) %>%
+  
+  # Sort by horsepower
+  arrange(desc(hp))
+
+# Group analysis
+summary_by_efficiency <- mtcars %>%
+  mutate(
+    efficiency = case_when(
+      mpg > 25 ~ "High",
+      mpg > 20 ~ "Medium",
+      TRUE ~ "Low"
+    )
+  ) %>%
+  group_by(efficiency) %>%
+  summarize(
+    count = n(),
+    avg_hp = mean(hp),
+    avg_mpg = mean(mpg),
+    avg_weight = mean(wt)
+  )
+```
+
+---
+
+# Quick Challenge! 🧠
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">Which pipeline finds cars with mpg > 20 AND cyl == 4, then calculates average hp?</div>
+  
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkDplyrQuiz(this, false)" style="font-family: monospace; font-size: 0.8em;">
+      mtcars %>% filter(mpg > 20 | cyl == 4) %>% mean(hp)
+    </div>
+    <div class="quiz-option" onclick="checkDplyrQuiz(this, true)" style="font-family: monospace; font-size: 0.8em;">
+      mtcars %>% filter(mpg > 20, cyl == 4) %>% summarize(avg_hp = mean(hp))
+    </div>
+    <div class="quiz-option" onclick="checkDplyrQuiz(this, false)" style="font-family: monospace; font-size: 0.8em;">
+      mtcars %>% select(mpg > 20 & cyl == 4) %>% mean(hp)
+    </div>
+    <div class="quiz-option" onclick="checkDplyrQuiz(this, false)" style="font-family: monospace; font-size: 0.8em;">
+      mtcars %>% group_by(mpg > 20) %>% filter(cyl == 4)
+    </div>
+  </div>
+  
+  <div id="dplyr-quiz-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkDplyrQuiz(element, isCorrect) {
+  document.querySelectorAll('.quiz-option').forEach(opt => {
+    opt.classList.remove('correct', 'incorrect');
+  });
+  
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+  
+  const feedback = document.getElementById('dplyr-quiz-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  
+  if (isCorrect) {
+    feedback.textContent = '✅ Perfect! filter() with comma means AND, and summarize() calculates the mean!';
+  } else {
+    feedback.textContent = '❌ Not quite! Use filter() for rows, comma for AND, and summarize() for aggregation.';
+  }
+}
+</script>
+```
+
+---
+
+# Cheat Sheet: dplyr Verbs
+
+| Task | Function | Example |
+|------|----------|---------|
+| **Select columns** | `select()` | `select(data, col1, col2)` |
+| **Filter rows** | `filter()` | `filter(data, age > 18)` |
+| **Create columns** | `mutate()` | `mutate(data, new = old * 2)` |
+| **Sort** | `arrange()` | `arrange(data, desc(col))` |
+| **Group** | `group_by()` | `group_by(data, category)` |
+| **Aggregate** | `summarize()` | `summarize(data, avg = mean(x))` |
+| **Count** | `count()` | `count(data, category)` |
+| **Rename** | `rename()` | `rename(data, new_name = old_name)` |
+
+---
+
+# Quick Challenges! 🧠
+
+## Challenge 1: Pipe Order
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">What's the correct order for: "Filter cars with mpg > 20, then select cyl and mpg"?</div>
+  
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkPipeChallenge(this, false)">select(cyl, mpg) |> filter(mpg > 20)</div>
+    <div class="quiz-option" onclick="checkPipeChallenge(this, true)">filter(mpg > 20) |> select(cyl, mpg)</div>
+    <div class="quiz-option" onclick="checkPipeChallenge(this, false)">Both work the same</div>
+    <div class="quiz-option" onclick="checkPipeChallenge(this, false)">group_by(mpg) |> filter(mpg > 20)</div>
+  </div>
+  
+  <div id="pipe-challenge-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkPipeChallenge(element, isCorrect) {
+  document.querySelectorAll('#pipe-challenge-feedback').forEach(f => f.previousElementSibling.querySelectorAll('.quiz-option').forEach(opt => {
+    opt.classList.remove('correct', 'incorrect');
+  }));
+  
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+  
+  const feedback = document.getElementById('pipe-challenge-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  
+  if (isCorrect) {
+    feedback.textContent = '✅ Correct! Filter first to reduce data, then select columns. More efficient!';
+  } else {
+    feedback.textContent = '❌ Try again! Generally filter() first (reduce rows), then select() (reduce columns).';
+  }
+}
+</script>
+```
+
+---
+
+## Challenge 2: Mutate vs Summarize
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">Which creates a NEW column while keeping all rows?</div>
+  
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkMutateChallenge(this, true)">mutate()</div>
+    <div class="quiz-option" onclick="checkMutateChallenge(this, false)">summarize()</div>
+    <div class="quiz-option" onclick="checkMutateChallenge(this, false)">filter()</div>
+    <div class="quiz-option" onclick="checkMutateChallenge(this, false)">arrange()</div>
+  </div>
+  
+  <div id="mutate-challenge-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkMutateChallenge(element, isCorrect) {
+  document.querySelectorAll('#mutate-challenge-feedback').forEach(f => f.previousElementSibling.querySelectorAll('.quiz-option').forEach(opt => {
+    opt.classList.remove('correct', 'incorrect');
+  }));
+  
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+  
+  const feedback = document.getElementById('mutate-challenge-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  
+  if (isCorrect) {
+    feedback.textContent = '✅ Correct! mutate() adds columns without changing row count. summarize() collapses to summary stats.';
+  } else {
+    feedback.textContent = '❌ Not quite! mutate() keeps all rows and adds columns. summarize() reduces to aggregates.';
+  }
+}
+</script>
+```
+
+---
+
+## Challenge 3: Group By Logic
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">After <code>group_by(category)</code>, what does <code>summarize(avg = mean(price))</code> return?</div>
+  
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkGroupChallenge(this, false)">One overall mean price</div>
+    <div class="quiz-option" onclick="checkGroupChallenge(this, true)">One mean price per category</div>
+    <div class="quiz-option" onclick="checkGroupChallenge(this, false)">Original data with new column</div>
+    <div class="quiz-option" onclick="checkGroupChallenge(this, false)">Error: need filter() first</div>
+  </div>
+  
+  <div id="group-challenge-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkGroupChallenge(element, isCorrect) {
+  document.querySelectorAll('#group-challenge-feedback').forEach(f => f.previousElementSibling.querySelectorAll('.quiz-option').forEach(opt => {
+    opt.classList.remove('correct', 'incorrect');
+  }));
+  
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+  
+  const feedback = document.getElementById('group-challenge-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  
+  if (isCorrect) {
+    feedback.textContent = '✅ Correct! group_by() + summarize() = one row per group with aggregate statistics.';
+  } else {
+    feedback.textContent = '❌ Try again! group_by() splits data into groups, summarize() calculates stats for each group.';
+  }
+}
+</script>
+```
+
+---
+
+## Challenge 4: Code Writing
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    <strong>Write code</strong> using mtcars: Find the average mpg for each number of cylinders (cyl), but only for cars with hp > 100.
+    <button class="tool-button" onclick="showDplyrChallenge()" style="margin-top: 10px;">Show Solution</button>
+  </div>
+  
+  <div id="dplyr-challenge-solution" style="display: none; margin-top: 15px;">
+    <div class="quiz-feedback correct">
+      <strong>Solution:</strong><br>
+      <code style="display: block; background: #f5f5f5; padding: 10px; margin-top: 8px; border-radius: 4px;">
+library(dplyr)<br>
+<br>
+mtcars |><br>
+&nbsp;&nbsp;filter(hp > 100) |><br>
+&nbsp;&nbsp;group_by(cyl) |><br>
+&nbsp;&nbsp;summarize(avg_mpg = mean(mpg))<br>
+<br>
+# Key: filter() → group_by() → summarize()
+      </code>
+    </div>
+  </div>
+</div>
+
+<script>
+function showDplyrChallenge() {
+  const solution = document.getElementById('dplyr-challenge-solution');
+  solution.style.display = 'block';
+  event.target.textContent = '✓ Solution Shown';
+  event.target.disabled = true;
+}
+</script>
+```
+
+---
+
+# Recap & Next Week
+
+::: {.callout-tip icon="true"}
+## What We Learned Today
+
+✅ Tidyverse ecosystem  
+✅ Pipe operator %>% for readable code  
+✅ Six core dplyr verbs  
+✅ Data cleaning techniques  
+✅ Interactive dplyr pipeline builder
+:::
+
+::: {.callout-important}
+## For Next Class: Data Visualization (Base R & ggplot2)
+
+📚 **Practice:** Build dplyr pipelines with mtcars, iris, diamonds  
+💻 **Experiment:** Combine verbs in creative ways  
+🔮 **Preview:** We'll start visualizing data with plots!
+:::
+
+---
+
+<!-- 
+# Thank You! 🚀
+
+::: {style="text-align: center; font-size: 1.2em; color: #27AE60; margin-top: 50px;"}
+**Master the pipe, master data manipulation!**
+
+Practice with the interactive pipeline builder. Try combining all six verbs in one workflow!
+
+**Next time:** Making beautiful visualizations! 
+::: -->

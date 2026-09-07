@@ -1,5 +1,5 @@
 ---
-title: "Week 2: R Fundamentals Part 2"
+title: "SlideDeck 2: R Fundamentals Part 2"
 subtitle: "Data Structures & Advanced Concepts"
 author: "CS301 - Data Science with R"
 # date: "Fall 2026"
@@ -19,7 +19,7 @@ format:
     margin: 0.05
 ---
 
-# Welcome Back! 🎉
+# What's on for today?
 
 ::: {.callout-tip icon="true"}
 ## Today's Journey
@@ -37,7 +37,7 @@ format:
 
 ---
 
-# Quick Recap: Vectors 📊
+# Quick Recap: Vectors 
 
 ```r
 # Remember vectors? All elements same type
@@ -119,7 +119,7 @@ nested <- list(
 
 ---
 
-## Interactive: List Builder 🎮
+## Interactive: List Builder 
 
 ```{=html}
 <!-- Global copy to clipboard function -->
@@ -324,7 +324,7 @@ function clearListTool() {
 ## Creating Matrices
 
 ::: {.callout-note icon="false"}
-## Matrices: Rows × Columns of Numbers 🎯
+## Matrices: Rows × Columns of Numbers 
 
 Matrices are 2-dimensional arrays of **the same type** (usually numeric)
 :::
@@ -629,14 +629,14 @@ function clearMatrixTool() {
 
 ---
 
-# Part 3: Data Frames - The Star of R! ⭐
+# Part 3: Data Frames - The Star of R! 
 
 ---
 
 ## What Are Data Frames?
 
-::: {.callout-important icon="false"}
-**Data Frames: Excel-like Tables in R** 📊
+::: {.callout icon="false"}
+**Data Frames: Excel-like Tables in R** 
 
 Think of data frames as spreadsheets:
 - **Rows** = observations/cases
@@ -667,7 +667,7 @@ students
 
 ::: {.columns}
 ::: {.column}
-**Mixed Data Types** 🎨
+**Mixed Data Types** 
 
 ```r
 # Different types per column!
@@ -711,9 +711,35 @@ df[2, 3]         # Row 2, Column 3
 :::
 :::
 
+
+
+::: {.columns}
+
+::: {.column}
+
+<center>
+![](graphics/orangeFrame.png){width=50%}
+</center>
+
+:::
+
+::: {.column}
+<center>
+![](graphics/blueFrame.png){width=50%}
+</center>
+
+:::
+
+:::
+
+
+
+<!-- ![](graphics/orangeFrame.png){width=20%}
+![](graphics/blueFrame.png){width=20%} -->
+
 ---
 
-## Interactive: Data Frame Creator 🎮
+## Interactive: Data Frame Creator 
 
 ```{=html}
 <div class="interactive-tool">
@@ -968,14 +994,14 @@ function clearDFTool() {
 
 ---
 
-# Part 4: Reading Data Files 📁
+# Part 4: Reading Data Files
 
 ---
 
 ## Reading CSV Files
 
 ::: {.callout-tip icon="true"}
-## CSV: Comma-Separated Values 📄
+## CSV: Comma-Separated Values
 
 Most common format for sharing data!
 :::
@@ -1004,7 +1030,7 @@ data <- read_csv("mydata.csv")  # Smarter defaults!
 
 ---
 
-## Built-in Datasets in R 🎁
+## Built-in Datasets in R
 
 ::: {.callout-note icon="false"}
 ## R Comes with Practice Data!
@@ -1206,7 +1232,7 @@ function showDataFrameChallenge() {
 
 ---
 
-# Comparing Data Structures 📊
+# Comparing Data Structures
 
 
 ::: {.callout}
@@ -1227,7 +1253,7 @@ function showDataFrameChallenge() {
 
 ---
 
-# Recap & Next Week 🎯
+# Recap & Next Week
 
 ::: {.callout-tip icon="true"}
 ## What We Learned Today
@@ -1249,7 +1275,7 @@ function showDataFrameChallenge() {
 
 ---
 
-# Quick Reference: Data Structures 📋
+# Quick Reference: Data Structures
 
 ::: {.columns}
 ::: {.column}
@@ -1289,7 +1315,7 @@ read_csv("file.csv")
 
 ---
 
-# SunSpots Dataset Analysis 🌞
+# SunSpots Dataset Analysis
 
 
 ::: {.callout}

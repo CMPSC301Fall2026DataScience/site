@@ -1,5 +1,5 @@
 ---
-title: "Week 1: R Fundamentals Part 1"
+title: "SlideDeck 1: R Fundamentals Part 1"
 subtitle: "Welcome to Data Science with R!"
 # author: "CS301 - Data Science with R"
 author: Oliver Bonham-Carter

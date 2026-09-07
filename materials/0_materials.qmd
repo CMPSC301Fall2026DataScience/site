@@ -66,7 +66,8 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **R Fundamentals Part 2 (Data Structures & Advanced Concepts)**
   - <a href="week02_data_structures.html" target="_blank">Slides</a>
 
-
+<!-- - **Data Manipulation** -->
+  <!-- - <a href="week03_data_manipulation.html" target="_blank">Slides</a> -->
 
 ---
 
