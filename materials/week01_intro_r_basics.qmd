@@ -1211,7 +1211,8 @@ function clearExprTool() {
 
 ---
 
-# Recap & Next Steps
+
+# Recap & Up Next
 
 ::: {.callout-tip icon="true"}
 ## What We Learned Today

@@ -1075,7 +1075,11 @@ summary(diamonds)
 
 ---
 
-# Quick Challenge! 🧠
+# Quick Challenges!
+
+<center>
+![](graphics/think.png){width=80%}
+</center>
 
 ## Challenge 1: Data Frame Access
 
@@ -1113,6 +1117,10 @@ function checkDFQuiz(element, isCorrect) {
 }
 </script>
 ```
+
+<center>
+![](graphics/think.png){width=20%}
+</center>
 
 ---
 
@@ -1153,6 +1161,10 @@ function checkMatrixQuiz(element, isCorrect) {
 </script>
 ```
 
+<center>
+![](graphics/think.png){width=20%}
+</center>
+
 ---
 
 ## Challenge 3: List vs Data Frame
@@ -1192,6 +1204,10 @@ function checkListQuiz(element, isCorrect) {
 </script>
 ```
 
+<center>
+![](graphics/think.png){width=20%}
+</center>
+
 ---
 
 ## Challenge 4: Code Writing
@@ -1230,6 +1246,10 @@ function showDataFrameChallenge() {
 </script>
 ```
 
+<center>
+![](graphics/think.png){width=20%}
+</center>
+
 ---
 
 # Comparing Data Structures
@@ -1249,28 +1269,6 @@ function showDataFrameChallenge() {
 
 ::: {.callout-important}
 **Key Insight:** Data frames are your go-to for most data science work! They're like spreadsheets with superpowers. 💪
-:::
-
----
-
-# Recap & Next Week
-
-::: {.callout-tip icon="true"}
-## What We Learned Today
-
-✅ Lists — Flexible containers for mixed data  
-✅ Matrices — 2D numeric arrays  
-✅ Data Frames — The heart of R data analysis  
-✅ Reading CSV files  
-✅ Interactive tools for building data structures
-:::
-
-::: {.callout-important}
-## For Next Class: Data Manipulation with dplyr
-
-📚 **Practice:** Create data frames, explore built-in datasets  
-💻 **Install:** `install.packages("tidyverse")`  
-🔮 **Preview:** We'll learn the powerful dplyr verbs for data wrangling!
 :::
 
 ---
@@ -1315,7 +1313,279 @@ read_csv("file.csv")
 
 ---
 
-# SunSpots Dataset Analysis
+# Visualizing Data with `plot()`
+
+::: {.callout-tip icon="true"}
+## Base R Plots Start with Two Columns
+
+Use `plot(x, y)` to place one numeric variable on the horizontal axis and another on the vertical axis. Add a title, labels, colors, and point styles to make the graph easier to read.
+:::
+
+```r
+# Create synthetic data for a small class experiment
+study_data <- data.frame(
+  hours_studied = c(1, 2, 3, 4, 5, 6, 7, 8),
+  exam_score = c(58, 61, 67, 70, 76, 81, 86, 91)
+)
+
+# Plot one column against another
+plot(study_data$hours_studied, study_data$exam_score,
+     main = "Study Time and Exam Score",
+     xlab = "Hours studied",
+     ylab = "Exam score",
+     pch = 19,
+     col = "steelblue")
+
+# Add a fitted trend line to highlight the relationship
+abline(lm(exam_score ~ hours_studied, data = study_data),
+       col = "firebrick", lwd = 2)
+```
+
+---
+
+## Reading a `plot()` Call
+
+::: {.columns}
+::: {.column}
+```r
+plot(
+  study_data$hours_studied, # x values
+  study_data$exam_score,    # y values
+  type = "b",              # points and lines
+  pch = 19,                 # point shape
+  col = "steelblue",       # color
+  main = "Study Time and Exam Score",
+  xlab = "Hours studied",
+  ylab = "Exam score"
+)
+```
+:::
+
+::: {.column}
+**Useful `plot()` options**
+
+* `type = "p"` makes points (the default)
+* `type = "l"` makes lines
+* `type = "b"` makes both points and lines
+* `pch` chooses the point shape
+* `col` sets the data color
+* `main`, `xlab`, and `ylab` add readable text
+:::
+:::
+
+
+```{r}
+study_data <- data.frame(
+  hours_studied = c(1, 2, 3, 4, 5, 6, 7, 8),
+  exam_score = c(58, 61, 67, 70, 76, 81, 86, 91)
+)
+plot(
+  study_data$hours_studied, # x values
+  study_data$exam_score,    # y values
+  type = "b",              # points and lines
+  pch = 19,                 # point shape
+  col = "steelblue",       # color
+  main = "Study Time and Exam Score",
+  xlab = "Hours studied",
+  ylab = "Exam score"
+)
+```
+
+
+
+---
+
+## A More Complex Plot with Built-In Data
+
+R includes the `iris` data frame: flower measurements for three species. Passing several numeric columns to `plot()` creates a scatterplot matrix, so we can compare every measurement against every other one at once.
+
+```r
+# One color for each iris species
+iris_colors <- c("tomato", "goldenrod", "steelblue")[as.numeric(iris$Species)]
+
+# plot.data.frame() creates a scatterplot matrix for the four measurements
+plot(iris[1:4],
+     main = "Relationships Among Iris Measurements",
+     pch = 19,
+     col = iris_colors)
+
+legend("topright",
+       legend = levels(iris$Species),
+       col = c("tomato", "goldenrod", "steelblue"),
+       pch = 19,
+       bty = "n")
+```
+
+---
+
+## Interactive: `plot()` Code Generator
+
+```{=html}
+<div class="interactive-tool">
+  <h3>Build a Base R Plot</h3>
+
+  <div class="tool-controls">
+    <div class="control-group">
+      <label for="plot-data-source">Data</label>
+      <select id="plot-data-source" onchange="updatePlotColumns()">
+        <option value="study_data">Synthetic study data</option>
+        <option value="mtcars">Built-in mtcars</option>
+        <option value="iris">Built-in iris</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label for="plot-x-column">X-axis data</label>
+      <select id="plot-x-column"></select>
+    </div>
+
+    <div class="control-group">
+      <label for="plot-y-column">Y-axis data</label>
+      <select id="plot-y-column"></select>
+    </div>
+
+    <div class="control-group">
+      <label for="plot-type">Plot type</label>
+      <select id="plot-type">
+        <option value="p">Points</option>
+        <option value="l">Lines</option>
+        <option value="b">Points and lines</option>
+        <option value="h">Vertical lines</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label for="plot-title">Title</label>
+      <input type="text" id="plot-title" value="My Data Plot">
+    </div>
+
+    <div class="control-group">
+      <label for="plot-x-label">X-axis label</label>
+      <input type="text" id="plot-x-label" value="X values">
+    </div>
+
+    <div class="control-group">
+      <label for="plot-y-label">Y-axis label</label>
+      <input type="text" id="plot-y-label" value="Y values">
+    </div>
+
+    <div class="control-group">
+      <label for="plot-color">Color</label>
+      <select id="plot-color">
+        <option value="steelblue">Blue</option>
+        <option value="firebrick">Red</option>
+        <option value="darkgreen">Green</option>
+        <option value="purple">Purple</option>
+        <option value="black">Black</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label for="plot-point-style">Point shape</label>
+      <select id="plot-point-style">
+        <option value="19">Solid circle</option>
+        <option value="1">Open circle</option>
+        <option value="17">Triangle</option>
+        <option value="15">Square</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="tool-buttons">
+    <button class="tool-button" onclick="generatePlotCode()">Generate Code</button>
+    <button class="tool-button secondary" onclick="resetPlotGenerator()">Reset</button>
+  </div>
+
+  <div class="tool-output-container">
+    <button class="copy-button" onclick="copyToClipboard('plot-output', this)">Copy</button>
+    <div class="tool-output" id="plot-output">Choose options and select "Generate Code".</div>
+  </div>
+</div>
+
+<script>
+const plotDataColumns = {
+  study_data: ["hours_studied", "exam_score"],
+  mtcars: ["mpg", "cyl", "disp", "hp", "wt", "qsec"],
+  iris: ["Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width"]
+};
+
+function updatePlotColumns() {
+  const source = document.getElementById('plot-data-source').value;
+  const columns = plotDataColumns[source];
+  const xColumn = document.getElementById('plot-x-column');
+  const yColumn = document.getElementById('plot-y-column');
+
+  xColumn.innerHTML = '';
+  yColumn.innerHTML = '';
+  columns.forEach(function(column, index) {
+    xColumn.add(new Option(column, column, index === 0, index === 0));
+    yColumn.add(new Option(column, column, index === 1, index === 1));
+  });
+
+  document.getElementById('plot-x-label').value = columns[0];
+  document.getElementById('plot-y-label').value = columns[1];
+  document.getElementById('plot-title').value = source === 'study_data'
+    ? 'Study Time and Exam Score'
+    : `${columns[1]} by ${columns[0]}`;
+}
+
+function rString(value) {
+  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+function generatePlotCode() {
+  const source = document.getElementById('plot-data-source').value;
+  const xColumn = document.getElementById('plot-x-column').value;
+  const yColumn = document.getElementById('plot-y-column').value;
+  const type = document.getElementById('plot-type').value;
+  const title = rString(document.getElementById('plot-title').value || 'My Data Plot');
+  const xLabel = rString(document.getElementById('plot-x-label').value || xColumn);
+  const yLabel = rString(document.getElementById('plot-y-label').value || yColumn);
+  const color = document.getElementById('plot-color').value;
+  const pointStyle = document.getElementById('plot-point-style').value;
+
+  let code = '';
+  if (source === 'study_data') {
+    code += '# Synthetic data\n';
+    code += 'study_data <- data.frame(\n';
+    code += '  hours_studied = c(1, 2, 3, 4, 5, 6, 7, 8),\n';
+    code += '  exam_score = c(58, 61, 67, 70, 76, 81, 86, 91)\n';
+    code += ')\n\n';
+  }
+
+  code += `plot(${source}$${xColumn}, ${source}$${yColumn},\n`;
+  code += `     type = "${type}",\n`;
+  code += `     main = "${title}",\n`;
+  code += `     xlab = "${xLabel}",\n`;
+  code += `     ylab = "${yLabel}",\n`;
+  code += `     col = "${color}",\n`;
+  code += `     pch = ${pointStyle})`;
+
+  document.getElementById('plot-output').textContent = code;
+}
+
+function resetPlotGenerator() {
+  document.getElementById('plot-data-source').value = 'study_data';
+  document.getElementById('plot-type').value = 'p';
+  document.getElementById('plot-color').value = 'steelblue';
+  document.getElementById('plot-point-style').value = '19';
+  updatePlotColumns();
+  document.getElementById('plot-output').textContent = 'Choose options and select "Generate Code".';
+}
+
+updatePlotColumns();
+</script>
+```
+
+---
+
+# It's Time for Some Light Research!!
+
+<center>
+![](graphics/lightResearch.png){width=50%}
+</center>
+
+## SunSpots Dataset Analysis
 
 
 ::: {.callout}
@@ -1326,7 +1596,7 @@ We are going to analyze a dataset called `Sunspots` which contains monthly sunsp
 ![](graphics/sunSpots.png){width=50%}
 </center>
 
-# Articulating the Research Question
+## Articulating the Research Question
 
 ::: {.callout-important}
 
@@ -1339,7 +1609,7 @@ We are going to analyze a dataset called `Sunspots` which contains monthly sunsp
 :::
 
 
-# Sunspots Analysis Code
+## Sunspots Analysis Code
 
 ```r
 
@@ -1397,7 +1667,7 @@ print(fit$order) # Shows the optimal autoregressive lag order
 
 
 
-# Activity by Month Visualization
+## Activity by Month Visualization
 
 ```r
 
@@ -1409,6 +1679,10 @@ df <- data.frame(
   Count = as.numeric(sunspots_subset)
 )
 
+# We will use a new way to visualize the data by month using ggplot2.
+# This will allow us to see the sunspot activity for each calendar
+# month across the years.
+
 ggplot(df, aes(x = Year, y = Count)) +
   geom_line(color = "steelblue") +
   facet_wrap(~ Month, ncol = 4) +
@@ -1418,13 +1692,14 @@ ggplot(df, aes(x = Year, y = Count)) +
   theme_light()
 ```
 
-# Month Visualization Output
+## Month Visualization Output
+
 <center>
 ![](graphics/sunspots_byMonths.png){width=70%}
 </center>
 
 
-# Activity by Year Visualization
+## Activity by Year Visualization
 
 ```r
 
@@ -1441,11 +1716,58 @@ ggplot(df, aes(x = YearGroup, y = Count, fill = YearGroup)) +
 
 ```
 
-# Year Visualization Output
+## Year Visualization Output
 
 <center>
 ![](graphics/sunspots_byYears.png){width=70%}
 </center>
+
+## Observations and Further Analyses?
+
+
+::: {.callout}
+
+**Observation:** The data reveals a distinct 11-year solar cycle, with peaks in sunspot activity occurring approximately every 11 years. The activity is not evenly distributed across the years, with some periods showing higher activity than others.
+
+:::
+
+
+
+::: {.callout-important icon="true"}
+
+**Further Analyses:** Does your analysis of the sunspot data reveal any *other* patterns or cycles? How might these patterns be useful for predicting future sunspot activity or understanding solar phenomena?
+
+:::
+
+::: {.callout-tip icon="false"}
+
+**Even Further Analyses:** Remember that this is just a simplified analysis. More advanced time series techniques (like ARIMA modeling, spectral analysis, or machine learning approaches) could provide deeper insights into the sunspot data and its predictive capabilities.
+
+:::
+---
+
+# Recap & Up Next
+
+::: {.callout-tip icon="true"}
+## From Today
+
+✅ Lists — Flexible containers for mixed data  
+✅ Matrices — 2D numeric arrays  
+✅ Data Frames — The heart of R data analysis  
+✅ Reading CSV files  
+✅ Interactive tools for building data structures  
+✅ Basic plotting with `plot()`   
+✅ Some experience with `ggplot2` (more coming soon)
+
+:::
+
+::: {.callout-important}
+## Up Next: Data Manipulation with dplyr
+
+📚 **Practice:** Create data frames, explore built-in datasets  
+💻 **Install:** `install.packages("tidyverse")`  
+🔮 **Preview:** We'll learn the powerful dplyr verbs for data wrangling!
+:::
 
 ---
 

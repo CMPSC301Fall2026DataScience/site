@@ -738,6 +738,10 @@ function checkDplyrQuiz(element, isCorrect) {
 </script>
 ```
 
+<center>
+![](graphics/think.png){width=20%}
+</center>
+
 ---
 
 # Cheat Sheet: dplyr Verbs
@@ -755,7 +759,11 @@ function checkDplyrQuiz(element, isCorrect) {
 
 ---
 
-# Quick Challenges! 🧠
+# Quick Challenges!
+
+<center>
+![](graphics/think.png){width=80%}
+</center>
 
 ## Challenge 1: Pipe Order
 
@@ -793,6 +801,10 @@ function checkPipeChallenge(element, isCorrect) {
 }
 </script>
 ```
+
+<center>
+![](graphics/think.png){width=20%}
+</center>
 
 ---
 
@@ -833,6 +845,10 @@ function checkMutateChallenge(element, isCorrect) {
 </script>
 ```
 
+<center>
+![](graphics/think.png){width=20%}
+</center>
+
 ---
 
 ## Challenge 3: Group By Logic
@@ -872,6 +888,10 @@ function checkGroupChallenge(element, isCorrect) {
 </script>
 ```
 
+<center>
+![](graphics/think.png){width=20%}
+</center>
+
 ---
 
 ## Challenge 4: Code Writing
@@ -910,9 +930,14 @@ function showDplyrChallenge() {
 </script>
 ```
 
+<center>
+![](graphics/think.png){width=20%}
+</center>
+
 ---
 
-# Recap & Next Week
+
+# Recap & Up Next
 
 ::: {.callout-tip icon="true"}
 ## What We Learned Today
