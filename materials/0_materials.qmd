@@ -17,7 +17,11 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 
 ---
 
+::: {.callout-note}
+
 - **Project Downloads**: [Starter files, tutorials, and other downloadable project materials](1_project_files.html)
+
+:::
 
 ---
 
