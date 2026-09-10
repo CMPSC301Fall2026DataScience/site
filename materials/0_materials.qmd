@@ -70,6 +70,10 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **R Fundamentals Part 2 (Data Structures & Advanced Concepts)**
   - <a href="week02_data_structures.html" target="_blank">Slides</a>
 
+- **Activity 2**: Data Origins
+  - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/activity02/accept" target="_blank">Activity02</a>  
+
+
 <!-- - **Data Manipulation** -->
   <!-- - <a href="week03_data_manipulation.html" target="_blank">Slides</a> -->
 
