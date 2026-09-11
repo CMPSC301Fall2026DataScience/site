@@ -759,8 +759,6 @@ function checkMutateChallenge(element, isCorrect) {
 
 ---
 
-# More dplyr Challenges
-
 ## Challenge 3: Filter Conditions
 
 ```{=html}
@@ -921,7 +919,25 @@ mtcars |>
 
 ## Challenge 7: Create a Useful Column
 
+::: {.callout}
+
+::: {style="color: #0f0fda; font-size: 1.3em; text-align: center; margin-top: 0.5em;"} 
+
 Using `mtcars`, add a column named `power_per_weight` equal to horsepower divided by weight. Keep only cars with `power_per_weight` greater than 50, then show `mpg`, `hp`, `wt`, and the new column.
+
+:::
+
+:::
+
+
+<center>
+![](graphics/letsTry.png){width=50%}
+</center>
+
+<center>
+![](graphics/think.png){width=20%}
+</center>
+
 
 ---
 
@@ -938,7 +954,23 @@ mtcars |>
 
 ## Challenge 8: Summarize by Group
 
+::: {.callout}
+
+::: {style="color: #0f0fda; font-size: 1.3em; text-align: center; margin-top: 0.5em;"} 
+
 Using `iris`, calculate the number of flowers and the average petal length for each species. Sort the result from the largest average petal length to the smallest.
+
+:::
+
+:::
+
+<center>
+![](graphics/letsTry.png){width=50%}
+</center>
+
+<center>
+![](graphics/think.png){width=20%}
+</center>
 
 ---
 
