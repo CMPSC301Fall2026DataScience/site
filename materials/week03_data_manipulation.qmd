@@ -19,6 +19,13 @@ format:
     margin: 0.05
 ---
 
+<!-- Add blue text: -->
+<!-- ::: {style="color: #2E86C1; font-size: 0.9em; text-align: center; margin-top: 0.5em;"}  -->
+
+<!-- ::: {.callout} -->
+<!-- my blue text -->
+<!-- ::: -->
+
 
 # What's on for today?
 
@@ -40,7 +47,7 @@ format:
 
 # The Tidyverse Revolution 
 
-::: {.callout-important icon="false"}
+::: {.callout}
 **Tidyverse: R's Modern Data Science Toolkit**
 
 A collection of packages designed to work together seamlessly!
@@ -66,17 +73,27 @@ library(tidyverse)
 
 ---
 
-# The Pipe Operator: %>% 
+# The Pipe Operators: `%>%` and `|>` 
+
+
+<center>
+![](graphics/andThen.png){width=70%}
+</center>
 
 ::: {.callout-note icon="false"}
 ## Make Your Code Read Like a Story!
 
-The pipe %>% passes output from one function to the next
+The pipe `%>%` (and also written as `|>`) passes output from one function to the next.
 :::
+
+---
+
+## With and Without Pipes
 
 ::: {.columns}
 ::: {.column}
 **Without Pipes**
+
 
 ```r
 # Nested (hard to read)
@@ -114,13 +131,68 @@ result <- mtcars %>%
 :::
 :::
 
-::: {.callout-tip}
+::: {.callout}
 **Keyboard shortcut:** Cmd/Ctrl + Shift + M = %>%
 :::
 
+
+::: {.callout-tip}
+You are not the only person reading your code. Write it *readably* for humans, not just computers!
+
+:::
+
+
 ---
 
-# The dplyr Verbs 🔧
+# Looking for a single book in many?
+
+ 
+<center>
+![](graphics/w3_graphics/bookshop.png){width=60%}
+</center>
+
+
+::: {style="color: #4b2ec1; font-size: 0.7em; text-align: center; margin-top: 0.5em;"} 
+
+Imagine looking for a single book in a messy bookstore. Do you search by genre, author, or title? How to separate the book from the others? 
+
+::: 
+
+## To Find things, we can use filters!
+
+
+
+::: {.columns}
+
+::: {.column}
+
+![](graphics/w3_graphics/coffee_in_filter.png){width=75%}
+
+
+:::
+
+::: {.column}
+
+![](graphics/w3_graphics/coffee_filters.png){width=80%}
+
+
+:::
+
+:::
+
+
+::: {.callout-note}
+
+Data manipulation is a similar challenge: **finding the right information in a messy dataset**.
+
+:::
+
+
+
+
+---
+
+# The dplyr Verbs 1
 
 ::: {style="text-align: center; font-size: 1.1em; color: #2E86C1; font-weight: bold;"}
 Six powerful functions that solve 90% of data manipulation tasks!
@@ -131,6 +203,17 @@ Six powerful functions that solve 90% of data manipulation tasks!
 | `select()` | Choose columns | `select(data, name, age)` |
 | `filter()` | Choose rows | `filter(data, age > 18)` |
 | `mutate()` | Create/modify columns | `mutate(data, age_squared = age^2)` |
+
+
+
+# The dplyr Verbs 2
+
+::: {style="text-align: center; font-size: 1.1em; color: #2E86C1; font-weight: bold;"}
+Six powerful functions that solve 90% of data manipulation tasks!
+:::
+
+| Verb | Purpose | Example |
+|------|---------|---------|
 | `arrange()` | Sort rows | `arrange(data, desc(age))` |
 | `summarize()` | Aggregate data | `summarize(data, mean_age = mean(age))` |
 | `group_by()` | Group for operations | `group_by(data, category)` |
