@@ -174,7 +174,7 @@ Imagine looking for a single book in a messy bookstore. Do you search by genre, 
 
 ::: 
 
-## To Find things, we can use filters!
+## To find things, we can use filters!
 
 
 
@@ -182,14 +182,14 @@ Imagine looking for a single book in a messy bookstore. Do you search by genre, 
 
 ::: {.column}
 
-![](graphics/w3_graphics/coffee_in_filter.png){width=75%}
+![](graphics/w3_graphics/coffee_filters.png){width=80%}
 
 
 :::
 
 ::: {.column}
 
-![](graphics/w3_graphics/coffee_filters.png){width=80%}
+![](graphics/w3_graphics/coffee_in_filter.png){width=75%}
 
 
 :::
@@ -1004,9 +1004,9 @@ iris |>
   arrange(desc(average_petal_length))
 ```
 
----
+<!-- --- -->
 
-
+<!-- 
 # Up next: Data Cleaning
 
 
@@ -1016,4 +1016,4 @@ iris |>
 - **Cleaning Messy Data** — Handling missing values, duplicates, and inconsistent data
 
 
-:::
+::: -->
