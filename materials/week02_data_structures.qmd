@@ -1,5 +1,5 @@
 ---
-title: "SlideDeck 2: R Fundamentals Part 2"
+title: "R Fundamentals Part 2"
 subtitle: "Data Structures & Advanced Concepts"
 author: "CS301 - Data Science with R"
 # date: "Fall 2026"

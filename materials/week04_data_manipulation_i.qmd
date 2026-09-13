@@ -1,5 +1,5 @@
 ---
-title: "SlideDeck 3: Data Manipulation & Cleaning"
+title: "Data Manipulation & Cleaning"
 subtitle: "Mastering dplyr for Data Wrangling"
 author: "CS301 - Data Science with R"
 date: "Fall 2026"
@@ -45,6 +45,16 @@ format:
 
 # The Tidyverse Revolution 
 
+<center>
+
+<a href="https://www.tidyverse.org" target="_blank">
+  <img src="graphics/tidyverse.png" alt="Tidyverse Logo" width=70%">
+</a>
+</center>
+
+
+## What is the Tidyverse?
+
 ::: {.callout}
 **Tidyverse: R's Modern Data Science Toolkit**
 
@@ -58,7 +68,7 @@ install.packages("tidyverse")
 # Load in every session
 library(tidyverse)
 
-# What you get:
+# You get a buncha packages!
 # ✅ dplyr    — Data manipulation
 # ✅ ggplot2  — Visualization
 # ✅ tidyr    — Data tidying
@@ -70,6 +80,14 @@ library(tidyverse)
 ```
 
 ---
+
+# But First This!
+
+<center>
+
+![](graphics/homework.png){width=50%}
+
+</center>
 
 # The Pipe Operators: `%>%` and `|>` 
 

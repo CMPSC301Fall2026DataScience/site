@@ -1,5 +1,5 @@
 ---
-title: "SlideDeck 3: Data Manipulation & Cleaning"
+title: "Data Manipulation & Cleaning"
 subtitle: "Mastering dplyr for Data Wrangling"
 author: "CS301 - Data Science with R"
 date: "Fall 2026"

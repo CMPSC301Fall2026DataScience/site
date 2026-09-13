@@ -75,7 +75,7 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 
 
 - **Data Manipulation**
-  - <a href="week03_data_manipulation_i.html" target="_blank">Slides</a>
+  - <a href="week04_data_manipulation_i.html" target="_blank">Slides</a>
 
 ---
 
