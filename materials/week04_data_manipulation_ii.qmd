@@ -40,9 +40,387 @@ format:
 **Transform messy data into insights!** 
 :::
 
-
 # Data Cleaning: Missing Values
 
+<!-- Notes: https://www.r-bloggers.com/2021/04/handling-missing-values-in-r/ -->
+
+## Small Example of Detecting Missing Values
+
+```
+library(tidyverse)
+y <- c(1, 2, NA, 4, NA, 6)
+which(is.na(y)) %>% print() # Print which elements are missing
+
+```
+
+
+::: {.callout-note}
+
+We can detect when values are missing using the `is.na()` function. This is crucial for data cleaning and analysis, as missing values can affect statistical calculations and visualizations.
+
+:::
+
+
+
+## Another Example of Detecting Missing Values
+
+```r
+# Sample data with missing values
+grades <- data.frame(
+  student = c("Ana", "Ben", "Cara", "Dan", "Eli"),
+  quiz1   = c(88, NA, 76, 95, NA),
+  quiz2   = c(91, 85, NA, 89, 78),
+  quiz3   = c(84, 90, 82, NA, 88)
+)
+
+grades
+
+sum(is.na(grades))    # Total number of missing values in the whole data frame
+```
+
+::: {.callout-note}
+
+`is.na()` returns `TRUE`/`FALSE` for every cell. Wrapping it in `sum()` adds up the `TRUE`s (each `TRUE` counts as 1), giving the **total count of missing values** anywhere in `grades`.
+:::
+
+---
+
+## Counting Missing Values by Column
+
+```r
+colSums(is.na(grades))
+```
+
+```
+student   quiz1   quiz2   quiz3 
+      0       2       1       1 
+```
+
+::: {.callout-tip}
+
+`colSums()` applies `sum()` down each column of the logical matrix produced by `is.na()`. This tells us **which columns** need the most cleanup — here, `quiz1` has the most missing values.
+:::
+
+---
+
+## Checking for Missing Values with a Conditional
+
+```r
+if (any(is.na(grades$quiz1))) {
+  cat("quiz1 has missing values!\n")
+  print(which(is.na(grades$quiz1)))
+} else {
+  cat("No missing values in quiz1.\n")
+}
+```
+
+```
+quiz1 has missing values!
+[1] 2 5
+```
+
+::: {.callout-note}
+
+`any(is.na(x))` returns a single `TRUE`/`FALSE`, so it's perfect for an `if` statement. `which(is.na(x))` tells you the exact **positions** of the missing values.
+:::
+
+---
+
+## Replacing Missing Values with the Mean
+
+```r
+quiz1_fixed <- grades$quiz1
+quiz1_fixed[is.na(quiz1_fixed)] <- mean(quiz1_fixed, na.rm = TRUE)
+
+quiz1_fixed
+```
+
+```
+[1] 88.00000 86.33333 76.00000 95.00000 86.33333
+```
+
+::: {.callout-important}
+
+`x[is.na(x)] <- mean(x, na.rm = TRUE)` finds the missing positions and overwrites **only those** with the column's mean. This is called **mean imputation** — convenient, but it reduces variability and can bias results if too many values are missing.
+:::
+
+---
+
+## Removing Missing Values: `na.omit()`
+
+```r
+newdata <- na.omit(grades)
+
+newdata
+nrow(grades)    # original number of rows
+nrow(newdata)   # rows remaining after dropping any row with an NA
+```
+
+```
+  student quiz1 quiz2 quiz3
+1     Ana    88    91    84
+4     Dan    95    89    NA
+```
+
+::: {.callout-warning}
+
+`na.omit()` drops **any row** containing at least one `NA`. It's simple, but every dropped row throws away real data from the other columns too — that's the trade-off with `mean(x, na.rm = TRUE)` and imputation approaches.
+:::
+
+---
+
+## Why Does Missing Data Matter? A Visual Comparison
+
+Let's build a small time series and see what happens when a few values go missing.
+
+```r
+days <- 1:10
+temp <- c(58, 60, 63, 65, 68, 70, 72, 74, 76, 78)
+
+plot(days, temp,
+     type = "b", pch = 19, col = "steelblue",
+     main = "Daily Temperature (Complete Data)",
+     xlab = "Day", ylab = "Temperature (°F)")
+```
+
+## Complete Data (Output)
+
+```{r}
+days <- 1:10
+temp <- c(58, 60, 63, 65, 68, 70, 72, 74, 76, 78)
+
+plot(days, temp,
+     type = "b", pch = 19, col = "steelblue",
+     main = "Daily Temperature (Complete Data)",
+     xlab = "Day", ylab = "Temperature (°F)")
+```
+
+---
+
+## The Problem: Same Data With Missing Values
+
+```r
+temp_missing <- temp
+temp_missing[c(3, 7)] <- NA   # Day 3 and Day 7 readings were lost
+
+plot(days, temp_missing,
+     type = "b", pch = 19, col = "tomato",
+     main = "Daily Temperature (With Missing Values)",
+     xlab = "Day", ylab = "Temperature (°F)")
+```
+
+## Missing Data (Output)
+
+```{r}
+temp_missing <- temp
+temp_missing[c(3, 7)] <- NA
+
+plot(days, temp_missing,
+     type = "b", pch = 19, col = "tomato",
+     main = "Daily Temperature (With Missing Values)",
+     xlab = "Day", ylab = "Temperature (°F)")
+```
+
+::: {.callout-important}
+
+Notice the **gaps** in the line — `plot()` simply skips over `NA` values, breaking the trend and hiding what actually happened on those days.
+:::
+
+---
+
+## Missing Data Can Silently Break Calculations
+
+```{r}
+mean(temp)                          # complete data
+mean(temp_missing)                  # NA propagates through the whole calculation!
+mean(temp_missing, na.rm = TRUE)    # ignores NAs, but uses fewer data points
+```
+
+::: {.callout-important}
+
+A single `NA` can turn an entire `mean()`, `sum()`, or `sd()` into `NA` — with **no error or warning**. Always check `is.na()` / `sum(is.na())` before trusting a summary statistic, and remember that `na.rm = TRUE` changes *which* data the calculation is based on.
+:::
+
+---
+
+# Quick Challenge! 🧠
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">You run <code>x <- c(4, NA, 8, NA, 10)</code>. What does <code>sum(is.na(x))</code> return?</div>
+
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkMissingBasicsQuiz(this, false)">NA</div>
+    <div class="quiz-option" onclick="checkMissingBasicsQuiz(this, true)">2</div>
+    <div class="quiz-option" onclick="checkMissingBasicsQuiz(this, false)">5</div>
+    <div class="quiz-option" onclick="checkMissingBasicsQuiz(this, false)">TRUE</div>
+  </div>
+
+  <div id="missing-quiz-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkMissingBasicsQuiz(element, isCorrect) {
+  document.querySelectorAll('.quiz-option').forEach(opt => {
+    opt.classList.remove('correct', 'incorrect');
+  });
+
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+  const feedback = document.getElementById('missing-quiz-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+
+  if (isCorrect) {
+    feedback.textContent = '✅ Correct! is.na(x) gives TRUE, FALSE, TRUE, FALSE, TRUE — sum() adds the two TRUEs.';
+  } else {
+    feedback.textContent = '❌ Not quite! is.na() flags each NA as TRUE, and sum() counts how many TRUEs there are.';
+  }
+}
+</script>
+```
+
+<center>
+![](graphics/think.png){width=20%}
+</center>
+
+---
+
+## Challenge: Missing Data in Built-in R Data
+
+R ships with a real dataset that already contains missing values: `airquality` — daily air quality measurements in New York, May–September 1973.
+
+```r
+data(airquality)
+head(airquality)
+dim(airquality)          # 153 rows, 6 columns
+sum(is.na(airquality))   # total missing values
+colSums(is.na(airquality))
+```
+
+---
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">How many total missing values are in <code>airquality</code>?</div>
+
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkAirQualityQuiz1(this, false)">0</div>
+    <div class="quiz-option" onclick="checkAirQualityQuiz1(this, false)">7</div>
+    <div class="quiz-option" onclick="checkAirQualityQuiz1(this, true)">44</div>
+    <div class="quiz-option" onclick="checkAirQualityQuiz1(this, false)">153</div>
+  </div>
+
+  <div id="airquality-quiz1-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkAirQualityQuiz1(element, isCorrect) {
+  document.querySelectorAll('.quiz-option').forEach(opt => {
+    opt.classList.remove('correct', 'incorrect');
+  });
+
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+  const feedback = document.getElementById('airquality-quiz1-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+
+  if (isCorrect) {
+    feedback.textContent = '✅ Right! sum(is.na(airquality)) == 44 (37 in Ozone, 7 in Solar.R).';
+  } else {
+    feedback.textContent = '❌ Try running sum(is.na(airquality)) yourself — the answer is 44.';
+  }
+}
+</script>
+```
+
+<center>
+![](graphics/think.png){width=20%}
+</center>
+
+---
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">Based on <code>colSums(is.na(airquality))</code>, which column has the <strong>most</strong> missing values?</div>
+
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkAirQualityQuiz2(this, true)">Ozone</div>
+    <div class="quiz-option" onclick="checkAirQualityQuiz2(this, false)">Solar.R</div>
+    <div class="quiz-option" onclick="checkAirQualityQuiz2(this, false)">Wind</div>
+    <div class="quiz-option" onclick="checkAirQualityQuiz2(this, false)">Temp</div>
+  </div>
+
+  <div id="airquality-quiz2-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkAirQualityQuiz2(element, isCorrect) {
+  document.querySelectorAll('.quiz-option').forEach(opt => {
+    opt.classList.remove('correct', 'incorrect');
+  });
+
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+  const feedback = document.getElementById('airquality-quiz2-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+
+  if (isCorrect) {
+    feedback.textContent = '✅ Correct! Ozone has 37 missing values, far more than Solar.R\'s 7. Wind and Temp have none.';
+  } else {
+    feedback.textContent = '❌ Not quite — check colSums(is.na(airquality)) and compare each column\'s count.';
+  }
+}
+</script>
+```
+
+<center>
+![](graphics/think.png){width=20%}
+</center>
+
+---
+
+## Challenge: Write the Code
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    <strong>Write code</strong> to remove every row of <code>airquality</code> that has any missing value, save it as <code>clean_air</code>, and report how many rows remain.
+    <button class="tool-button" onclick="showAirQualityChallenge()" style="margin-top: 10px;">Show Solution</button>
+  </div>
+
+  <div id="airquality-challenge-solution" style="display: none; margin-top: 15px;">
+    <div class="quiz-feedback correct">
+      <strong>Solution:</strong><br>
+      <code style="display: block; background: #f5f5f5; padding: 10px; margin-top: 8px; border-radius: 4px;">
+clean_air <- na.omit(airquality)<br>
+nrow(clean_air)<br>
+<br>
+# 111 rows remain (out of 153) — 42 rows had at least one NA
+      </code>
+    </div>
+  </div>
+</div>
+
+<script>
+function showAirQualityChallenge() {
+  const solution = document.getElementById('airquality-challenge-solution');
+  solution.style.display = 'block';
+  event.target.textContent = '✓ Solution Shown';
+  event.target.disabled = true;
+}
+</script>
+```
+
+<center>
+![](graphics/think.png){width=20%}
+</center>
+
+---
+
+## Bigger Examples of Missing Values
 ::: {.callout-important icon="false"}
 **Real Data is Messy!**
 
@@ -200,7 +578,7 @@ function checkDplyrQuiz(element, isCorrect) {
 
 ---
 
-# Cheat Sheet: dplyr Verbs
+# Cheat Sheet: dplyr Verbs Part 1
 
 | Task | Function | Example |
 |------|----------|---------|
@@ -208,12 +586,17 @@ function checkDplyrQuiz(element, isCorrect) {
 | **Filter rows** | `filter()` | `filter(data, age > 18)` |
 | **Create columns** | `mutate()` | `mutate(data, new = old * 2)` |
 | **Sort** | `arrange()` | `arrange(data, desc(col))` |
+
+---
+
+# Cheat Sheet: dplyr Verbs Part 2
+
+| Task | Function | Example |
+|------|----------|---------|
 | **Group** | `group_by()` | `group_by(data, category)` |
 | **Aggregate** | `summarize()` | `summarize(data, avg = mean(x))` |
 | **Count** | `count()` | `count(data, category)` |
 | **Rename** | `rename()` | `rename(data, new_name = old_name)` |
-
----
 
 ## Challenge 3: Group By Logic
 
