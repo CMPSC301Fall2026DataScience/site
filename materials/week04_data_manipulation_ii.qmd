@@ -1,8 +1,8 @@
 ---
-title: "Data Manipulation & Cleaning"
+title: "Data Manipulation & Cleaning Part 2"
 subtitle: "Mastering dplyr for Data Wrangling"
-author: "CS301 - Data Science with R"
-date: "Fall 2026"
+# author: "CS301 - Data Science with R"
+# date: "Fall 2026"
 format:
   revealjs:
     theme: white
@@ -39,6 +39,408 @@ format:
 ::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
 **Transform messy data into insights!** 
 :::
+
+
+---
+
+# Hands-On Demo: Wrangling `diamonds` with `dplyr` & `ggplot2`
+
+<center>
+![](graphics/letsTry.png){width=50%}
+</center>
+
+
+---
+
+## The Power of `dplyr` Verbs
+
+::: {.callout-note icon="false"}
+## What is `dplyr`? 🛠️
+
+`dplyr` provides a fast, consistent grammar of data manipulation with intuitive verbs:
+
+* **`filter()`** — Pick rows matching specific conditions
+* **`select()`** — Pick and rename specific columns
+* **`mutate()`** — Add new variables or transform existing ones
+* **`arrange()`** — Reorder rows based on column values
+* **`summarise()` & `group_by()`** — Calculate grouped summary statistics
+:::
+
+::: {.callout-tip}
+We combine these verbs sequentially using the pipe operator (`%>%` or `|>`) to build clean data workflows!
+:::
+
+---
+
+## Application: Converting Data from USD to UK Pounds
+
+![](graphics/uk.png){width=90%}
+
+---
+
+
+## Understanding the Data
+
+::: {.callout-note}
+
+The `diamonds` dataset contains information about ~54,000 diamonds, including the following.
+ 
+:::
+
+- **Carat** weight
+- **Cut** quality
+- **Color** grade
+- **Clarity** grade
+- **Price** in USD
+- **Dimensions** (length, width, depth)
+- **Volume** (calculated from dimensions)
+- **Other attributes** (e.g., depth percentage, table percentage)
+
+## Viewing the dataset
+
+
+
+```r
+library(tidyverse)
+names(diamonds)  # Displays column names of the diamonds dataset
+```
+
+
+```{r}
+library(tidyverse)
+names(diamonds)  # Displays column names of the diamonds dataset
+```
+
+
+```r
+View(diamonds)  # Opens the diamonds dataset in a spreadsheet-like viewer
+```
+
+::: {.callout-note}
+
+```r
+help(diamonds)  # Opens the codebook for the diamonds dataset to explain each variable
+```
+
+:::
+
+
+---
+
+## Transforming `diamonds` Data (Part 1)
+
+::: {.callout-blue}
+
+Use `filter()` to select diamonds with Ideal or Premium cut and carat between 0.7 and 2.5.
+
+:::
+
+```r
+uk_diamonds <- diamonds %>% 
+  filter(cut %in% c("Ideal", "Premium"), 
+         carat >= 0.7 & carat <= 2.5)
+```
+
+
+
+::: {.callout-blue}
+
+Use `mutate()` to convert USD prices to UK Pounds (£ GBP, ~0.79 exchange rate) and calculate price per carat.
+
+:::
+
+```r
+uk_diamonds_mutate <- uk_diamonds %>%mutate(
+    price_gbp = round(price * 0.79, 2),
+    price_per_carat_gbp = round(price_gbp / carat, 2))
+```
+
+## Transforming `diamonds` Data (Part 2)
+
+::: {.callout-blue}
+
+Use `select()` to choose specific columns from the transformed data.
+
+:::
+
+```r
+uk_diamonds_mutate_select <- 
+  uk_diamonds_mutate %>% 
+    select(carat, 
+          cut,
+          color,
+          clarity,
+          price_usd = 
+            price,
+            price_gbp,
+            price_per_carat_gbp)
+```
+
+::: {.callout-blue}
+
+Use `arrange()` to sort the transformed data.
+
+:::
+
+```r
+uk_diamonds_mutate_select_arrange <-
+ uk_diamonds_mutate_select %>% 
+  arrange(desc(price_gbp))
+```
+
+## All Code in One Pipeline
+
+```r
+library(tidyverse)
+
+# Filter the data according to cut and carat size
+uk_diamonds <- diamonds %>% 
+  filter(cut %in% c("Ideal", "Premium"), 
+         carat >= 0.7 & carat <= 2.5)
+
+# Mutate to convert USD prices to UK Pounds 
+# (£ GBP, ~0.79 exchange rate) and 
+# calculate price per carat
+
+uk_diamonds_mutate <- uk_diamonds %>%mutate(
+  price_gbp = round(price * 0.79, 2),
+  price_per_carat_gbp = round(price_gbp / carat, 2))
+
+
+# Select specific columns from the transformed data
+
+uk_diamonds_mutate_select <- 
+  uk_diamonds_mutate %>% 
+  select(carat, 
+         cut,
+         color,
+         clarity,
+         price_usd = 
+           price,
+         price_gbp,
+         price_per_carat_gbp)
+
+# Arrange the data frame in descending order of price in GBP
+
+uk_diamonds_mutate_select_arrange <-
+  uk_diamonds_mutate_select %>% 
+  arrange(desc(price_gbp))
+
+# View the final transformed data frame
+View(uk_diamonds_mutate_select_arrange) 
+```
+
+::: {.callout}
+
+Try copying and pasting the above code into your RStudio console to see the results for yourself!
+
+:::
+
+## More Efficient Coding Can be Written in a Single Pipeline
+
+Let's convert USD prices to UK Pounds (£ GBP, ~0.79 exchange rate) and inspect top diamonds:
+
+```r
+library(tidyverse)
+
+# Pipeline: filter -> mutate -> select -> arrange
+uk_diamonds <- diamonds %>%
+
+  # 1. filter: Select diamonds with 
+  # Ideal or Premium cut and 0.7 to 2.5 carats
+  filter(cut %in% c("Ideal", "Premium"),
+    carat >= 0.7 & carat <= 2.5) %>%
+
+  # 2. mutate: Convert USD price to UK
+  # Pounds (£) & calculate price per carat
+  mutate(
+    price_gbp = round(price * 0.79, 2),
+    price_per_carat_gbp = round(price_gbp / carat, 2)
+  ) %>%
+
+  # 3. select: Keep only relevant columns
+  # with descriptive names
+  select(carat, 
+         cut, 
+         color, 
+         clarity, 
+         price_usd = price, 
+         price_gbp, 
+         price_per_carat_gbp) %>%
+
+  # 4. arrange: Sort in descending
+  # order of price in GBP
+  arrange(desc(price_gbp))
+
+# Preview the transformed data frame
+head(uk_diamonds, 5)
+```
+## Output
+
+::: {.callout}
+
+Preview the transformed data frame
+
+:::
+
+```r
+head(uk_diamonds, 5)
+```
+
+```text
+# A tibble: 5 × 7
+  carat cut     color clarity price_usd price_gbp price_per_carat_gbp
+  <dbl> <ord>   <ord> <ord>       <int>     <dbl>               <dbl>
+1  2.29 Premium I     VS2         18823    14870.               6494.
+2  1.51 Ideal   G     IF          18806    14857.               9839.
+3  2.07 Ideal   G     SI2         18804    14855.               7176.
+4  2.29 Premium I     SI1         18797    14850.               6485.
+5  2.04 Premium H     SI1         18795    14848.               7278.
+```
+
+---
+
+## Grouping & Summarizing with `dplyr`
+
+We can also group by categories such as `cut` to compare summary statistics in UK currency:
+
+```r
+# Calculate average and median prices in UK Pounds across diamond cuts
+diamond_summary <- diamonds %>%
+  mutate(price_gbp = price * 0.79) %>%
+  group_by(cut) %>%
+  summarise(
+    count = n(),
+    avg_carat = round(mean(carat), 2),
+    avg_price_gbp = round(mean(price_gbp), 2),
+    median_price_gbp = round(median(price_gbp), 2)
+  ) %>%
+  arrange(desc(avg_price_gbp))
+
+print(diamond_summary)
+```
+
+---
+
+## Visualizing with `ggplot2`
+
+Now let's visualize the relationship between diamond carat size, cut, and price in UK Pounds (£):
+
+```r
+# Scatter plot with trend lines comparing Ideal and Premium cuts
+ggplot(uk_diamonds, aes(x = carat, y = price_gbp, color = cut)) +
+  geom_point(alpha = 0.4, size = 1.5) +
+  geom_smooth(method = "lm", se = FALSE, linewidth = 1) +
+  scale_y_continuous(labels = scales::dollar_format(prefix = "£")) +
+  scale_color_manual(values = c("Ideal" = "#2ECC71", "Premium" = "#E7235D")) +
+  labs(
+    title = "Diamond Carat vs. Price (£ GBP)",
+    subtitle = "Comparing Ideal and Premium cuts with UK currency conversion",
+    x = "Carat Weight",
+    y = "Price in UK Pounds (£)",
+    color = "Cut Quality"
+  ) +
+  theme_minimal()
+```
+
+
+## Output of Trend Lines Comparing Ideal and Premium Cuts
+
+```{r}
+library(tidyverse)
+
+# Pipeline: filter -> mutate -> select -> arrange
+uk_diamonds <- diamonds %>%
+  
+  # 1. filter: Select diamonds with 
+  # Ideal or Premium cut and 0.7 to 2.5 carats
+  filter(cut %in% c("Ideal", "Premium"),
+         carat >= 0.7 & carat <= 2.5) %>%
+  
+  # 2. mutate: Convert USD price to UK
+  # Pounds (£) & calculate price per carat
+  mutate(
+    price_gbp = round(price * 0.79, 2),
+    price_per_carat_gbp = round(price_gbp / carat, 2)
+  ) %>%
+  
+  # 3. select: Keep only relevant columns
+  # with descriptive names
+  select(carat, 
+         cut, 
+         color, 
+         clarity, 
+         price_usd = price, 
+         price_gbp, 
+         price_per_carat_gbp) %>%
+  
+  # 4. arrange: Sort in descending
+  # order of price in GBP
+  arrange(desc(price_gbp))
+
+  # Scatter plot with trend lines comparing Ideal and Premium cuts
+  ggplot(uk_diamonds, aes(x = carat, y = price_gbp, color = cut)) +
+    geom_point(alpha = 0.4, size = 1.5) +
+    geom_smooth(method = "lm", se = FALSE, linewidth = 1) +
+    scale_y_continuous(labels = scales::dollar_format(prefix = "£")) +
+    scale_color_manual(values = c("Ideal" = "#2ECC71", "Premium" = "#E7235D")) +
+    labs(
+      title = "Diamond Carat vs. Price (£ GBP)",
+      subtitle = "Comparing Ideal and Premium cuts with UK currency conversion",
+      x = "Carat Weight",
+      y = "Price in UK Pounds (£)",
+      color = "Cut Quality"
+    ) +
+    theme_minimal()
+```
+
+---
+
+## Visualizing Distributions Across Cuts
+
+```r
+# Boxplot of UK prices across different diamond cuts
+diamonds %>%
+  mutate(price_gbp = price * 0.79) %>%
+  ggplot(aes(x = cut, y = price_gbp, fill = cut)) +
+  geom_boxplot(alpha = 0.7, outlier.alpha = 0.2) +
+  scale_y_continuous(labels = scales::dollar_format(prefix = "£")) +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "Distribution of Diamond Prices in UK Pounds (£)",
+    x = "Cut",
+    y = "Price (£ GBP)"
+  ) +
+  theme_light() +
+  theme(legend.position = "none")
+```
+
+
+## Output Boxplot
+
+```{r}
+library(tidyverse)
+
+# Boxplot of UK prices across different diamond cuts
+diamonds %>%
+  mutate(price_gbp = price * 0.79) %>%
+  ggplot(aes(x = cut, y = price_gbp, fill = cut)) +
+  geom_boxplot(alpha = 0.7, outlier.alpha = 0.2) +
+  scale_y_continuous(labels = scales::dollar_format(prefix = "£")) +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "Distribution of Diamond Prices in UK Pounds (£)",
+    x = "Cut",
+    y = "Price (£ GBP)"
+  ) +
+  theme_light() +
+  theme(legend.position = "none")
+```
+
+
+
+
+
 
 # Data Cleaning: Missing Values
 
@@ -230,9 +632,27 @@ Notice the **gaps** in the line — `plot()` simply skips over `NA` values, brea
 
 ## Missing Data Can Silently Break Calculations
 
+```r
+mean(temp)                          # complete data
+```
+
 ```{r}
 mean(temp)                          # complete data
+```
+
+```r
 mean(temp_missing)                  # NA propagates through the whole calculation!
+```
+
+```{r}
+mean(temp_missing)                  # NA propagates through the whole calculation!
+```
+
+```r
+mean(temp_missing, na.rm = TRUE)    # ignores NAs, but uses fewer data points
+```
+
+```{r}
 mean(temp_missing, na.rm = TRUE)    # ignores NAs, but uses fewer data points
 ```
 

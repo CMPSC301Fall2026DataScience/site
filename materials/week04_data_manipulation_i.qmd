@@ -1,8 +1,8 @@
 ---
-title: "Data Manipulation & Cleaning"
+title: "Data Manipulation & Cleaning Part 1"
 subtitle: "Mastering dplyr for Data Wrangling"
-author: "CS301 - Data Science with R"
-date: "Fall 2026"
+# author: "CS301 - Data Science with R"
+# date: "Fall 2026"
 format:
   revealjs:
     theme: white

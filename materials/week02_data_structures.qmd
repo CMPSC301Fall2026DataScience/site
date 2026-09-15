@@ -1763,6 +1763,7 @@ ggplot(df, aes(x = YearGroup, y = Count, fill = YearGroup)) +
 **Even Further Analyses:** Remember that this is just a simplified analysis. More advanced time series techniques (like ARIMA modeling, spectral analysis, or machine learning approaches) could provide deeper insights into the sunspot data and its predictive capabilities.
 
 :::
+
 ---
 
 # Recap & Up Next

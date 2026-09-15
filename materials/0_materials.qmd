@@ -74,8 +74,11 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/activity02/accept" target="_blank">Activity02</a>  
 
 
-- **Data Manipulation**
+- **Data Manipulation & Cleaning Part 1**
   - <a href="week04_data_manipulation_i.html" target="_blank">Slides</a>
+
+- **Data Manipulation & Cleaning Part 2**
+  - <a href="week04_data_manipulation_ii.html" target="_blank">Slides</a>
 
 ---
 
