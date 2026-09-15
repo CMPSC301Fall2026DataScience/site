@@ -99,9 +99,15 @@ The `diamonds` dataset contains information about ~54,000 diamonds, including th
 ## Viewing the dataset
 
 
-
 ```r
+# Install and load the tidyverse package
+if (!requireNamespace("tidyverse", quietly = TRUE)) {
+  install.packages("tidyverse", quiet = TRUE)
+}
+
 library(tidyverse)
+print("Tidyverse is ready to use")
+
 names(diamonds)  # Displays column names of the diamonds dataset
 ```
 
@@ -113,7 +119,7 @@ if (!requireNamespace("tidyverse", quietly = TRUE)) {
 }
 
 library(tidyverse)
-print("tidyverse is ready to use")
+print("Tidyverse is ready to use")
 
 names(diamonds)  # Displays column names of the diamonds dataset
 ```
