@@ -96,8 +96,13 @@ The `diamonds` dataset contains information about ~54,000 diamonds, including th
 - **Volume** (calculated from dimensions)
 - **Other attributes** (e.g., depth percentage, table percentage)
 
-## Viewing the dataset
+## Install and Load `tidyverse` Library
 
+::: {.callout-tip}
+
+Code to install and load the `tidyverse` package, which includes `dplyr` and `ggplot2`, and to display the column names of the `diamonds` dataset.
+
+:::
 
 ```r
 # Install and load the tidyverse package
@@ -106,11 +111,13 @@ if (!requireNamespace("tidyverse", quietly = TRUE)) {
 }
 
 library(tidyverse)
+
 print("Tidyverse is ready to use")
 
 names(diamonds)  # Displays column names of the diamonds dataset
 ```
 
+## Viewing the Dataset
 
 ```{r}
 # Install and load the tidyverse package
