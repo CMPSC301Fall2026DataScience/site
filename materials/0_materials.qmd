@@ -80,6 +80,10 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **Data Manipulation & Cleaning Part 2**
   - <a href="week04_data_manipulation_ii.html" target="_blank">Slides</a>
 
+- **Lab 2**: Data frames, Statistics and Visualization in R
+  - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/lab02/accept" target="_blank">Lab02</a>
+
+
 ---
 
 *Materials are updated throughout the semester. Check back weekly for new content!*
