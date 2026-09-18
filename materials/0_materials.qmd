@@ -83,6 +83,8 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **Lab 2**: Data frames, Statistics and Visualization in R
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/lab02/accept" target="_blank">Lab02</a>
 
+- **Activity 3**: Data Manipulation and Visualization
+  - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/activity03/accept" target="_blank">Activity03</a>
 
 ---
 
