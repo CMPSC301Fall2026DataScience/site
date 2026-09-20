@@ -74,17 +74,22 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/activity02/accept" target="_blank">Activity02</a>  
 
 
+## W4. R Fundamentals Part 3 (Dplyr Data Manipulation, and Visualization)
+
 - **Data Manipulation & Cleaning Part 1**
   - <a href="week04_data_manipulation_i.html" target="_blank">Slides</a>
-
-- **Data Manipulation & Cleaning Part 2**
-  - <a href="week04_data_manipulation_ii.html" target="_blank">Slides</a>
 
 - **Lab 2**: Data frames, Statistics and Visualization in R
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/lab02/accept" target="_blank">Lab02</a>
 
 - **Activity 3**: Data Manipulation and Visualization
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/activity03/accept" target="_blank">Activity03</a>
+
+## W5. R Fundamentals Part 3 (Missing Data, Data Cleaning, and Visualization)
+
+- **Data Manipulation & Cleaning Part 2**
+  - <a href="week04_data_manipulation_ii.html" target="_blank">Slides</a>
+
 
 ---
 
