@@ -1158,21 +1158,22 @@ function showDplyrChallenge() {
 # Recap & Up Next
 
 ::: {.callout-tip icon="true"}
-## What We Learned Today
+## What We covered in these slides
 
 ✅ Tidyverse ecosystem  
-✅ Pipe operator %>% for readable code  
+✅ Pipe operator `%>%` (and `|>`) for readable code  
 ✅ Six core dplyr verbs  
 ✅ Data cleaning techniques  
 ✅ Interactive dplyr pipeline builder
 :::
 
 ::: {.callout-important}
-## For Next Class: Data Visualization (Base R & ggplot2)
+## For Next Class: Data Visualization (tools from base R, ggplot2 and plotly)
 
-📚 **Practice:** Build dplyr pipelines with mtcars, iris, diamonds  
-💻 **Experiment:** Combine verbs in creative ways  
-🔮 **Preview:** We'll start visualizing data with plots!
+📚 **Practice:** Build coded pipelines with datasets
+💻 **Experiment:** Combine verbs in creative ways to build plots from data 
+🔮 **Preview:** Use the plots to see what's *going on* in the data
+
 :::
 
 ---
