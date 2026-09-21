@@ -694,10 +694,23 @@ mean(temp_missing, na.rm = TRUE)    # ignores NAs, but uses fewer data points
 mean(temp_missing, na.rm = TRUE)    # ignores NAs, but uses fewer data points
 ```
 
+## Watchout for NA's!
+
 ::: {.callout-important}
 
 A single `NA` can turn an entire `mean()`, `sum()`, or `sd()` into `NA` — with **no error or warning**. Always check `is.na()` / `sum(is.na())` before trusting a summary statistic, and remember that `na.rm = TRUE` changes *which* data the calculation is based on.
+
 :::
+
+```r
+# Create a vector with NA values
+numbers <- c(1, 2, NA, 4, 5, NA, 7)
+
+# Without na.rm
+sum(numbers)  # Returns NA
+mean(numbers) # Returns NA
+```
+
 
 ---
 
