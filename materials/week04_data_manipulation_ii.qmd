@@ -98,13 +98,19 @@ The `diamonds` dataset contains information about ~54,000 diamonds, including th
 
 ## Install and Load `tidyverse` Library
 
-::: {.callout-tip}
+::: {.callout}
 
 Code to install and load the `tidyverse` package, which includes `dplyr` and `ggplot2`, and to display the column names of the `diamonds` dataset.
 
 :::
 
 ```r
+
+# Clear environment and plots
+rm(list = ls()) # clear all variables
+graphics.off()  # clear all plots
+cat("\014")    # clear the console
+
 # Install and load the tidyverse package
 if (!requireNamespace("tidyverse", quietly = TRUE)) {
   install.packages("tidyverse", quiet = TRUE)
@@ -184,16 +190,15 @@ Use `select()` to choose specific columns from the transformed data.
 :::
 
 ```r
+# Note: The `select()` function allows you to rename columns
+# using the syntax `new_name = old_name`.
+
 uk_diamonds_mutate_select <- 
   uk_diamonds_mutate %>% 
     select(carat, 
-          cut,
-          color,
-          clarity,
-          price_usd = 
-            price,
-            price_gbp,
-            price_per_carat_gbp)
+          cut, color, clarity,
+          price_usd = price,
+          price_gbp, price_per_carat_gbp)
 ```
 
 ::: {.callout-blue}
@@ -325,7 +330,8 @@ head(uk_diamonds, 5)
 We can also group by categories such as `cut` to compare summary statistics in UK currency:
 
 ```r
-# Calculate average and median prices in UK Pounds across diamond cuts
+# Calculate average and median prices in
+# UK Pounds across diamond cuts
 diamond_summary <- diamonds %>%
   mutate(price_gbp = price * 0.79) %>%
   group_by(cut) %>%
