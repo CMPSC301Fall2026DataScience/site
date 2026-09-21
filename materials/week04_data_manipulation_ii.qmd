@@ -463,8 +463,20 @@ diamonds %>%
   theme(legend.position = "none")
 ```
 
+## Box Plots in a Nutshell
+
+<center>
+
+![](graphics/box_plot.png){width=75%}
+
+</center>
 
 
+::: {.callout}
+
+Box plots are a great way to visualize the distribution of data across different categories. They show the median, quartiles, and potential outliers for each group.
+
+:::
 
 
 
