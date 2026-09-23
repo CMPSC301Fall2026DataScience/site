@@ -1203,11 +1203,6 @@ ggplot(iris,
               linewidth = 1) +
   theme_bw()
 
-# All pairwise comparisons
-library(GGally)
-iris %>%
-  select(everything()) %>%
-  ggpairs(aes(color = Species))
 ```
 
 ```{r}
@@ -1223,11 +1218,6 @@ ggplot(iris,
               linewidth = 1) +
   theme_bw()
 
-# All pairwise comparisons
-library(GGally)
-iris %>%
-  select(everything()) %>%
-  ggpairs(aes(color = Species))
 ```
 
 ---
