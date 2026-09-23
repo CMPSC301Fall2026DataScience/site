@@ -734,7 +734,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
 ```
 
 
-## Linear Regression Lines Part 2
+<!-- ## Linear Regression Lines Part 2
 
 ```r
 if (!require('ggpubr')) {
@@ -770,10 +770,10 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
     aes(label = ..eq.label..)
   )
 
-```
+``` -->
 
 
-## Linear Regression Lines Part 3
+## Linear Regression Lines Part 2
 
 ```r
 # Add linear regression
