@@ -90,6 +90,8 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **Data Manipulation & Cleaning Part 2**
   - <a href="week04_data_manipulation_ii.html" target="_blank">Slides</a>
 
+- **Visualizations in R with ggplot2**
+  - <a href="week05_visualization_ggplot.html" target="_blank">Slides</a>
 
 ---
 
