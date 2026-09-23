@@ -755,6 +755,28 @@ ggplot(mpg, aes(x = displ, y = hwy,
   geom_smooth(method = "lm", se = FALSE)
 ```
 
+
+## Adding Linear Regression Lines with Formula and R²
+
+```r
+library(tidyverse)
+if (!require('ggpubr')) {
+  install.packages('ggpubr')
+  library('ggpubr')
+}
+
+# Show formula and R²
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", 
+              formula = y ~ x) +
+  stat_regline_equation(
+    label.y = 45, 
+    aes(label = ..eq.label..)
+  )
+
+```
+
 ---
 
 ## Adding Lines and Trends: Smooth Line (LOESS) Part 1
@@ -1202,6 +1224,13 @@ ggplot(iris,
               se = FALSE,
               linewidth = 1) +
   theme_bw()
+
+
+# All pairwise comparisons
+library(GGally) # install.packages('GGally') if needed
+iris %>%
+  select(everything()) %>%
+  ggpairs(aes(color = Species))
 
 ```
 
