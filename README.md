@@ -1,6 +1,6 @@
 # CMPSC 301: Data Science - Fall 2026
 
-![Course Logo](logo.png)
+![Course Logo](graphics/logo.png)
 
 **Allegheny College | Department of Computer Science**
 
