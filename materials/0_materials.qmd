@@ -90,6 +90,9 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **Data Manipulation & Cleaning Part 2**
   - <a href="week04_data_manipulation_ii.html" target="_blank">Slides</a>
 
+- **Lab 3**: Video Game Sales and Ratings Analysis
+  - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/lab03/accept" target="_blank">Lab03</a> 
+
 - **Visualizations in R with ggplot2**
   - <a href="week05_visualization_ggplot.html" target="_blank">Slides</a>
 
