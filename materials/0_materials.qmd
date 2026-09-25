@@ -96,10 +96,7 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **Visualizations in R with ggplot2**
   - <a href="week05_visualization_ggplot.html" target="_blank">Slides</a>
 
-- **Activity 3**: Data Manipulation and Visualization
-  - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/activity03/accept" target="_blank">Activity03</a>
-
-- **Activity 4**: Missing Data
+- **Activity 4**: Working with Missing Data
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/activity04/accept" target="_blank">Activity04</a>
 
 
