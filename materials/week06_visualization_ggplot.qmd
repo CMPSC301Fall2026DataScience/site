@@ -1,5 +1,5 @@
 ---
-title: "First Steps with Tidyverse & ggplot2()"
+title: "Steps with Tidyverse & ggplot2()"
 subtitle: "Visualizations in R with `ggplot2()`"
 # author: "CS301 - Data Science with R"
 format:

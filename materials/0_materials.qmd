@@ -93,12 +93,19 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **Lab 3**: Video Game Sales and Ratings Analysis
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/lab03/accept" target="_blank">Lab03</a> 
 
-- **Visualizations in R with ggplot2**
-  - <a href="week05_visualization_ggplot.html" target="_blank">Slides</a>
 
 - **Activity 4**: Working with Missing Data
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/activity04/accept" target="_blank">Activity04</a>
 
+## W6. Visualization with `ggplot()`
+
+- **Visualizations in R with ggplot2**
+  - <a href="week06_visualization_ggplot.html" target="_blank">Slides</a>
+
+## W7. Visualization with `plotly`
+
+- **Interactive Data Visualization with `plotly`**
+  - <a href="week07_first_steps_plotly.html" target="_blank">Slides</a>
 
 
 ---
