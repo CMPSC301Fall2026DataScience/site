@@ -13,7 +13,18 @@ format:
     width: 1200
     height: 800
     margin: 0.05
+fig-width: 10
+fig-height: 5.5
+fig-align: center
 ---
+
+```{r}
+#| include: false
+# Result slides use static ggplot2 equivalents so no plotly install is needed at render time
+library(ggplot2)
+library(dplyr)
+theme_set(theme_minimal(base_size = 18))
+```
 
 ## Welcome! 🎨
 
@@ -117,6 +128,20 @@ plot_ly(data = mtcars,
 
 ---
 
+## Result: Your First Plot 🎯
+
+```{r}
+#| echo: false
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_point(size = 3)
+```
+
+::: {.callout-note icon="false"}
+Static ggplot2 version of the plotly output; run the plotly code for the interactive version.
+:::
+
+---
+
 ## Plotly Syntax: Key Components 🎯
 
 ::: {.callout-note icon="false"}
@@ -183,6 +208,16 @@ fig
 
 ---
 
+## Result: Basic Scatter Plot 📊
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Sepal.Length, Petal.Length)) +
+  geom_point(size = 3)
+```
+
+---
+
 ## Customize Scatter Plot Markers 🎨
 
 ::: {.callout-tip icon="true"}
@@ -209,6 +244,17 @@ fig
 
 ---
 
+## Result: Custom Markers 🎨
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Sepal.Length, Petal.Length)) +
+  geom_point(size = 4, shape = 21, stroke = 1.2,
+             fill = alpha("#FFB6C1", 0.9), color = "#980000")
+```
+
+---
+
 ## Color Points by Category 🎨
 
 ::: {.callout-note icon="false"}
@@ -224,6 +270,16 @@ Visualize a third variable with color
 fig <- plot_ly(iris, x = ~Sepal.Length, y = ~Petal.Length,
                color = ~Species, type = 'scatter', mode = 'markers')
 fig
+```
+
+---
+
+## Result: Color by Species 🎨
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Sepal.Length, Petal.Length, color = Species)) +
+  geom_point(size = 3)
 ```
 
 ---
@@ -247,6 +303,18 @@ fig
 - `color = ~variable`: map a variable to color
 - `colors = 'Set1'`: use an RColorBrewer palette
 - `colors = c(...)`: provide custom colors
+
+---
+
+## Result: Labeled Scatter Plot 🏷️
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Sepal.Length, Petal.Length, color = Species)) +
+  geom_point(size = 3) +
+  labs(title = "Iris Dataset: Sepal vs Petal Length",
+       x = "Sepal Length (cm)", y = "Petal Length (cm)")
+```
 
 ---
 
@@ -323,6 +391,19 @@ fig
 
 ---
 
+## Result: Scatter with Trend Line 📈
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Sepal.Length, Petal.Length)) +
+  geom_point(size = 2.5, alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(title = "Scatter Plot with Linear Regression",
+       x = "Sepal Length", y = "Petal Length")
+```
+
+---
+
 # Part 3: Box Plots
 
 ---
@@ -343,6 +424,17 @@ fig <- plot_ly(data = iris,
                name = 'Sepal Length')
 
 fig
+```
+
+---
+
+## Result: Basic Box Plot 📦
+
+```{r}
+#| echo: false
+ggplot(iris, aes(x = "Sepal Length", y = Sepal.Length)) +
+  geom_boxplot(width = 0.4) +
+  labs(x = NULL, y = "Sepal.Length")
 ```
 
 ---
@@ -388,6 +480,18 @@ fig
 
 ---
 
+## Result: Grouped Box Plots 📊
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Species, Sepal.Length, fill = Species)) +
+  geom_boxplot() +
+  labs(title = "Sepal Length Distribution by Species",
+       x = "Species", y = "Sepal Length (cm)")
+```
+
+---
+
 ## Show Individual Values on Box Plots 🔎
 
 ::: {.callout-tip icon="true"}
@@ -408,6 +512,17 @@ fig <- plot_ly(data = iris,
                pointpos = -1.8)          # Position of points
 
 fig
+```
+
+---
+
+## Result: Box Plot with Points 🔎
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Species, Sepal.Length, fill = Species)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.6) +
+  geom_jitter(width = 0.15, size = 2)
 ```
 
 ---
@@ -440,6 +555,18 @@ fig
 
 ---
 
+## Result: Horizontal Box Plots 🔄
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Sepal.Length, Species, fill = Species)) +
+  geom_boxplot() +
+  labs(title = "Sepal Length by Species (Horizontal)",
+       x = "Sepal Length (cm)", y = NULL)
+```
+
+---
+
 ## Multiple Box Plots 📈 {.smaller}
 
 ::: {.callout-note icon="false"}
@@ -463,6 +590,19 @@ fig <- plot_ly(data = iris, x = ~Species) %>%
          yaxis = list(title = "Measurement (cm)"))
 
 fig
+```
+
+---
+
+## Result: Multiple Box Plots 📈
+
+```{r}
+#| echo: false
+iris |>
+  tidyr::pivot_longer(-Species, names_to = "Measurement", values_to = "value") |>
+  ggplot(aes(Species, value, fill = Measurement)) +
+  geom_boxplot() +
+  labs(title = "All Iris Measurements by Species", y = "Measurement (cm)")
 ```
 
 ---
@@ -505,6 +645,18 @@ fig
 
 ---
 
+## Result: Basic Histogram 📊
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Sepal.Length)) +
+  geom_histogram(bins = 15, fill = "steelblue", color = "white") +
+  labs(title = "Distribution of Sepal Length",
+       x = "Sepal Length (cm)", y = "Count")
+```
+
+---
+
 ## Histogram Bin Controls 📊
 
 ::: {.callout-note icon="false"}
@@ -539,6 +691,16 @@ fig
 
 ---
 
+## Result: 5 Bins 📊
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Sepal.Length)) +
+  geom_histogram(bins = 5, fill = "steelblue", color = "white")
+```
+
+---
+
 ## Binwidth: Finding Balance 🎯
 
 **Too Many Bins (Small Binwidth):**
@@ -555,6 +717,16 @@ fig
 
 **Advantages:** ✅ Shows fine detail, reveals minor peaks  
 **Disadvantages:** ❌ Noisy, harder to see overall pattern, sparse bins
+
+---
+
+## Result: 50 Bins 📊
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Sepal.Length)) +
+  geom_histogram(bins = 50, fill = "steelblue", color = "white")
+```
 
 ---
 
@@ -592,6 +764,16 @@ fig  # Plotly uses smart defaults!
 
 ---
 
+## Result: Automatic Binwidth 🎨
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Sepal.Length)) +
+  geom_histogram(bins = 15, fill = "lightgreen", color = "darkgreen")
+```
+
+---
+
 ## Custom Binwidth 🔧 {.smaller}
 
 ::: {.callout-note icon="false"}
@@ -617,6 +799,19 @@ fig <- fig %>% layout(
 )
 
 fig
+```
+
+---
+
+## Result: Custom Binwidth 🔧
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Sepal.Length)) +
+  geom_histogram(binwidth = 0.2, boundary = 4, fill = "steelblue", color = "white") +
+  coord_cartesian(xlim = c(4, 8)) +
+  labs(title = "Sepal Length with 0.2 cm Bins",
+       x = "Sepal Length (cm)", y = "Frequency")
 ```
 
 ---
@@ -652,6 +847,18 @@ fig
 
 ---
 
+## Result: Overlaid Histograms 📊
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Sepal.Length, fill = Species)) +
+  geom_histogram(binwidth = 0.2, alpha = 0.6, position = "identity") +
+  labs(title = "Sepal Length by Species",
+       x = "Sepal Length (cm)", y = "Count")
+```
+
+---
+
 ## Stacked Histograms 📚 {.smaller}
 
 ::: {.callout-tip icon="true"}
@@ -678,6 +885,19 @@ fig <- plot_ly() %>%
          yaxis = list(title = "Total Count"))
 
 fig
+```
+
+---
+
+## Result: Stacked Histograms 📚
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Sepal.Length, fill = Species)) +
+  geom_histogram(binwidth = 0.2, position = "stack") +
+  scale_fill_manual(values = c("#e74c3c", "#3498db", "#2ecc71")) +
+  labs(title = "Species Distribution Across Sepal Lengths",
+       x = "Sepal Length (cm)", y = "Total Count")
 ```
 
 ---
@@ -717,6 +937,18 @@ fig
 
 ---
 
+## Result: Bar Chart 📊
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Species, fill = Species)) +
+  geom_bar(show.legend = FALSE) +
+  scale_fill_manual(values = c("#e74c3c", "#3498db", "#2ecc71")) +
+  labs(title = "Sample Count by Species", y = "Number of Samples")
+```
+
+---
+
 ## Line Charts 📈 {.smaller}
 
 ::: {.callout-blue icon="false"}
@@ -735,6 +967,22 @@ fig <- plot_ly(iris_sorted, x = ~seq_along(Sepal.Length),
          xaxis = list(title = "Sample Index"),
          yaxis = list(title = "Sepal Length (cm)"))
 fig
+```
+
+---
+
+## Result: Line Chart 📈
+
+```{r}
+#| echo: false
+iris |>
+  arrange(Sepal.Length) |>
+  mutate(idx = row_number()) |>
+  ggplot(aes(idx, Sepal.Length, color = Species, group = Species)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  labs(title = "Sepal Length Sorted Values",
+       x = "Sample Index", y = "Sepal Length (cm)")
 ```
 
 ---
@@ -770,6 +1018,19 @@ fig
 
 ---
 
+## Result: Violin Plot 🎻
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Species, Sepal.Length, fill = Species)) +
+  geom_violin(alpha = 0.7) +
+  geom_boxplot(width = 0.1, fill = "white") +
+  labs(title = "Sepal Length Distribution (Violin Plot)",
+       x = "Species", y = "Sepal Length (cm)")
+```
+
+---
+
 ## Heatmaps 🔥 {.smaller}
 
 ::: {.callout-note icon="false"}
@@ -787,6 +1048,21 @@ fig <- plot_ly(x = colnames(cor_matrix), y = rownames(cor_matrix),
   layout(title = "Iris Feature Correlation Matrix",
          xaxis = list(title = ""), yaxis = list(title = ""))
 fig
+```
+
+---
+
+## Result: Heatmap 🔥
+
+```{r}
+#| echo: false
+cor(iris |> select(-Species)) |>
+  as.data.frame.table(responseName = "r") |>
+  ggplot(aes(Var1, Var2, fill = r)) +
+  geom_tile() +
+  geom_text(aes(label = round(r, 2)), size = 6) +
+  scale_fill_gradient2(low = "blue", mid = "white", high = "red") +
+  labs(title = "Iris Feature Correlation Matrix", x = NULL, y = NULL)
 ```
 
 ---
@@ -843,6 +1119,22 @@ fig
 
 ---
 
+## Result: Layout Customization 🎨
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Sepal.Length, Petal.Length, color = Species)) +
+  geom_point(size = 3) +
+  labs(title = "Beautiful Iris Plot",
+       x = "Sepal Length (cm)", y = "Petal Length (cm)") +
+  theme(plot.title = element_text(size = 24, color = "#2c3e50"),
+        panel.background = element_rect(fill = "#F8F9FA"),
+        panel.grid = element_line(color = "#E0E0E0"),
+        axis.line.x = element_line(color = "#2c3e50", linewidth = 1))
+```
+
+---
+
 ## Color Scales 🌈
 
 ::: {.callout-note icon="false"}
@@ -864,6 +1156,17 @@ fig <- plot_ly(data = iris,
 
 fig <- fig %>% layout(title = "Color by Sepal Width")
 fig
+```
+
+---
+
+## Result: Continuous Color Scale 🌈
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Sepal.Length, Petal.Length, color = Sepal.Width)) +
+  geom_point(size = 4) +
+  labs(title = "Color by Sepal Width", color = "Sepal Width")
 ```
 
 ---
@@ -910,6 +1213,18 @@ fig
 
 ---
 
+## Result: Annotated Plot 📝
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Sepal.Length, Petal.Length)) +
+  geom_point(size = 3) +
+  annotate("label", x = 6.5, y = 5.5, label = "Cluster of large flowers") +
+  labs(title = "Annotated Plot")
+```
+
+---
+
 ## Highlight a Region with a Shape 🟥 {.smaller}
 
 ::: {.callout-tip icon="true"}
@@ -934,6 +1249,18 @@ fig <- plot_ly(data = iris,
   )
 
 fig
+```
+
+---
+
+## Result: Highlighted Region 🟥
+
+```{r}
+#| echo: false
+ggplot(iris, aes(Sepal.Length, Petal.Length)) +
+  geom_point(size = 3) +
+  annotate("rect", xmin = 6, xmax = 7, ymin = 5, ymax = 6,
+           fill = "red", alpha = 0.1, color = "red", linewidth = 1)
 ```
 
 ---
