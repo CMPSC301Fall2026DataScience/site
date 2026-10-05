@@ -1,0 +1,1546 @@
+---
+title: "First Steps with Plotly in R"
+subtitle: "Interactive Data Visualization"
+author: "R Programming Tutorial"
+format:
+  revealjs:
+    # theme: [default, custom_plotly.css]
+    theme: custom_ds.css
+    slide-number: true
+    chalkboard: true
+    preview-links: auto
+    scrollable: true
+    width: 1200
+    height: 800
+    margin: 0.05
+---
+
+## Welcome! 🎨
+
+::: {.callout-note icon="false"}
+**Interactive Plotting with Plotly**
+
+Learn to create beautiful, interactive visualizations in R
+:::
+
+**What You'll Learn:**
+
+- Installing and setting up Plotly
+- Creating interactive scatter plots, box plots, and histograms
+- Understanding binwidths and their impact
+- Customizing interactive plots
+- Building publication-ready visualizations
+
+---
+
+# Part 1: Getting Started
+
+---
+
+## What is Plotly? 🚀
+
+::: {.callout-blue icon="false"}
+**Plotly** is a powerful graphing library that creates interactive, publication-quality visualizations
+:::
+
+**Key Features:**
+
+- **Interactive**: Hover for details, zoom, pan, download
+- **Web-based and shareable**: Works in RStudio, R Markdown, and Shiny
+- **Versatile**: 40+ chart types
+- **Beautiful**: Professional styling out-of-the-box
+
+**Plotly vs ggplot2:** ggplot2 excels at static graphics; Plotly adds interactivity for web dashboards and exploration.
+
+---
+
+## Clean Session Setup 🧹
+
+::: {.callout-tip icon="true"}
+**Start with a clean workspace** for reproducible R scripts
+:::
+
+```r
+# Clear objects, plots, and console
+remove_existing_objects <- function() {
+  rm(list = ls())
+  graphics.off()
+  cat("\014")
+}
+
+remove_existing_objects()
+```
+
+---
+
+## Install and Load Packages 📦
+
+::: {.callout-note icon="false"}
+List the packages your script needs, then install any that are missing.
+:::
+
+```r
+required_packages <- c('plotly', 'dplyr', 'tidyverse')
+
+install_and_load <- function(packages) {
+  for(pkg in packages) {
+    if(!require(pkg, character.only = TRUE, quietly = TRUE)) {
+      install.packages(pkg)
+      library(pkg, character.only = TRUE)
+    }
+  }
+}
+
+install_and_load(required_packages)
+```
+
+---
+
+## Your First Plotly Plot 🎯
+
+::: {.callout-note icon="false"}
+**Simple Scatter Plot** — The easiest way to start with Plotly
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+library(plotly)
+
+# Create a simple scatter plot
+plot_ly(data = mtcars, 
+        x = ~wt, 
+        y = ~mpg, 
+        type = 'scatter',
+        mode = 'markers')
+```
+
+---
+
+## Plotly Syntax: Key Components 🎯
+
+::: {.callout-note icon="false"}
+The first example uses the same core arguments in `plot_ly()`.
+:::
+
+- `plot_ly()`: Main plotting function
+- `data`: Your data frame
+- `x`, `y`: Variables (use `~` notation)
+- `type`: Chart type ('scatter', 'bar', 'box', etc.)
+- `mode`: For scatter plots ('markers', 'lines', 'markers+lines')
+
+---
+
+## Interactive Features 🖱️
+
+::: {.callout-tip icon="true"}
+Every Plotly plot comes with built-in interactivity!
+:::
+
+**Explore the plot:**
+
+1. **Hover** to inspect data values
+2. **Zoom** by clicking and dragging
+3. **Pan** with Shift + drag
+4. **Box or lasso select** points
+5. **Reset** with a double-click
+
+---
+
+## Plotly Toolbar Controls 🖱️
+
+- 📷 Download the plot as PNG
+- 🔍 Zoom, pan, and select points
+- 🏠 Reset axes to original view
+- ⚙️ Toggle spike lines and axis hover
+
+---
+
+# Part 2: Scatter Plots
+
+---
+
+## Basic Scatter Plot 📊
+
+::: {.callout-blue icon="false"}
+**Exploring Relationships Between Variables**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+library(plotly)
+
+# Basic scatter plot
+fig <- plot_ly(data = iris,
+               x = ~Sepal.Length,
+               y = ~Petal.Length,
+               type = 'scatter',
+               mode = 'markers')
+
+fig
+```
+
+---
+
+## Customize Scatter Plot Markers 🎨
+
+::: {.callout-tip icon="true"}
+Adjust marker size, fill, and outline to make points easier to distinguish.
+:::
+
+**Customizing Markers:**
+
+```{r}
+#| echo: true
+#| eval: false
+# Add color, size, and opacity
+fig <- plot_ly(data = iris,
+               x = ~Sepal.Length,
+               y = ~Petal.Length,
+               type = 'scatter',
+               mode = 'markers',
+               marker = list(size = 10,
+                           color = 'rgba(255, 182, 193, .9)',
+                           line = list(color = 'rgba(152, 0, 0, .8)',
+                                      width = 2)))
+fig
+```
+
+---
+
+## Color Points by Category 🎨
+
+::: {.callout-note icon="false"}
+
+### Adding Color Dimension
+Visualize a third variable with color
+
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+fig <- plot_ly(iris, x = ~Sepal.Length, y = ~Petal.Length,
+               color = ~Species, type = 'scatter', mode = 'markers')
+fig
+```
+
+---
+
+## Add Labels and Choose Colors 🎨
+
+```{r}
+#| echo: true
+#| eval: false
+fig <- fig %>% layout(
+  title = "Iris Dataset: Sepal vs Petal Length",
+  xaxis = list(title = "Sepal Length (cm)"),
+  yaxis = list(title = "Petal Length (cm)")
+)
+
+fig
+```
+
+**Color Options:**
+
+- `color = ~variable`: map a variable to color
+- `colors = 'Set1'`: use an RColorBrewer palette
+- `colors = c(...)`: provide custom colors
+
+---
+
+## Scatter with Custom Hover 🔍
+
+::: {.callout-tip icon="true"}
+**Customize Tooltip Information**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Custom hover text
+fig <- plot_ly(data = iris,
+               x = ~Sepal.Length,
+               y = ~Petal.Length,
+               color = ~Species,
+               type = 'scatter',
+               mode = 'markers',
+               text = ~paste("Species:", Species,
+                           "<br>Sepal Width:", Sepal.Width,
+                           "<br>Petal Width:", Petal.Width),
+               hoverinfo = 'text')
+
+fig
+```
+
+---
+
+## Choose What Appears on Hover 🔍
+
+::: {.callout-note icon="false"}
+Use `hoverinfo` to show only the details that help explain the plot.
+:::
+
+**Hover Options:**
+
+- `hoverinfo = 'x'`: Show only x value
+- `hoverinfo = 'y'`: Show only y value
+- `hoverinfo = 'x+y'`: Show both coordinates
+- `hoverinfo = 'text'`: Show custom text
+- `hoverinfo = 'none'`: Disable hover
+
+---
+
+## Scatter with Trend Line 📈 {.smaller}
+
+::: {.callout-blue icon="false"}
+**Adding Statistical Models**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+library(plotly)
+library(dplyr)
+
+# Calculate linear model
+model <- lm(Petal.Length ~ Sepal.Length, data = iris)
+iris$predicted <- predict(model)
+
+# Plot with trend line
+fig <- plot_ly(data = iris, x = ~Sepal.Length) %>%
+  add_markers(y = ~Petal.Length, name = 'Actual',
+              marker = list(size = 8, opacity = 0.6)) %>%
+  add_lines(y = ~predicted, name = 'Trend',
+            line = list(color = 'red', width = 2)) %>%
+  layout(title = "Scatter Plot with Linear Regression",
+         xaxis = list(title = "Sepal Length"),
+         yaxis = list(title = "Petal Length"))
+
+fig
+```
+
+---
+
+# Part 3: Box Plots
+
+---
+
+## Basic Box Plot 📦
+
+::: {.callout-note icon="false"}
+**Visualizing Distributions** — Box plots show median, quartiles, and outliers
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Simple box plot
+fig <- plot_ly(data = iris,
+               y = ~Sepal.Length,
+               type = 'box',
+               name = 'Sepal Length')
+
+fig
+```
+
+---
+
+## Read a Box Plot 📦
+
+::: {.callout-note icon="false"}
+The box summarizes the distribution; points beyond the whiskers are outliers.
+:::
+
+- **Box**: Interquartile range (IQR) - middle 50% of data
+- **Line in Box**: Median (50th percentile)
+- **Whiskers**: Extend to 1.5 × IQR
+- **Points**: Outliers beyond whiskers
+- Hover to inspect exact values
+
+---
+
+## Grouped Box Plots 📊 {.smaller}
+
+::: {.callout-blue icon="false"}
+**Comparing Multiple Groups**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Box plot by species
+fig <- plot_ly(data = iris,
+               y = ~Sepal.Length,
+               x = ~Species,
+               color = ~Species,
+               type = 'box')
+
+fig <- fig %>% layout(
+  title = "Sepal Length Distribution by Species",
+  xaxis = list(title = "Species"),
+  yaxis = list(title = "Sepal Length (cm)")
+)
+
+fig
+```
+
+---
+
+## Show Individual Values on Box Plots 🔎
+
+::: {.callout-tip icon="true"}
+Jitter spreads points horizontally so overlapping observations are easier to see.
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Show points on box plot
+fig <- plot_ly(data = iris,
+               y = ~Sepal.Length,
+               x = ~Species,
+               color = ~Species,
+               type = 'box',
+               boxpoints = 'all',        # Show all points
+               jitter = 0.3,             # Spread points horizontally
+               pointpos = -1.8)          # Position of points
+
+fig
+```
+
+---
+
+## Horizontal Box Plots 🔄 {.smaller}
+
+::: {.callout-tip icon="true"}
+**Better for Long Category Names**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Horizontal orientation
+fig <- plot_ly(data = iris,
+               x = ~Sepal.Length,        # x for horizontal
+               y = ~Species,             # y for categories
+               color = ~Species,
+               type = 'box',
+               orientation = 'h')        # h for horizontal
+
+fig <- fig %>% layout(
+  title = "Sepal Length by Species (Horizontal)",
+  xaxis = list(title = "Sepal Length (cm)"),
+  yaxis = list(title = "")
+)
+
+fig
+```
+
+---
+
+## Multiple Box Plots 📈 {.smaller}
+
+::: {.callout-note icon="false"}
+**Comparing Different Measurements**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Create subplot with multiple box plots
+fig <- plot_ly(data = iris, x = ~Species) %>%
+  add_trace(y = ~Sepal.Length, name = 'Sepal Length',
+            type = 'box', boxmean = 'sd') %>%
+  add_trace(y = ~Sepal.Width, name = 'Sepal Width',
+            type = 'box', boxmean = 'sd') %>%
+  add_trace(y = ~Petal.Length, name = 'Petal Length',
+            type = 'box', boxmean = 'sd') %>%
+  add_trace(y = ~Petal.Width, name = 'Petal Width',
+            type = 'box', boxmean = 'sd') %>%
+  layout(title = "All Iris Measurements by Species",
+         yaxis = list(title = "Measurement (cm)"))
+
+fig
+```
+
+---
+
+## Show the Mean on a Box Plot 📈
+
+::: {.callout-note icon="false"}
+Set `boxmean = 'sd'` to show the mean and standard deviation.
+:::
+
+---
+
+# Part 4: Histograms
+
+---
+
+## Basic Histogram 📊
+
+::: {.callout-blue icon="false"}
+**Distribution of a Single Variable**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Simple histogram
+fig <- plot_ly(x = ~iris$Sepal.Length,
+               type = 'histogram',
+               marker = list(color = 'steelblue',
+                           line = list(color = 'white', width = 1)))
+
+fig <- fig %>% layout(
+  title = "Distribution of Sepal Length",
+  xaxis = list(title = "Sepal Length (cm)"),
+  yaxis = list(title = "Count")
+)
+
+fig
+```
+
+---
+
+## Histogram Bin Controls 📊
+
+::: {.callout-note icon="false"}
+Choose the number of bins or specify exact bin boundaries.
+:::
+
+- `nbinsx`: Number of bins (auto-calculated if not specified)
+- `xbins`: Manual bin configuration
+
+---
+
+## Understanding Binwidth ⚖️
+
+::: {.callout-warning icon="true"}
+**Binwidth Matters!** The choice of binwidth dramatically affects interpretation
+:::
+
+**Too Few Bins (Large Binwidth):**
+
+```{r}
+#| echo: true
+#| eval: false
+# Very few bins - loses detail
+fig <- plot_ly(x = ~iris$Sepal.Length,
+               type = 'histogram',
+               nbinsx = 5)  # Only 5 bins
+fig
+```
+
+**Advantages:** ✅ Clear overall pattern, less noise  
+**Disadvantages:** ❌ Loses fine-grained patterns, may hide bimodality
+
+---
+
+## Binwidth: Finding Balance 🎯
+
+**Too Many Bins (Small Binwidth):**
+
+```{r}
+#| echo: true
+#| eval: false
+# Too many bins - too noisy
+fig <- plot_ly(x = ~iris$Sepal.Length,
+               type = 'histogram',
+               nbinsx = 50)  # 50 bins
+fig
+```
+
+**Advantages:** ✅ Shows fine detail, reveals minor peaks  
+**Disadvantages:** ❌ Noisy, harder to see overall pattern, sparse bins
+
+---
+
+## Choosing a Binwidth 🎨
+
+::: {.callout-tip icon="true"}
+**Rules of Thumb for Choosing Bins**
+:::
+
+**Common Rules:**
+
+1. **Sturges' Rule**: `bins ≈ log₂(n) + 1`
+2. **Square Root**: `bins ≈ √n`
+3. **Scott's Rule**: `binwidth ≈ 3.5σ / ∛n`
+4. **Freedman-Diaconis**: `binwidth ≈ 2IQR / ∛n`
+
+---
+
+## Try an Automatic Binwidth 🎨
+
+::: {.callout-tip icon="true"}
+Plotly chooses a default binning; compare it with other choices to see which best tells the data's story.
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Good balance - auto-calculated
+fig <- plot_ly(x = ~iris$Sepal.Length,
+               type = 'histogram',
+               marker = list(color = 'lightgreen',
+                           line = list(color = 'darkgreen', width = 1)))
+fig  # Plotly uses smart defaults!
+```
+
+---
+
+## Custom Binwidth 🔧 {.smaller}
+
+::: {.callout-note icon="false"}
+**Manual Control Over Bins**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Specify exact bin size
+fig <- plot_ly(x = ~iris$Sepal.Length,
+               type = 'histogram',
+               xbins = list(
+                 start = 4.0,     # First bin starts at 4
+                 end = 8.0,       # Last bin ends at 8
+                 size = 0.2       # Each bin is 0.2 cm wide
+               ))
+
+fig <- fig %>% layout(
+  title = "Sepal Length with 0.2 cm Bins",
+  xaxis = list(title = "Sepal Length (cm)"),
+  yaxis = list(title = "Frequency")
+)
+
+fig
+```
+
+---
+
+## Overlaid Histograms 📊 {.smaller}
+
+::: {.callout-blue icon="false"}
+**Comparing Distributions**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Create separate data for each species
+setosa <- iris %>% filter(Species == "setosa")
+versicolor <- iris %>% filter(Species == "versicolor")
+virginica <- iris %>% filter(Species == "virginica")
+
+# Overlaid histograms
+fig <- plot_ly(alpha = 0.6) %>%
+  add_histogram(x = ~setosa$Sepal.Length, name = "Setosa") %>%
+  add_histogram(x = ~versicolor$Sepal.Length, name = "Versicolor") %>%
+  add_histogram(x = ~virginica$Sepal.Length, name = "Virginica") %>%
+  layout(barmode = "overlay",          # Overlay instead of stack
+         title = "Sepal Length by Species",
+         xaxis = list(title = "Sepal Length (cm)"),
+         yaxis = list(title = "Count"))
+
+fig
+```
+
+**Other `barmode` options:** `'stack'`, `'group'`
+
+---
+
+## Stacked Histograms 📚 {.smaller}
+
+::: {.callout-tip icon="true"}
+**Showing Composition**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Stacked histogram
+fig <- plot_ly() %>%
+  add_histogram(x = ~setosa$Sepal.Length, 
+                name = "Setosa",
+                marker = list(color = '#e74c3c')) %>%
+  add_histogram(x = ~versicolor$Sepal.Length,
+                name = "Versicolor",
+                marker = list(color = '#3498db')) %>%
+  add_histogram(x = ~virginica$Sepal.Length,
+                name = "Virginica",
+                marker = list(color = '#2ecc71')) %>%
+  layout(barmode = "stack",
+         title = "Species Distribution Across Sepal Lengths",
+         xaxis = list(title = "Sepal Length (cm)"),
+         yaxis = list(title = "Total Count"))
+
+fig
+```
+
+---
+
+# Part 5: Other Plot Types
+
+---
+
+## Bar Charts 📊 {.smaller}
+
+::: {.callout-note icon="false"}
+**Categorical Data Visualization**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Count by species
+species_count <- iris %>%
+  group_by(Species) %>%
+  summarise(Count = n())
+
+fig <- plot_ly(data = species_count,
+               x = ~Species,
+               y = ~Count,
+               type = 'bar',
+               marker = list(color = c('#e74c3c', '#3498db', '#2ecc71')))
+
+fig <- fig %>% layout(
+  title = "Sample Count by Species",
+  xaxis = list(title = "Species"),
+  yaxis = list(title = "Number of Samples")
+)
+
+fig
+```
+
+---
+
+## Line Charts 📈 {.smaller}
+
+::: {.callout-blue icon="false"}
+**Time Series and Trends**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+iris_sorted <- iris %>% arrange(Sepal.Length)
+fig <- plot_ly(iris_sorted, x = ~seq_along(Sepal.Length),
+               y = ~Sepal.Length, color = ~Species,
+               type = 'scatter', mode = 'lines+markers',
+               line = list(width = 2), marker = list(size = 6)) %>%
+  layout(title = "Sepal Length Sorted Values",
+         xaxis = list(title = "Sample Index"),
+         yaxis = list(title = "Sepal Length (cm)"))
+fig
+```
+
+---
+
+## Violin Plots 🎻 {.smaller}
+
+::: {.callout-tip icon="true"}
+**Density + Box Plot Combined**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Violin plot shows distribution shape
+fig <- plot_ly(data = iris,
+               x = ~Species,
+               y = ~Sepal.Length,
+               color = ~Species,
+               type = 'violin',
+               box = list(visible = TRUE),     # Show box plot inside
+               meanline = list(visible = TRUE)) # Show mean line
+
+fig <- fig %>% layout(
+  title = "Sepal Length Distribution (Violin Plot)",
+  xaxis = list(title = "Species"),
+  yaxis = list(title = "Sepal Length (cm)")
+)
+
+fig
+```
+
+**Violin plots** show the full probability density, making them superior to box plots for multimodal distributions!
+
+---
+
+## Heatmaps 🔥 {.smaller}
+
+::: {.callout-note icon="false"}
+**Correlation Matrix Visualization**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+iris_numeric <- iris %>% select(-Species)
+cor_matrix <- cor(iris_numeric)
+fig <- plot_ly(x = colnames(cor_matrix), y = rownames(cor_matrix),
+               z = cor_matrix, type = "heatmap",
+               colors = colorRamp(c("blue", "white", "red"))) %>%
+  layout(title = "Iris Feature Correlation Matrix",
+         xaxis = list(title = ""), yaxis = list(title = ""))
+fig
+```
+
+---
+
+## 3D Scatter Plots 🌐 {.smaller}
+
+::: {.callout-blue icon="false"}
+**Three-Dimensional Data**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+fig <- plot_ly(iris, x = ~Sepal.Length, y = ~Sepal.Width,
+               z = ~Petal.Length, color = ~Species,
+               type = 'scatter3d', mode = 'markers',
+               marker = list(size = 5)) %>%
+  layout(scene = list(
+    xaxis = list(title = 'Sepal Length'),
+    yaxis = list(title = 'Sepal Width'),
+    zaxis = list(title = 'Petal Length')),
+    title = "3D Iris Visualization")
+fig
+```
+
+**Interactivity is KEY!** Rotate the plot by clicking and dragging!
+
+---
+
+# Part 6: Customization & Styling
+
+---
+
+## Layout Customization 🎨 {.smaller}
+
+::: {.callout-tip icon="true"}
+**Fine-Tuning Your Plots**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+fig <- plot_ly(iris, x = ~Sepal.Length, y = ~Petal.Length,
+               color = ~Species, type = 'scatter', mode = 'markers')
+fig <- fig %>% layout(
+  title = list(text = "Beautiful Iris Plot",
+               font = list(size = 24, color = '#2c3e50')),
+  xaxis = list(title = "Sepal Length (cm)", gridcolor = '#E0E0E0',
+               showline = TRUE, linecolor = '#2c3e50', linewidth = 2),
+  yaxis = list(title = "Petal Length (cm)", gridcolor = '#E0E0E0'),
+  plot_bgcolor = '#F8F9FA', paper_bgcolor = '#FFFFFF')
+fig
+```
+
+---
+
+## Color Scales 🌈
+
+::: {.callout-note icon="false"}
+**Using Color Effectively**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Color by continuous variable
+fig <- plot_ly(data = iris,
+               x = ~Sepal.Length,
+               y = ~Petal.Length,
+               color = ~Sepal.Width,      # Continuous color
+               type = 'scatter',
+               mode = 'markers',
+               marker = list(size = 10,
+                           colorbar = list(title = "Sepal Width")))
+
+fig <- fig %>% layout(title = "Color by Sepal Width")
+fig
+```
+
+---
+
+## Choose a Color Scale 🌈
+
+::: {.callout-note icon="false"}
+Use a palette that helps readers distinguish values without distracting from the data.
+:::
+
+**Built-in Color Scales:**
+
+- `colors = 'Viridis'`, `'Blues'`, `'Reds'`, `'RdBu'`
+- Or use custom: `colors = colorRamp(c("blue", "yellow", "red"))`
+
+---
+
+## Add an Annotation 📝 {.smaller}
+
+::: {.callout-blue icon="false"}
+Add a text label and arrow to call attention to a data point.
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+fig <- plot_ly(data = iris,
+               x = ~Sepal.Length,
+               y = ~Petal.Length,
+               type = 'scatter',
+               mode = 'markers') %>%
+  layout(
+    title = "Annotated Plot",
+    annotations = list(
+      list(x = 6.5, y = 5.5,
+           text = "Cluster of large flowers",
+           showarrow = TRUE,
+           arrowhead = 2,
+           arrowcolor = "red"))
+  )
+
+fig
+```
+
+---
+
+## Highlight a Region with a Shape 🟥 {.smaller}
+
+::: {.callout-tip icon="true"}
+Use a transparent rectangle to mark an area of the plot without hiding the data.
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+fig <- plot_ly(data = iris,
+               x = ~Sepal.Length,
+               y = ~Petal.Length,
+               type = 'scatter',
+               mode = 'markers') %>%
+  layout(
+    shapes = list(
+      list(type = "rect",
+           x0 = 6, x1 = 7, y0 = 5, y1 = 6,
+           line = list(color = "red", width = 2),
+           fillcolor = "rgba(255, 0, 0, 0.1)")
+    )
+  )
+
+fig
+```
+
+---
+
+## Subplots 📊📊
+
+::: {.callout-tip icon="true"}
+**Multiple Plots in One Figure**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+library(plotly)
+
+# Create individual plots
+p1 <- plot_ly(iris, x = ~Sepal.Length, type = "histogram",
+              name = "Sepal Length")
+p2 <- plot_ly(iris, x = ~Petal.Length, type = "histogram",
+              name = "Petal Length")
+p3 <- plot_ly(iris, x = ~Sepal.Length, y = ~Petal.Length,
+              color = ~Species, type = "scatter", mode = "markers")
+p4 <- plot_ly(iris, x = ~Species, y = ~Sepal.Length,
+              color = ~Species, type = "box")
+```
+
+---
+
+## Combine Plots in a Grid 📊
+
+::: {.callout-tip icon="true"}
+After defining `p1` through `p4`, arrange them in a 2 × 2 layout.
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Combine into subplot
+fig <- subplot(p1, p2, p3, p4,
+               nrows = 2, ncols = 2,
+               shareX = FALSE, shareY = FALSE,
+               titleX = TRUE, titleY = TRUE)
+
+fig <- fig %>% layout(title = "Iris Dataset Overview",
+                     showlegend = FALSE)
+fig
+```
+
+---
+
+# Part 7: Interactive Code Generator
+
+---
+
+## Plotly Code Generator 🛠️
+
+::: {.callout-important icon="false"}
+## Build Your Own Plotly Visualization!
+
+Interactive tool to generate Plotly code for different plot types
+:::
+
+```{=html}
+<div id="plotly-generator" style="padding: 8px; border: 2px solid #9B59B6; border-radius: 8px; background: #f8f9fa; font-size: 0.65em; max-width: 900px; margin: 0 auto;">
+  <h3 style="text-align: center; font-size: 1.1em; margin: 3px 0;">Plotly Code Generator</h3>
+  
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 5px 0;">
+    <div>
+      <label style="font-weight: bold; font-size: 0.85em;">Dataset:</label>
+      <select id="plotly-dataset" style="width: 100%; padding: 2px; margin: 2px 0; font-size: 0.9em;">
+        <option value="iris">iris</option>
+        <option value="mtcars">mtcars</option>
+      </select>
+      
+      <label style="font-weight: bold; margin-top: 3px; display: block; font-size: 0.85em;">X Variable:</label>
+      <select id="plotly-x" style="width: 100%; padding: 2px; margin: 2px 0; font-size: 0.9em;">
+        <option value="Sepal.Length">Sepal.Length</option>
+        <option value="Sepal.Width">Sepal.Width</option>
+        <option value="Petal.Length">Petal.Length</option>
+        <option value="Petal.Width">Petal.Width</option>
+      </select>
+      
+      <label style="font-weight: bold; margin-top: 3px; display: block; font-size: 0.85em;">Y Variable:</label>
+      <select id="plotly-y" style="width: 100%; padding: 2px; margin: 2px 0; font-size: 0.9em;">
+        <option value="Petal.Length" selected>Petal.Length</option>
+        <option value="Sepal.Length">Sepal.Length</option>
+        <option value="Sepal.Width">Sepal.Width</option>
+        <option value="Petal.Width">Petal.Width</option>
+      </select>
+    </div>
+    
+    <div>
+      <label style="font-weight: bold; font-size: 0.85em;">Plot Type:</label>
+      <select id="plotly-type" style="width: 100%; padding: 2px; margin: 2px 0; font-size: 0.9em;">
+        <option value="scatter">Scatter Plot</option>
+        <option value="box">Box Plot</option>
+        <option value="histogram">Histogram</option>
+        <option value="bar">Bar Chart</option>
+        <option value="line">Line Chart</option>
+        <option value="violin">Violin Plot</option>
+        <option value="heatmap">Heatmap</option>
+        <option value="3d">3D Scatter</option>
+      </select>
+      
+      <label style="font-weight: bold; margin-top: 3px; display: block; font-size: 0.85em;">Color By:</label>
+      <select id="plotly-color" style="width: 100%; padding: 2px; margin: 2px 0; font-size: 0.9em;">
+        <option value="none">None</option>
+        <option value="Species">Species</option>
+        <option value="Sepal.Width">Sepal.Width</option>
+      </select>
+      
+      <label style="font-weight: bold; margin-top: 3px; display: block; font-size: 0.85em;">Color Scale:</label>
+      <select id="plotly-colorscale" style="width: 100%; padding: 2px; margin: 2px 0; font-size: 0.9em;">
+        <option value="default">Default</option>
+        <option value="Viridis">Viridis</option>
+        <option value="Blues">Blues</option>
+        <option value="Reds">Reds</option>
+        <option value="RdBu">RdBu</option>
+      </select>
+    </div>
+    
+    <div style="display: flex; flex-direction: column; justify-content: space-around;">
+      <label style="font-size: 0.9em;"><input type="checkbox" id="plotly-markers"> Show Markers</label>
+      <label style="font-size: 0.9em;"><input type="checkbox" id="plotly-hover"> Custom Hover</label>
+      <label style="font-size: 0.9em;"><input type="checkbox" id="plotly-title" checked> Add Title</label>
+      <button id="generate-plotly-code" style="padding: 5px; background: #9B59B6; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9em;">
+        Generate Code
+      </button>
+    </div>
+  </div>
+  
+  <div style="background: #2c3e50; color: #ecf0f1; padding: 8px; border-radius: 4px; margin: 5px 0; font-family: 'Courier New', monospace; white-space: pre-wrap; font-size: 0.8em; max-height: 200px; overflow-y: auto; line-height: 1.2;">
+<code id="plotly-generated-code">Click "Generate Code" to create your Plotly code!</code>
+  </div>
+  
+  <button id="copy-plotly-code" style="padding: 4px 12px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85em;">
+    📋 Copy
+  </button>
+</div>
+
+<script>
+function updatePlotlyVariableOptions() {
+  const dataset = document.getElementById('plotly-dataset').value;
+  const xSelect = document.getElementById('plotly-x');
+  const ySelect = document.getElementById('plotly-y');
+  const colorSelect = document.getElementById('plotly-color');
+  
+  // Clear existing options
+  xSelect.innerHTML = '';
+  ySelect.innerHTML = '';
+  colorSelect.innerHTML = '<option value="none">None</option>';
+  
+  let variables = [];
+  let categoricalVar = '';
+  
+  if (dataset === 'iris') {
+    variables = ['Sepal.Length', 'Sepal.Width', 'Petal.Length', 'Petal.Width'];
+    categoricalVar = 'Species';
+  } else if (dataset === 'mtcars') {
+    variables = ['mpg', 'disp', 'hp', 'wt', 'qsec'];
+    categoricalVar = 'cyl';
+  }
+  
+  // Populate X and Y
+  variables.forEach(v => {
+    xSelect.innerHTML += `<option value="${v}">${v}</option>`;
+    ySelect.innerHTML += `<option value="${v}">${v}</option>`;
+  });
+  
+  // Set defaults
+  xSelect.value = variables[0];
+  ySelect.value = variables[2] || variables[1];
+  
+  // Add color options
+  variables.forEach(v => {
+    colorSelect.innerHTML += `<option value="${v}">${v}</option>`;
+  });
+  colorSelect.innerHTML += `<option value="${categoricalVar}">${categoricalVar}</option>`;
+}
+
+function generatePlotlyCode() {
+  const dataset = document.getElementById('plotly-dataset').value;
+  const xVar = document.getElementById('plotly-x').value;
+  const yVar = document.getElementById('plotly-y').value;
+  const plotType = document.getElementById('plotly-type').value;
+  const colorVar = document.getElementById('plotly-color').value;
+  const colorScale = document.getElementById('plotly-colorscale').value;
+  const showMarkers = document.getElementById('plotly-markers').checked;
+  const customHover = document.getElementById('plotly-hover').checked;
+  const addTitle = document.getElementById('plotly-title').checked;
+  
+  let code = `library(tidyverse)\nlibrary(plotly)\n\n`;
+  
+  // Generate code based on plot type
+  if (plotType === 'scatter') {
+    code += `fig <- plot_ly(data = ${dataset},\n`;
+    code += `               x = ~${xVar},\n`;
+    code += `               y = ~${yVar},\n`;
+    if (colorVar !== 'none') {
+      code += `               color = ~${colorVar},\n`;
+      if (colorScale !== 'default') {
+        code += `               colors = '${colorScale}',\n`;
+      }
+    }
+    code += `               type = 'scatter',\n`;
+    code += `               mode = '${showMarkers ? 'markers' : 'markers'}',\n`;
+    code += `               marker = list(size = 8))`;
+    
+  } else if (plotType === 'box') {
+    code += `fig <- plot_ly(data = ${dataset},\n`;
+    code += `               x = ~${colorVar !== 'none' ? colorVar : xVar},\n`;
+    code += `               y = ~${yVar},\n`;
+    if (colorVar !== 'none') {
+      code += `               color = ~${colorVar},\n`;
+    }
+    code += `               type = 'box',\n`;
+    code += `               boxpoints = 'outliers')`;
+    
+  } else if (plotType === 'histogram') {
+    code += `fig <- plot_ly(x = ~${dataset}$${xVar},\n`;
+    code += `               type = 'histogram',\n`;
+    code += `               marker = list(color = 'steelblue',\n`;
+    code += `                           line = list(color = 'white', width = 1)))`;
+    
+  } else if (plotType === 'bar') {
+    code += `# First, summarize the data\n`;
+    code += `library(dplyr)\n`;
+    code += `summary_data <- ${dataset} %>%\n`;
+    code += `  group_by(${colorVar !== 'none' ? colorVar : xVar}) %>%\n`;
+    code += `  summarise(mean_val = mean(${yVar}, na.rm = TRUE))\n\n`;
+    code += `fig <- plot_ly(data = summary_data,\n`;
+    code += `               x = ~${colorVar !== 'none' ? colorVar : xVar},\n`;
+    code += `               y = ~mean_val,\n`;
+    code += `               type = 'bar')`;
+    
+  } else if (plotType === 'line') {
+    code += `fig <- plot_ly(data = ${dataset},\n`;
+    code += `               x = ~${xVar},\n`;
+    code += `               y = ~${yVar},\n`;
+    if (colorVar !== 'none') {
+      code += `               color = ~${colorVar},\n`;
+    }
+    code += `               type = 'scatter',\n`;
+    code += `               mode = 'lines+markers',\n`;
+    code += `               line = list(width = 2))`;
+    
+  } else if (plotType === 'violin') {
+    code += `fig <- plot_ly(data = ${dataset},\n`;
+    code += `               x = ~${colorVar !== 'none' ? colorVar : xVar},\n`;
+    code += `               y = ~${yVar},\n`;
+    if (colorVar !== 'none') {
+      code += `               color = ~${colorVar},\n`;
+    }
+    code += `               type = 'violin',\n`;
+    code += `               box = list(visible = TRUE),\n`;
+    code += `               meanline = list(visible = TRUE))`;
+    
+  } else if (plotType === 'heatmap') {
+    code += `# Create correlation matrix\n`;
+    code += `${dataset}_numeric <- ${dataset} %>% select(where(is.numeric))\n`;
+    code += `cor_matrix <- cor(${dataset}_numeric, use = "complete.obs")\n\n`;
+    code += `fig <- plot_ly(\n`;
+    code += `  x = colnames(cor_matrix),\n`;
+    code += `  y = rownames(cor_matrix),\n`;
+    code += `  z = cor_matrix,\n`;
+    code += `  type = "heatmap",\n`;
+    code += `  colors = colorRamp(c("blue", "white", "red")))`;
+    
+  } else if (plotType === '3d') {
+    code += `fig <- plot_ly(data = ${dataset},\n`;
+    code += `               x = ~${xVar},\n`;
+    code += `               y = ~${yVar},\n`;
+    code += `               z = ~${xVar === 'Sepal.Length' ? 'Petal.Width' : 'Sepal.Width'},\n`;
+    if (colorVar !== 'none') {
+      code += `               color = ~${colorVar},\n`;
+    }
+    code += `               type = 'scatter3d',\n`;
+    code += `               mode = 'markers',\n`;
+    code += `               marker = list(size = 5))`;
+  }
+  
+  // Add layout
+  if (addTitle) {
+    code += `\n\nfig <- fig %>% layout(\n`;
+    code += `  title = "${plotType.charAt(0).toUpperCase() + plotType.slice(1)} Plot of ${dataset}",\n`;
+    code += `  xaxis = list(title = "${xVar}"),\n`;
+    code += `  yaxis = list(title = "${yVar}")\n`;
+    code += `)`;
+  }
+  
+  code += `\n\nfig`;
+  
+  document.getElementById('plotly-generated-code').textContent = code;
+}
+
+// Event listeners
+document.getElementById('plotly-dataset').addEventListener('change', updatePlotlyVariableOptions);
+document.getElementById('generate-plotly-code').addEventListener('click', generatePlotlyCode);
+
+document.getElementById('copy-plotly-code').addEventListener('click', function() {
+  const code = document.getElementById('plotly-generated-code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    this.textContent = '✓ Copied!';
+    setTimeout(() => {
+      this.textContent = '📋 Copy';
+    }, 2000);
+  }).catch(err => {
+    alert('Failed to copy code');
+  });
+});
+
+// Initialize
+updatePlotlyVariableOptions();
+</script>
+```
+
+---
+
+## Try the Generator! 🎮
+
+::: {.callout-tip icon="true"}
+**Interactive Learning** — Experiment with the controls and inspect the generated code.
+:::
+
+**Try these options:**
+
+- Switch datasets and plot types
+- Add a color variable and choose a color scale
+- Generate and copy the code
+
+**Try it:** Generate code for a 3D scatter plot of iris data colored by Species!
+
+---
+
+# Part 8: Best Practices
+
+---
+
+## When to Use Plotly 🤔
+
+::: {.callout-note icon="false"}
+**Choosing the Right Tool**
+:::
+
+**Choose Plotly for:**
+
+✅ Interactive dashboards and web apps  
+✅ Exploratory data analysis  
+✅ Presentations where you can click and zoom  
+✅ Sharing HTML reports  
+✅ 3D visualizations
+
+---
+
+## When to Use ggplot2 🤔
+
+::: {.callout-note icon="false"}
+**Choose a static plot when publication control matters most.**
+:::
+
+✅ Publication-quality static graphics  
+✅ Fine-grained control over every element  
+✅ Complex multi-layered plots  
+✅ PDF/PNG exports for papers  
+✅ Faceted plots with many panels
+
+**Need both?** Convert a ggplot with `ggplotly()`.
+
+---
+
+## Converting ggplot2 to Plotly 🔄 {.smaller}
+
+::: {.callout-blue icon="false"}
+**The Power of ggplotly()**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+library(ggplot2)
+library(plotly)
+
+# Create a ggplot
+p <- ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, 
+                     color = Species)) +
+  geom_point(size = 3) +
+  theme_minimal() +
+  labs(title = "Iris Dataset",
+       x = "Sepal Length (cm)",
+       y = "Petal Length (cm)")
+
+# Convert to interactive Plotly plot
+ggplotly(p)
+```
+
+**Advantages:**
+
+- Keeps all your ggplot2 customization
+- Automatically adds interactivity
+- One line of code!
+
+---
+
+## Performance Tips 🚀
+
+::: {.callout-warning icon="true"}
+**Making Plotly Fast**
+:::
+
+**For Large Datasets:**
+
+```{r}
+#| echo: true
+#| eval: false
+# 1. Use webgl for better performance
+fig <- plot_ly(data = large_dataset,
+               x = ~x, y = ~y,
+               type = 'scattergl',  # Note: scattergl instead of scatter
+               mode = 'markers')
+
+# 2. Reduce marker count with sampling
+sampled <- large_dataset %>% sample_n(1000)
+fig <- plot_ly(data = sampled, ...)
+
+# 3. Disable hover for thousands of points
+fig <- plot_ly(..., hoverinfo = 'skip')
+```
+
+---
+
+## Keep Large Plots Responsive ⚡
+
+::: {.callout-note icon="false"}
+Choose a rendering strategy that matches the size of your data.
+:::
+
+**Tips:**
+
+- Use `scattergl` for >1000 points
+- Consider aggregation or binning for huge datasets
+- Disable unnecessary interactive features
+
+---
+
+## Saving Plotly Plots 💾
+
+::: {.callout-tip icon="true"}
+**Export Options**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+library(plotly)
+library(htmlwidgets)
+
+# Create a plot
+fig <- plot_ly(iris, x = ~Sepal.Length, y = ~Petal.Length,
+               color = ~Species, type = 'scatter', mode = 'markers')
+
+# Save as interactive HTML
+htmlwidgets::saveWidget(fig, "my_plot.html")
+```
+
+---
+
+## Export a Static Image 🖼️
+
+::: {.callout-tip icon="true"}
+Static PNG export requires a configured image engine such as Kaleido.
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# install.packages("reticulate")
+# reticulate::py_install("kaleido")
+library(orca)
+orca(fig, "my_plot.png")
+```
+
+---
+
+## Embed a Plot in a Report 📄
+
+::: {.callout-note icon="false"}
+In an R Markdown or Quarto document, print the plot object to include it.
+:::
+
+```r
+fig
+```
+
+---
+
+## Key Takeaways: Core Ideas 🎯
+
+::: {.callout-note icon="false"}
+**What We Learned**
+:::
+
+**1. Installation:** Use `install.packages('plotly')` and setup functions
+
+**2. Basic Syntax:**
+```r
+plot_ly(data = df, x = ~var1, y = ~var2, type = 'scatter')
+```
+
+**3. Plot Types:**
+- Scatter, Box, Histogram, Bar, Line, Violin, Heatmap, 3D
+
+**4. Binwidths:**
+- Too few bins → lose detail
+- Too many bins → too noisy
+- Use Plotly's smart defaults or calculate optimal bins
+
+---
+
+## Key Takeaways: Customize and Extend 🎨
+
+::: {.callout-note icon="false"}
+**Make plots clearer and shareable**
+:::
+
+**5. Customization:**
+- `layout()` for axes, titles, colors
+- `add_trace()` for multiple layers
+- Annotations and shapes for context
+
+---
+
+## Practice Challenge 🏆
+
+::: {.callout-tip icon="true"}
+**Try This on Your Own!**
+:::
+
+**Challenge:** Create an interactive Plotly visualization using the `mtcars` dataset
+
+**Requirements:**
+
+1. Create a scatter plot of `mpg` vs `wt` (weight)
+2. Color points by `cyl` (cylinders)
+3. Add custom hover text showing car name and horsepower
+4. Include a title and axis labels
+5. Customize the color scheme
+
+---
+
+## Practice Challenge: Bonus Ideas 🏆
+
+::: {.callout-tip icon="true"}
+Try an extension after the required scatter plot is complete.
+:::
+
+**Bonus:**
+
+- Add a trend line
+- Create a subplot with a histogram of mpg
+- Make it 3D by adding `disp` as z-axis
+
+**Time:** 5-10 minutes
+
+---
+
+## Resources 📚
+
+::: {.callout-blue icon="false"}
+**Continue Learning**
+:::
+
+**Documentation:** [Plotly R](https://plotly.com/r/) · [Graph reference](https://plotly.com/r/reference/) · [Community forum](https://community.plotly.com/)
+
+**Tutorials:** [Getting started](https://plotly.com/r/getting-started/) · [Plotly book](https://plotly-r.com/) · [R Graph Gallery](https://r-graph-gallery.com/interactive-charts.html)
+
+**Cheat sheet:** [Plotly R PDF](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf)
+
+---
+
+## So What Did We Cover, Again?
+
+::: {.callout-note icon="false"}
+**Keep Exploring!**
+:::
+
+**You now know how to:**
+
+✅ Install and set up Plotly  
+✅ Create interactive scatter, box, and histogram plots  
+✅ Choose appropriate binwidths  
+✅ Customize plots with colors, layouts, and themes  
+✅ Use the code generator for quick starts  
+✅ Convert ggplot2 plots to interactive Plotly plots
+
+---
+
+## What to Try Next 🚀
+
+::: {.callout-note icon="false"}
+**Keep exploring with your own data**
+:::
+
+**Next Steps:**
+
+- Practice with your own datasets
+- Explore advanced plot types (sunburst, sankey, etc.)
+- Build interactive dashboards with Shiny + Plotly
+- Share your visualizations on the web!
+
+**Happy Plotting! 📊✨**
