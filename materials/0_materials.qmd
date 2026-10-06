@@ -107,7 +107,7 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **Interactive Data Visualization with `plotly`**
   - <a href="week07_first_steps_plotly.html" target="_blank">Slides</a>
 
-- **Activity 5**: Analysis: Coffee Deserts and Oases (Mapping with ggplot2 and plotly)
+- **Activity 5**: Analysis; Coffee Deserts and Oases (Mapping with ggplot2 and plotly)
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/activity05/accept" target="_blank">Activity05</a>
 
 
