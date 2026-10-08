@@ -1253,11 +1253,7 @@ No matter how weird the population's shape, the distribution of **sample
 means** approaches a normal curve as n grows. 🤯
 :::
 
-```{r clt-demo}
-#| echo: true
-#| fig-width: 11
-#| fig-height: 4
-
+```r
 library(patchwork)
 set.seed(301)
 
@@ -1279,6 +1275,12 @@ p0 <- ggplot(tibble(x = pop), aes(x)) +
 
 (p0 + clt_plot(2)) / (clt_plot(10) + clt_plot(50))
 ```
+
+## The Central Limit Theorem Plot
+
+<center>
+![](graphics/clt_patchwork.png){width="70%"}
+</center>
 
 ---
 
