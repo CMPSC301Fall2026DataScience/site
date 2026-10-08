@@ -1,0 +1,2035 @@
+---
+title: "Probability, Distributions and Concepts"
+subtitle: "Statistical Inference: probability, distributions and confidence intervals"
+# author: "CS301 - Data Science with R"
+# date: "Fall 2026"
+format:
+  revealjs:
+    # theme: [default, custom_plotly.css]
+    theme: custom_ds.css
+    slide-number: true
+    chalkboard: true
+    preview-links: auto
+    scrollable: true
+    width: 1200
+    height: 800
+    margin: 0.05
+fig-width: 10
+fig-height: 5.5
+fig-align: center
+---
+
+# Up for Today
+
+::: {.callout-tip icon="true"}
+## From Description to Inference
+* **Binwidths** — choosing the right width for histograms
+* **Probability** — quantifying uncertainty
+* **Distributions** — normal, binomial, Poisson
+* **The d/p/q/r Family** — R's four-letter superpower
+* **Sampling** — why samples differ from populations
+* **Central Limit Theorem** — the most surprising result in statistics
+* **Confidence Intervals** — putting error bars on everything
+:::
+
+<!-- ::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**add text here 🔮
+::: -->
+
+
+
+
+# On Bin Widths
+
+Remember the `diamonds` dataset in R:
+
+```r
+library(tidyverse)
+
+bw = 0.1 # binwidth setting
+ggplot(diamonds, aes(x = carat)) +
+  geom_histogram(binwidth = bw ,
+    fill = "#2E86C1", color = "white") +
+  labs(title = "Histogram of Diamond Carats
+    with Smaller Binwidth",
+       x = "Carat", y = "Count") +
+  theme_minimal()
+```
+
+## Diamonds Histogram Plot 1
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+Binwidth of 0.1
+:::
+
+```{r bw 0.1}
+library(tidyverse)
+
+bw = 0.1 # binwidth setting
+ggplot(diamonds, aes(x = carat)) +
+  geom_histogram(binwidth = bw ,
+    fill = "#2E86C1", color = "white") +
+  labs(title = "Histogram of Diamond Carats
+    with Smaller Binwidth",
+       x = "Carat", y = "Count") +
+  theme_minimal()
+```
+
+
+
+## Diamonds Histogram Plot 2
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+Binwidth of 0.2
+:::
+
+```{r bw 0.2}
+library(tidyverse)
+
+bw = 0.2 # binwidth setting
+ggplot(diamonds, aes(x = carat)) +
+  geom_histogram(binwidth = bw ,
+    fill = "#2E86C1", color = "white") +
+  labs(title = "Histogram of Diamond Carats
+    with Smaller Binwidth",
+       x = "Carat", y = "Count") +
+  theme_minimal()
+```
+
+
+
+## Diamonds Histogram Plot 3
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+Binwidth of 0.3
+:::
+
+```{r bw 0.3}
+library(tidyverse)
+
+bw = 0.3 # binwidth setting
+ggplot(diamonds, aes(x = carat)) +
+  geom_histogram(binwidth = bw ,
+    fill = "#2E86C1", color = "white") +
+  labs(title = "Histogram of Diamond Carats
+    with Smaller Binwidth",
+       x = "Carat", y = "Count") +
+  theme_minimal()
+```
+
+
+
+
+## Diamonds Histogram Plot 4
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+Binwidth of 0.6
+:::
+
+```{r bw 0.6}
+library(tidyverse)
+
+bw = 0.6 # binwidth setting
+ggplot(diamonds, aes(x = carat)) +
+  geom_histogram(binwidth = bw ,
+    fill = "#2E86C1", color = "white") +
+  labs(title = "Histogram of Diamond Carats
+    with Smaller Binwidth",
+       x = "Carat", y = "Count") +
+  theme_minimal()
+```
+
+
+
+## Diamonds Histogram Plot 5
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+Binwidth of 0.8
+:::
+
+```{r bw 0.8}
+library(tidyverse)
+
+bw = 0.8 # binwidth setting
+ggplot(diamonds, aes(x = carat)) +
+  geom_histogram(binwidth = bw ,
+    fill = "#2E86C1", color = "white") +
+  labs(title = "Histogram of Diamond Carats
+    with Smaller Binwidth",
+       x = "Carat", y = "Count") +
+  theme_minimal()
+```
+
+
+
+## Diamonds Histogram Plot 6
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+Binwidth of 1
+:::
+
+```{r bw 1}
+library(tidyverse)
+
+bw = 1 # binwidth setting
+ggplot(diamonds, aes(x = carat)) +
+  geom_histogram(binwidth = bw ,
+    fill = "#2E86C1", color = "white") +
+  labs(title = "Histogram of Diamond Carats
+    with Smaller Binwidth",
+       x = "Carat", y = "Count") +
+  theme_minimal()
+```
+
+
+## Diamonds Histogram Plot 7
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+Binwidth of 10
+:::
+
+```{r bw 10}
+library(tidyverse)
+
+bw = 10 # binwidth setting
+ggplot(diamonds, aes(x = carat)) +
+  geom_histogram(binwidth = bw ,
+    fill = "#2E86C1", color = "white") +
+  labs(title = "Histogram of Diamond Carats
+    with Smaller Binwidth",
+       x = "Carat", y = "Count") +
+  theme_minimal()
+```
+
+::: {style="color: #db1327; text-align: center; margin-top: 20px;"}
+Is our data a single huge square!?
+:::
+
+## Binwidth Discussion
+
+::: {.callout-note}
+::: {style="color: #db1327; text-align: center; margin-top: 20px;"}
+Is our data a single huge square!? When binwidth is too large, the data appears to be aggregated into a small number of bins and the histogram loses its ability to show the true distribution of the data.
+:::
+:::
+
+::: {.callout-important}
+
+- When creating histograms, the choice of binwidth can significantly affect the appearance and interpretation of the data. 
+- **Smaller binwidths** provide more detail but can be noisy, while **larger binwidths** smooth out the data but may hide important features.
+
+- Consider experimenting with different binwidths to find a balance that accurately represents the underlying distribution of your data.
+
+::: 
+
+
+---
+
+# Part 1: Probability Basics 🎯
+
+---
+
+## What Does "Probability" Mean?
+
+**The long-run frequency view**
+
+P(event) = the fraction of times it happens if you repeat the experiment
+forever.
+
+You cannot repeat forever — but you *can* repeat 100,000 times in R. 💻
+
+::: {.callout-note}
+**Key vocabulary**
+
+- **Experiment** — a repeatable procedure
+- **Outcome** — one result
+- **Event** — a set of outcomes
+- **Random variable** — a number attached to an outcome
+:::
+
+## Frequency of Heads in Coin Flips
+```r
+#| echo: false
+#| fig-width: 6
+#| fig-height: 3.6
+
+library(tidyverse)
+set.seed(301)
+
+flips <- sample(c(0, 1), 5000, replace = TRUE)
+
+tibble(
+  n = seq_along(flips),
+  running = cummean(flips)
+) %>%
+  ggplot(aes(n, running)) +
+  geom_line(color = "#2E86C1") +
+  geom_hline(yintercept = 0.5,
+             color = "#E74C3C",
+             linetype = "dashed") +
+  coord_cartesian(ylim = c(0.3, 0.7)) +
+  labs(title = "Proportion of heads settles at 0.5",
+       x = "Number of flips", y = NULL) +
+  theme_minimal(base_size = 11)
+```
+
+
+
+## Frequency of Heads in Coin Flips Plot
+```{r prob-frequency1}
+#| echo: false
+#| fig-width: 6
+#| fig-height: 3.6
+
+library(tidyverse)
+set.seed(301)
+
+flips <- sample(c(0, 1), 5000, replace = TRUE)
+
+tibble(
+  n = seq_along(flips),
+  running = cummean(flips)
+) %>%
+  ggplot(aes(n, running)) +
+  geom_line(color = "#2E86C1") +
+  geom_hline(yintercept = 0.5,
+             color = "#E74C3C",
+             linetype = "dashed") +
+  coord_cartesian(ylim = c(0.3, 0.7)) +
+  labs(title = "Proportion of heads settles at 0.5",
+       x = "Number of flips", y = NULL) +
+  theme_minimal(base_size = 11)
+```
+
+## Frequency of Heads in Coin Flips Discussion
+
+::: {.callout-important}
+**Discussion Points**
+
+- The proportion of heads tends to stabilize around 0.5 as the number of flips increases.
+- Early fluctuations are common due to randomness, but they diminish over time.
+- This illustrates the Law of Large Numbers: the average of repeated independent trials converges to the expected value.
+:::
+
+
+---
+
+## Sampling in R (Part 1)
+
+```{r sampling1}
+#| echo: true
+
+set.seed(301)
+
+# Without replacement (default) - like dealing cards
+sample(1:10, size = 5)
+
+# With replacement - like rolling a die repeatedly
+sample(1:6, size = 10, replace = TRUE)
+```
+
+## Sampling in R (Part 2)
+
+```{r sampling2}
+#| echo: true
+
+# Unequal probabilities - a weighted coin
+sample(c("Heads", "Tails"), size = 10, replace = TRUE, prob = c(0.8, 0.2))
+
+# Shuffle an entire vector
+sample(letters[1:8])
+```
+
+## Sampling in R (Part 3)
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+
+**Sampling allows for the selection of a subset of elements from a set. Useful for simulations and resampling methods.** 🔮
+
+:::
+
+```{r sampling3}
+#| echo: true
+
+# Sample rows of a data frame (tidyverse)
+slice_sample(iris, n = 10)
+```
+
+---
+
+## Discrete vs Continuous 📊
+
+::: {.columns}
+::: {.column}
+**Discrete** — countable outcomes
+
+- Number of heads in 10 flips
+- Customers arriving per hour
+- Dice totals
+
+Described by a **probability mass function**: P(X = 3) is a real number.
+:::
+
+::: {.column}
+**Continuous** — any value in a range
+
+- Height, weight, temperature
+- Time until failure
+
+Described by a **probability density function**: P(X = 3.000...) = 0!
+Only *ranges* have probability. 📏
+:::
+:::
+
+::: {.callout-warning icon="true"}
+## A Density Is Not a Probability
+`dnorm(0)` returns `0.399` — that is a **height**, not a chance. For continuous
+variables, probability is **area under the curve**, which is what `pnorm()`
+gives you. 📐
+:::
+
+## Continuous Distribution Example
+
+```{r continuous-example}
+#| echo: true
+#| fig-width: 6
+#| fig-height: 3.6
+library(tidyverse)
+
+# Scatter plot of continuous data 
+# (Engine displacement vs. Highway MPG)
+ggplot(data = mpg, aes(x = displ, y = hwy)) +
+  geom_point(color = "steelblue", size = 2.5, alpha = 0.7) +
+  labs(
+    title = "Continuous Data: Engine Size vs. Fuel Efficiency",
+    x = "Engine Displacement (Liters)",
+    y = "Highway Miles per Gallon"
+  ) +
+  theme_minimal()
+```
+
+## Discrete Distribution Example
+
+```{r discrete-example}
+#| echo: true
+#| fig-width: 6
+#| fig-height: 3.6
+library(tidyverse)
+
+# Bar chart of discrete data (Count of diamonds by cut quality)
+ggplot(data = diamonds, aes(x = cut)) +
+  geom_bar(fill = "steelblue", color = "black", alpha = 0.7) +
+  labs(
+    title = "Discrete Data: Count of Diamonds by Cut",
+    x = "Cut Quality (Category)",
+    y = "Count"
+  ) + theme_minimal()
+```
+
+---
+
+## R's Four-Letter Pattern 🔤
+
+::: {.callout icon="false"}
+**Every distribution in R has four functions:** prefix + name
+:::
+
+::: {.callout-tip}
+| Prefix | Meaning | Question it answers | Example |
+|:--|:--|:--|:--|
+| **d** | density / mass | "How likely is exactly this?" | `dbinom(3, 10, 0.5)` |
+| **p** | cumulative probability | "What is P(*X* ≤ *q*)?" | `pnorm(1.96)` |
+| **q** | quantile (inverse of p) | "Which value has *p* below it?" | `qnorm(0.975)` |
+| **r** | random draws | "Give me *n* random values" | `rnorm(100)` |
+
+**Distribution names:** `norm`, `binom`, `pois`, `unif`, `exp`, `t`, `chisq`, `f`
+:::
+
+---
+
+## The Normal Distribution
+
+```r
+x <- seq(-4, 4, length.out = 300)
+
+tibble(x = x, density = dnorm(x)) %>%
+  ggplot(aes(x, density)) +
+  geom_area(data = ~ filter(.x, x >= -1, x <= 1),
+   fill = "#27AE60", alpha = 0.5) +
+  geom_area(data = ~ filter(.x, x >= -2, x <= 2),
+   fill = "#3498DB", alpha = 0.25) +
+  geom_line(linewidth = 1) +
+  annotate("text", x = 0, y = 0.15,
+   label = "68%", size = 5, color = "white") +
+  annotate("text", x = 1.5, y = 0.05,
+   label = "95%", size = 4.5, color = "#2E86C1") +
+  labs(title = "The 68-95-99.7 rule",
+       subtitle = "Within 1, 2, and 3 standard deviations of the mean",
+       y = "Density") +
+  theme_minimal(base_size = 12)
+```
+
+## The Normal Distribution Plot 🔔
+
+```{r normal-dist-plot}
+#| echo: false
+#| fig-width: 11
+#| fig-height: 3.8
+
+x <- seq(-4, 4, length.out = 300)
+
+tibble(x = x, density = dnorm(x)) %>%
+  ggplot(aes(x, density)) +
+  geom_area(data = ~ filter(.x, x >= -1, x <= 1), fill = "#27AE60", alpha = 0.5) +
+  geom_area(data = ~ filter(.x, x >= -2, x <= 2), fill = "#3498DB", alpha = 0.25) +
+  geom_line(linewidth = 1) +
+  annotate("text", x = 0, y = 0.15, label = "68%", size = 5, color = "white") +
+  annotate("text", x = 1.5, y = 0.05, label = "95%", size = 4.5, color = "#2E86C1") +
+  labs(title = "The 68-95-99.7 rule",
+       subtitle = "Within 1, 2, and 3 standard deviations of the mean",
+       y = "Density") +
+  theme_minimal(base_size = 12)
+```
+
+---
+
+## Working with the Normal 📐
+
+```{r normal-calcs}
+#| echo: true
+
+# Human IQ scores: mean 100, sd 15
+
+# What fraction score below 115?
+pnorm(115, mean = 100, sd = 15)
+
+# What fraction score ABOVE 130?
+pnorm(130, mean = 100, sd = 15, lower.tail = FALSE)
+
+# What fraction between 85 and 115?
+pnorm(115, 100, 15) - pnorm(85, 100, 15)
+
+# What score puts you in the top 1%?
+qnorm(0.99, mean = 100, sd = 15)
+
+# The classic 95% cutoffs on the standard normal
+qnorm(c(0.025, 0.975))
+```
+
+::: {.callout-tip}
+**z-score = (x - mean) / sd.** Once standardized, every normal becomes *the*
+standard normal, and `pnorm(z)` answers everything. 🎯
+:::
+
+---
+
+## The Binomial Distribution 🪙
+
+::: {.callout-note icon="false"}
+**Binomial:** the count of successes in `n` independent trials, each with
+probability `p`.
+:::
+
+```{r binomial}
+#| echo: true
+#| fig-width: 10
+#| fig-height: 3.6
+#| output-location: column
+
+# A 20-question multiple-choice quiz,
+# 4 options each, answered by guessing
+
+# P(exactly 5 correct)
+dbinom(5, size = 20, prob = 0.25)
+
+# P(10 or more correct)
+pbinom(9, 20, 0.25, lower.tail = FALSE)
+
+tibble(k = 0:20,
+       p = dbinom(0:20, 20, 0.25)) %>%
+  ggplot(aes(factor(k), p)) +
+  geom_col(fill = "#8E44AD") +
+  labs(title = "Guessing on a 20-question quiz",
+       x = "Number correct",
+       y = "Probability") +
+  theme_minimal(base_size = 11)
+```
+
+---
+
+## The Poisson Distribution 📞
+
+::: {.callout-note icon="false"}
+**Poisson:** the count of events in a fixed window, given an average rate
+`lambda`. Calls per hour, typos per page, goals per match.
+:::
+
+```{r poisson}
+#| echo: true
+#| fig-width: 11
+#| fig-height: 3.4
+
+# A help desk receives 4 calls per hour on average
+
+cat("P(exactly 4 calls):", round(dpois(4, lambda = 4), 4), "\n")
+cat("P(more than 8):    ", round(ppois(8, 4, lower.tail = FALSE), 4), "\n")
+cat("Busiest 5% of hours start at:", qpois(0.95, 4), "calls\n")
+
+tibble(k = rep(0:15, 3),
+       lambda = rep(c(1, 4, 9), each = 16)) %>%
+  mutate(p = dpois(k, lambda)) %>%
+  ggplot(aes(k, p, fill = factor(lambda))) +
+  geom_col(position = "identity", alpha = 0.6) +
+  scale_fill_manual(values = c("#27AE60", "#3498DB", "#E67E22")) +
+  labs(title = "Poisson gets more symmetric as lambda grows",
+       fill = "lambda", x = "Events", y = "Probability") +
+  theme_minimal(base_size = 11)
+```
+
+---
+
+## Choosing a Distribution 🗺️
+
+| Your question | Distribution | R name |
+|:--|:--|:--|
+| Successes out of n trials | Binomial | `binom` |
+| Events per unit time | Poisson | `pois` |
+| Measurement with a bell shape | Normal | `norm` |
+| Equally likely over a range | Uniform | `unif` |
+| Waiting time until an event | Exponential | `exp` |
+| Small-sample mean (sd unknown) | Student's t | `t` |
+| Counts in a contingency table | Chi-square | `chisq` |
+| Comparing variances (ANOVA) | F | `f` |
+
+::: {.callout-warning}
+**Real data is never *exactly* any of these.** These are useful models, not
+laws of nature. Always plot your data against the assumed shape. 📊
+:::
+
+---
+
+## Interactive: Distribution Explorer 🎮
+
+```{=html}
+<!-- Global copy to clipboard function -->
+<script>
+function copyToClipboard(elementId, buttonElement) {
+  const element = document.getElementById(elementId);
+  const text = element.textContent;
+
+  navigator.clipboard.writeText(text).then(function() {
+    // Visual feedback
+    const originalText = buttonElement.innerHTML;
+    buttonElement.innerHTML = '✓ Copied!';
+    buttonElement.classList.add('copied');
+
+    setTimeout(function() {
+      buttonElement.innerHTML = originalText;
+      buttonElement.classList.remove('copied');
+    }, 2000);
+  }).catch(function(err) {
+    console.error('Failed to copy:', err);
+    buttonElement.innerHTML = '❌ Error';
+    setTimeout(function() {
+      buttonElement.innerHTML = '📋 Copy';
+    }, 2000);
+  });
+}
+</script>
+
+<div class="interactive-tool">
+  <h3>📐 Distribution Explorer</h3>
+
+  <div class="tool-controls">
+    <div class="control-group">
+      <label>Distribution:</label>
+      <select id="dist-name" onchange="updateDistLabels()">
+        <option value="norm">Normal</option>
+        <option value="binom">Binomial</option>
+        <option value="pois">Poisson</option>
+        <option value="unif">Uniform</option>
+        <option value="exp">Exponential</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label id="dist-p1-label">Mean:</label>
+      <input type="number" id="dist-p1" value="100" step="any">
+    </div>
+
+    <div class="control-group">
+      <label id="dist-p2-label">SD:</label>
+      <input type="number" id="dist-p2" value="15" step="any">
+    </div>
+
+    <div class="control-group">
+      <label>What do you want?</label>
+      <select id="dist-task">
+        <option value="plot">Plot the distribution</option>
+        <option value="prob">P(X &lt;= q) for a value q</option>
+        <option value="upper">P(X &gt; q) for a value q</option>
+        <option value="quantile">The value at a given percentile</option>
+        <option value="random">Random draws + histogram</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>q or percentile:</label>
+      <input type="number" id="dist-q" value="115" step="any">
+    </div>
+  </div>
+
+  <div class="tool-buttons">
+    <button class="tool-button" onclick="generateDistCode()">Generate Code</button>
+    <button class="tool-button secondary" onclick="showDistCompare()">Compare All Four (d/p/q/r)</button>
+    <button class="tool-button secondary" onclick="clearDistTool()">Clear</button>
+  </div>
+
+  <div class="tool-output-container">
+    <button class="copy-button" onclick="copyToClipboard('dist-output', this)">📋 Copy</button>
+    <div class="tool-output" id="dist-output">Pick a distribution and click "Generate Code"!</div>
+  </div>
+</div>
+
+<script>
+const distMeta = {
+  norm:  {p1: 'Mean', p2: 'SD', d1: 100, d2: 15, args: 'mean = P1, sd = P2', discrete: false},
+  binom: {p1: 'Trials (n)', p2: 'Prob (p)', d1: 20, d2: 0.25, args: 'size = P1, prob = P2', discrete: true},
+  pois:  {p1: 'Lambda', p2: '(unused)', d1: 4, d2: 0, args: 'lambda = P1', discrete: true},
+  unif:  {p1: 'Min', p2: 'Max', d1: 0, d2: 1, args: 'min = P1, max = P2', discrete: false},
+  exp:   {p1: 'Rate', p2: '(unused)', d1: 0.5, d2: 0, args: 'rate = P1', discrete: false}
+};
+
+function updateDistLabels() {
+  const m = distMeta[document.getElementById('dist-name').value];
+  document.getElementById('dist-p1-label').textContent = m.p1 + ':';
+  document.getElementById('dist-p2-label').textContent = m.p2 + ':';
+  document.getElementById('dist-p1').value = m.d1;
+  document.getElementById('dist-p2').value = m.d2;
+}
+
+function distArgs() {
+  const name = document.getElementById('dist-name').value;
+  const p1 = document.getElementById('dist-p1').value;
+  const p2 = document.getElementById('dist-p2').value;
+  return distMeta[name].args.replace('P1', p1).replace('P2', p2);
+}
+
+function generateDistCode() {
+  const name = document.getElementById('dist-name').value;
+  const task = document.getElementById('dist-task').value;
+  const q = document.getElementById('dist-q').value;
+  const args = distArgs();
+  const m = distMeta[name];
+
+  let code = 'library(tidyverse)\n\n';
+
+  if (task === 'prob') {
+    code += '# P(X <= ' + q + ')\n';
+    code += 'p' + name + '(' + q + ', ' + args + ')\n\n';
+    if (m.discrete) {
+      code += '# Careful with discrete distributions:\n';
+      code += '# P(X < ' + q + ') is NOT the same as P(X <= ' + q + ')\n';
+      code += 'p' + name + '(' + q + ' - 1, ' + args + ')   # strictly less than\n';
+    }
+  } else if (task === 'upper') {
+    code += '# P(X > ' + q + ") - use lower.tail = FALSE, it is more accurate\n";
+    code += 'p' + name + '(' + q + ', ' + args + ', lower.tail = FALSE)\n\n';
+    code += '# (Equivalent to 1 - p' + name + '(...), but safer in the far tail)\n';
+  } else if (task === 'quantile') {
+    code += '# The value below which ' + q + ' of the distribution falls\n';
+    code += '# (enter q as a proportion, e.g. 0.95)\n';
+    code += 'q' + name + '(' + q + ', ' + args + ')\n';
+  } else if (task === 'random') {
+    code += 'set.seed(301)\n';
+    code += 'draws <- r' + name + '(1000, ' + args + ')\n\n';
+    code += 'mean(draws)\n';
+    code += 'sd(draws)\n\n';
+    code += 'ggplot(tibble(x = draws), aes(x)) +\n';
+    if (m.discrete) {
+      code += '  geom_bar(fill = "#3498DB") +\n';
+    } else {
+      code += '  geom_histogram(aes(y = after_stat(density)), bins = 30,\n';
+      code += '                 fill = "#3498DB", color = "white") +\n';
+      code += '  stat_function(fun = d' + name + ', args = list(' + args.replace(/(\w+) = /g, '$1 = ') + '),\n';
+      code += '                color = "#E74C3C", linewidth = 1) +\n';
+    }
+    code += '  labs(title = "1000 draws from ' + name + '") +\n';
+    code += '  theme_minimal()\n';
+  } else {
+    if (m.discrete) {
+      const top = name === 'binom' ? document.getElementById('dist-p1').value : '20';
+      code += '# The probability of each possible count\n';
+      code += 'tibble(k = 0:' + top + ') %>%\n';
+      code += '  mutate(p = d' + name + '(k, ' + args + ')) %>%\n';
+      code += '  ggplot(aes(factor(k), p)) +\n';
+      code += '  geom_col(fill = "#8E44AD") +\n';
+      code += '  labs(title = "' + name + ' distribution",\n';
+      code += '       x = "Outcome", y = "Probability") +\n';
+      code += '  theme_minimal()\n';
+    } else {
+      code += '# The density curve, with the region below q shaded\n';
+      code += 'q_val <- ' + q + '\n\n';
+      code += 'grid <- tibble(x = seq(q' + name + '(0.001, ' + args + '),\n';
+      code += '                       q' + name + '(0.999, ' + args + '),\n';
+      code += '                       length.out = 400)) %>%\n';
+      code += '  mutate(density = d' + name + '(x, ' + args + '))\n\n';
+      code += 'ggplot(grid, aes(x, density)) +\n';
+      code += '  geom_area(data = ~ filter(.x, x <= q_val), fill = "#3498DB", alpha = 0.5) +\n';
+      code += '  geom_line(linewidth = 1) +\n';
+      code += '  geom_vline(xintercept = q_val, color = "#E74C3C", linetype = "dashed") +\n';
+      code += '  labs(title = paste0("' + name + ': shaded area = P(X <= ", q_val, ") = ",\n';
+      code += '                      round(p' + name + '(q_val, ' + args + '), 4))) +\n';
+      code += '  theme_minimal()\n';
+    }
+  }
+
+  document.getElementById('dist-output').textContent = code;
+}
+
+function showDistCompare() {
+  const name = document.getElementById('dist-name').value;
+  const args = distArgs();
+  const q = document.getElementById('dist-q').value;
+
+  let code = '# The same distribution, all four prefixes\n\n';
+  code += '# d = density / mass at a point\n';
+  code += 'd' + name + '(' + q + ', ' + args + ')\n\n';
+  code += '# p = cumulative probability, P(X <= q)\n';
+  code += 'p' + name + '(' + q + ', ' + args + ')\n\n';
+  code += '# q = the inverse: which value has 95% below it?\n';
+  code += 'q' + name + '(0.95, ' + args + ')\n\n';
+  code += '# r = random draws\n';
+  code += 'set.seed(301)\n';
+  code += 'r' + name + '(10, ' + args + ')\n\n';
+  code += '# Sanity check: q undoes p\n';
+  code += 'q' + name + '(p' + name + '(' + q + ', ' + args + '), ' + args + ')\n';
+
+  document.getElementById('dist-output').textContent = code;
+}
+
+function clearDistTool() {
+  document.getElementById('dist-name').selectedIndex = 0;
+  document.getElementById('dist-task').selectedIndex = 0;
+  updateDistLabels();
+  document.getElementById('dist-q').value = 115;
+  document.getElementById('dist-output').textContent =
+    'Pick a distribution and click "Generate Code"!';
+}
+</script>
+```
+
+---
+
+## Knowledge Check 🧠
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    You want the IQ score that only the top 5% exceed (mean 100, sd 15).
+    Which call do you need?
+  </div>
+
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkProbQuiz1(this, false)">dnorm(0.95, 100, 15)</div>
+    <div class="quiz-option" onclick="checkProbQuiz1(this, false)">pnorm(0.95, 100, 15)</div>
+    <div class="quiz-option" onclick="checkProbQuiz1(this, true)">qnorm(0.95, 100, 15)</div>
+    <div class="quiz-option" onclick="checkProbQuiz1(this, false)">rnorm(0.95, 100, 15)</div>
+  </div>
+
+  <div id="prob-quiz1-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkProbQuiz1(element, isCorrect) {
+  const box = element.closest('.quiz-box');
+  box.querySelectorAll('.quiz-option').forEach(function(opt) {
+    opt.classList.remove('correct', 'incorrect');
+  });
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+  const feedback = document.getElementById('prob-quiz1-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  if (isCorrect) {
+    feedback.textContent = '✅ Correct! You have a probability (0.95) and want a value, so you need q. The answer is about 124.7.';
+  } else {
+    feedback.textContent = '❌ Not quite! Ask yourself: what do you HAVE (a probability) and what do you WANT (a value)? That tells you the prefix.';
+  }
+}
+</script>
+```
+
+---
+
+# Part 2: Sampling & the CLT ✨
+
+---
+
+## Population vs Sample 🎯
+
+::: {.columns}
+::: {.column}
+**Population** — everyone you care about
+
+Parameters (usually unknown):
+
+- μ (mu) = population mean
+- σ (sigma) = population sd
+
+**Sample** — who you actually measured
+
+Statistics (computed from data):
+
+- x̄ = sample mean
+- s = sample sd
+:::
+
+::: {.column}
+::: {.callout-important icon="true"}
+## The Central Question
+Your sample mean is **not** the population mean. How far off might it be?
+Everything in Weeks 8-10 answers that question. 🎯
+:::
+
+::: {.callout-warning}
+**Who is in your population?** A "national" survey that samples only landline
+owners has a population you did not intend. Sampling frames encode bias before
+a single number is computed. ⚖️
+:::
+:::
+:::
+
+---
+
+## Samples Vary 🎰
+
+```{r sampling-variation}
+#| echo: true
+
+set.seed(301)
+
+# Our "population": 100,000 adults with mean height 170cm, sd 10
+population <- rnorm(100000, mean = 170, sd = 10)
+mean(population)
+
+# Take three samples of 25 people each
+mean(sample(population, 25))
+mean(sample(population, 25))
+mean(sample(population, 25))
+```
+
+::: {.callout-note}
+Same population, same method, three different answers. That spread **is** the
+thing statistics measures. 📏
+:::
+
+---
+
+## The Sampling Distribution Part 1📊
+
+```{r sampling-distribution1}
+#| echo: true
+#| fig-width: 11
+#| fig-height: 3.6
+
+set.seed(301)
+
+# Repeat "take a sample of 25, record the mean" 5,000 times
+sample_means <- replicate(5000, mean(sample(population, 25)))
+
+cat("Population mean:      ", round(mean(population), 2), "\n")
+cat("Mean of sample means: ", round(mean(sample_means), 2), "\n")
+cat("SD of sample means:   ", round(sd(sample_means), 2), "\n")
+cat("Theory: sigma/sqrt(n) =", round(10 / sqrt(25), 2), "\n")
+```
+
+## The Sampling Distribution Part 2📊
+
+```{r sampling-distribution2}
+#| echo: true
+#| fig-width: 11
+#| fig-height: 3.6
+
+set.seed(301)
+
+# Repeat "take a sample of 25, record the mean" 5,000 times
+sample_means <- replicate(5000, mean(sample(population, 25)))
+
+ggplot(tibble(m = sample_means), aes(m)) +
+  geom_histogram(bins = 40, fill = "#3498DB", color = "white") +
+  geom_vline(xintercept = mean(population), color = "#E74C3C", linewidth = 1) +
+  labs(title = "5,000 sample means, n = 25 each",
+       x = "Sample mean", y = "Count") +
+  theme_minimal(base_size = 12)
+```
+
+## The Sampling Distribution Discussion
+
+
+::: {.callout-note}
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+
+**Key Takeaways**
+
+- The sampling distribution of the sample mean is the distribution of all possible sample means that could be obtained from a population. It is a theoretical distribution that describes how the sample mean varies from sample to sample.
+
+- Intuitively, as the sample size increases, the variability of the sample means decreases. This is because larger samples provide more information about the population, leading to more precise estimates of the population mean.
+
+:::
+
+:::
+
+## Your Sample Mean May Not Be the Population Mean
+
+```{r sample-mean-vs-population-mean}
+#| echo: true
+
+set.seed(301)
+
+# Our "population": 100,000 adults with mean height 170cm, sd 10
+population <- rnorm(100000, mean = 170, sd = 10)
+
+# Take a single sample of 25 people
+sample_mean <- mean(sample(population, 25))
+
+cat("Population mean:      ", round(mean(population), 2), "\n")
+cat("Sample mean:        ", round(sample_mean, 2), "\n")
+```
+
+## Visualizing the Difference
+
+```{r visualize-difference}
+#| echo: true
+#| fig-width: 11
+#| fig-height: 3.6
+
+set.seed(301)
+
+# Our "population": 100,000 adults with mean height 170cm, sd 10
+population <- rnorm(100000, mean = 170, sd = 10)
+
+# Take a single sample of 25 people
+sample_mean <- mean(sample(population, 25))
+
+ggplot(tibble(x = population), aes(x)) +
+  geom_histogram(bins = 50, fill = "#3498DB", color = "white") +
+  geom_vline(xintercept = mean(population), color = "#E74C3C", linewidth = 1) +
+  geom_vline(xintercept = sample_mean, color = "#2E8B57", linewidth = 1) +
+  labs(title = "Population vs. Sample",
+       x = "Height (cm)", y = "Count") +
+  theme_minimal(base_size = 12)
+```
+
+
+## Visualizing the Difference Plot
+
+```{r visualize-difference-plot}
+#| echo: false
+#| fig-width: 11
+#| fig-height: 3.6
+
+set.seed(301)
+
+# Our "population": 100,000 adults with mean height 170cm, sd 10
+population <- rnorm(100000, mean = 170, sd = 10)
+
+# Take a single sample of 25 people
+sample_mean <- mean(sample(population, 25))
+
+ggplot(tibble(x = population), aes(x)) +
+  geom_histogram(bins = 50, fill = "#3498DB", color = "white") +
+  geom_vline(xintercept = mean(population), color = "#E74C3C", linewidth = 1) +
+  geom_vline(xintercept = sample_mean, color = "#2E8B57", linewidth = 1) +
+  labs(title = "Population vs. Sample",
+       x = "Height (cm)", y = "Count") +
+  theme_minimal(base_size = 12)
+```
+
+
+## Another Way Sample Means are Not the Same as the Population Mean
+
+```{r another-visual}
+#| echo: true
+#| fig-width: 11
+#| fig-height: 3.6
+
+# Load libraries
+library(ggplot2)
+library(dplyr)
+
+# 1. Set up the parameters
+set.seed(42)
+pop_mean <- 100        # True Population Mean (μ)
+pop_sd <- 15           # Population Standard Deviation (σ)
+sample_size <- 30      # Sample size (n)
+
+# 2. Simulate 1,000 different samples of size n
+# and calculate their means
+simulated_samples <- tibble(
+  sample_id = 1:1000
+) %>%
+  rowwise() %>%
+  mutate(
+    # Pull a random sample and compute its mean
+    sample_mean = mean(rnorm(sample_size, 
+                      mean = pop_mean,
+                      sd = pop_sd))
+  ) %>%
+  ungroup()
+
+# Calculate the Standard Error (SE = σ / √n)
+standard_error <- pop_sd / sqrt(sample_size)
+
+# Highlight one specific "lucky" sample to show 
+# how it differs from the truth
+single_sample_mean <- simulated_samples$sample_mean[1]
+ci_lower <- single_sample_mean - (1.96 * standard_error)
+ci_upper <- single_sample_mean + (1.96 * standard_error)
+
+# 3. Create the ggplot
+ggplot(simulated_samples, aes(x = sample_mean)) +
+  # Distribution of all possible sample means
+  geom_histogram(aes(y = ..density..),
+    bins = 35,
+    fill = "skyblue",
+    alpha = 0.6) +
+  geom_density(color = "blue", size = 1) +
+  
+  # True Population Mean Line (The Truth 🎯)
+  geom_vline(aes(xintercept = pop_mean,
+             color = "True Population Mean (μ)"), 
+             linetype = "dashed", size = 1.2) +
+  
+  # Our Single Sample Mean (The Estimate 📍)
+  geom_vline(aes(xintercept = single_sample_mean, 
+                      color = "Your Sample Mean (x̄)"), 
+             size = 1.2) +
+  
+  # Confidence Interval Bracket for that single sample
+  geom_rect(aes(xmin = ci_lower, xmax = ci_upper,
+                ymin = 0,
+                ymax = Inf, 
+                fill = "95% Confidence Interval"), 
+            alpha = 0.005) +
+  
+  # Custom Formatting
+  scale_color_manual(name = "Parameters",
+    values = c("True Population Mean (μ)" = "darkgreen",
+    "Your Sample Mean (x̄)" = "red")) +
+  scale_fill_manual(name = "Uncertainty",
+    values = c("95% Confidence Interval" = "gray")) +
+  labs(
+    title = "Your Sample Mean is Not the Population Mean",
+    subtitle = paste0("Sampling Distribution of 1,000 samples (n = ", sample_size, "). How far off might you be?"),
+    x = "Value of Sample Mean",
+    y = "Density"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+##  Another Way Sample Means are Not the Same as the Population Mean Plot
+
+```{r another-visual2}
+#| echo: false
+#| fig-width: 11
+#| fig-height: 3.6
+
+# Load libraries
+library(ggplot2)
+library(dplyr)
+
+# 1. Set up the parameters
+set.seed(42)
+pop_mean <- 100        # True Population Mean (μ)
+pop_sd <- 15           # Population Standard Deviation (σ)
+sample_size <- 30      # Sample size (n)
+
+# 2. Simulate 1,000 different samples of size n and calculate their means
+simulated_samples <- tibble(
+  sample_id = 1:1000
+) %>%
+  rowwise() %>%
+  mutate(
+    # Pull a random sample and compute its mean
+    sample_mean = mean(rnorm(sample_size, mean = pop_mean, sd = pop_sd))
+  ) %>%
+  ungroup()
+
+# Calculate the Standard Error (SE = σ / √n)
+standard_error <- pop_sd / sqrt(sample_size)
+
+# Highlight one specific "lucky" sample to show how it differs from the truth
+single_sample_mean <- simulated_samples$sample_mean[1]
+ci_lower <- single_sample_mean - (1.96 * standard_error)
+ci_upper <- single_sample_mean + (1.96 * standard_error)
+
+# 3. Create the ggplot
+ggplot(simulated_samples, aes(x = sample_mean)) +
+  # Distribution of all possible sample means
+  geom_histogram(aes(y = ..density..), bins = 35, fill = "skyblue", alpha = 0.6) +
+  geom_density(color = "blue", size = 1) +
+  
+  # True Population Mean Line (The Truth 🎯)
+  geom_vline(aes(xintercept = pop_mean, color = "True Population Mean (μ)"), 
+             linetype = "dashed", size = 1.2) +
+  
+  # Our Single Sample Mean (The Estimate 📍)
+  geom_vline(aes(xintercept = single_sample_mean, color = "Your Sample Mean (x̄)"), 
+             size = 1.2) +
+  
+  # Confidence Interval Bracket for that single sample
+  geom_rect(aes(xmin = ci_lower, xmax = ci_upper, ymin = 0, ymax = Inf, 
+                fill = "95% Confidence Interval"), 
+            alpha = 0.005) +
+  
+  # Custom Formatting
+  scale_color_manual(name = "Parameters", values = c("True Population Mean (μ)" = "darkgreen", "Your Sample Mean (x̄)" = "red")) +
+  scale_fill_manual(name = "Uncertainty", values = c("95% Confidence Interval" = "gray")) +
+  labs(
+    title = "Your Sample Mean is Not the Population Mean",
+    subtitle = paste0("Sampling Distribution of 1,000 samples (n = ", sample_size, "). How far off might you be?"),
+    x = "Value of Sample Mean",
+    y = "Density"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+---
+
+## Standard Error: The Key Formula 🔑
+
+::: {.callout icon="false"}
+
+**SE = σ / √n**  (in practice: **s / √n**)
+
+What is Standard Error? The standard deviation *of the sample mean* — how much your estimate wobbles.
+
+- For the mean, the standard error (SE) equals the standard deviation (σ or s) divided by the square root of the sample size (n).
+-  The standard error of the mean is a measure of the dispersion of sample means around the population mean.
+- It measures the precision and uncertainty of a sample estimate (like a mean or median).
+- A smaller number means your sample estimate is closer and more precise to the actual population value.
+- It shrinks as your sample size grows larger.
+:::
+
+## Standard Error: Table
+
+```{r standard-error}
+#| echo: true
+#| fig-width: 11
+#| fig-height: 3.2
+
+se_table <- tibble(n = c(4, 16, 25, 100, 400, 1600)) %>%
+  mutate(standardError = 10 / sqrt(n))
+se_table
+```
+
+## Standard Error: Plot
+
+:::{.callout}
+```{r standard-error-plot}
+#| echo: true
+#| fig-width: 11
+#| fig-height: 3.2
+
+se_table <- tibble(n = c(4, 16, 25, 100, 400, 1600)) %>%
+  mutate(standardError = 10 / sqrt(n))
+
+ggplot(se_table, aes(n, standardError)) +
+  geom_line(color = "#8E44AD", linewidth = 1) +
+  geom_point(size = 3, color = "#8E44AD") +
+  labs(title = "Diminishing returns: quadruple n to halve the error",
+       x = "Sample size", y = "Standard error") +
+  theme_minimal(base_size = 12)
+```
+:::
+
+::: {.callout}
+Want twice the precision? You need **four times** the data. This is why big
+studies are expensive. 💰
+:::
+
+---
+
+## The Central Limit Theorem ✨
+
+::: {.callout-important icon="true"}
+## The Most Surprising Result in Statistics
+No matter how weird the population's shape, the distribution of **sample
+means** approaches a normal curve as n grows. 🤯
+:::
+
+```{r clt-demo}
+#| echo: true
+#| fig-width: 11
+#| fig-height: 4
+
+library(patchwork)
+set.seed(301)
+
+# A wildly skewed population
+pop <- rexp(100000, rate = 0.1)
+
+clt_plot <- function(n) {
+  means <- replicate(3000, mean(sample(pop, n)))
+  ggplot(tibble(m = means), aes(m)) +
+    geom_histogram(bins = 40, fill = "#27AE60", color = "white") +
+    labs(title = paste("n =", n), x = NULL, y = NULL) +
+    theme_minimal(base_size = 11)
+}
+
+p0 <- ggplot(tibble(x = pop), aes(x)) +
+  geom_histogram(bins = 50, fill = "#E74C3C", color = "white") +
+  labs(title = "Population (very skewed!)", x = NULL, y = NULL) +
+  theme_minimal(base_size = 11)
+
+(p0 + clt_plot(2)) / (clt_plot(10) + clt_plot(50))
+```
+
+---
+
+## Why the CLT Matters 🎁
+
+::: {.columns}
+::: {.column}
+**What it buys you**
+
+✅ You can use normal-based methods on non-normal data  
+✅ Confidence intervals work for almost any variable  
+✅ t-tests and ANOVA (Week 9) rest on this  
+✅ It explains why so many real measurements look bell-shaped
+:::
+
+::: {.column}
+**The fine print** ⚠️
+
+⚠️ It is about **means**, not individual values  
+⚠️ "Large enough n" depends on how skewed the population is (n ≥ 30 is a rule
+of thumb, not a law)  
+⚠️ It assumes independent observations  
+⚠️ Heavy tails (a few enormous values) need much larger n
+:::
+:::
+
+::: {.callout-warning}
+The CLT does **not** make your data normal. It makes the *sampling distribution
+of the mean* approximately normal. Those are very different claims. 🎓
+:::
+
+---
+
+## Interactive: CLT Simulator 🎮
+
+```{=html}
+<div class="interactive-tool">
+  <h3>✨ Central Limit Theorem Simulator</h3>
+
+  <div class="tool-controls">
+    <div class="control-group">
+      <label>Population shape:</label>
+      <select id="clt-pop">
+        <option value="exp">Exponential (very skewed)</option>
+        <option value="unif">Uniform (flat)</option>
+        <option value="binom">Binomial (discrete)</option>
+        <option value="bimodal">Bimodal (two humps)</option>
+        <option value="norm">Normal (already bell-shaped)</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>Sample size (n):</label>
+      <select id="clt-n">
+        <option value="2">2</option>
+        <option value="5">5</option>
+        <option value="30" selected>30</option>
+        <option value="100">100</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>Number of samples:</label>
+      <select id="clt-reps">
+        <option value="1000">1,000</option>
+        <option value="5000">5,000</option>
+        <option value="10000">10,000</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>Statistic to track:</label>
+      <select id="clt-stat">
+        <option value="mean">Sample mean</option>
+        <option value="median">Sample median</option>
+        <option value="max">Sample maximum</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="tool-buttons">
+    <button class="tool-button" onclick="generateCLTCode()">Generate Simulation</button>
+    <button class="tool-button secondary" onclick="showCLTGrid()">Compare n = 2, 5, 30, 100</button>
+    <button class="tool-button secondary" onclick="clearCLTTool()">Clear</button>
+  </div>
+
+  <div class="tool-output-container">
+    <button class="copy-button" onclick="copyToClipboard('clt-output', this)">📋 Copy</button>
+    <div class="tool-output" id="clt-output">Choose a population and click "Generate Simulation"!</div>
+  </div>
+</div>
+
+<script>
+const cltPops = {
+  exp: 'rexp(100000, rate = 0.1)',
+  unif: 'runif(100000, min = 0, max = 100)',
+  binom: 'rbinom(100000, size = 1, prob = 0.15)',
+  bimodal: 'c(rnorm(50000, 20, 5), rnorm(50000, 60, 5))',
+  norm: 'rnorm(100000, mean = 50, sd = 10)'
+};
+
+function generateCLTCode() {
+  const pop = document.getElementById('clt-pop').value;
+  const n = document.getElementById('clt-n').value;
+  const reps = document.getElementById('clt-reps').value;
+  const stat = document.getElementById('clt-stat').value;
+
+  let code = 'library(tidyverse)\nset.seed(301)\n\n';
+  code += '# --- 1. Build a population ----------------------\n';
+  code += 'population <- ' + cltPops[pop] + '\n\n';
+  code += 'cat("Population mean:", mean(population),\n';
+  code += '    " sd:", sd(population), "\\n")\n\n';
+  code += '# --- 2. Repeatedly sample and record the ' + stat + ' ---\n';
+  code += 'stats <- replicate(' + reps + ', ' + stat + '(sample(population, ' + n + ')))\n\n';
+  code += 'cat("Mean of the ' + stat + 's:", mean(stats), "\\n")\n';
+  code += 'cat("SE (observed):      ", sd(stats), "\\n")\n';
+  if (stat === 'mean') {
+    code += 'cat("SE (theory sd/sqrt(n)):", sd(population) / sqrt(' + n + '), "\\n")\n';
+  }
+  code += '\n# --- 3. Look at the shape -----------------------\n';
+  code += 'ggplot(tibble(stat = stats), aes(stat)) +\n';
+  code += '  geom_histogram(aes(y = after_stat(density)), bins = 40,\n';
+  code += '                 fill = "#3498DB", color = "white") +\n';
+  if (stat === 'mean') {
+    code += '  stat_function(fun = dnorm,\n';
+    code += '                args = list(mean = mean(stats), sd = sd(stats)),\n';
+    code += '                color = "#E74C3C", linewidth = 1) +\n';
+  }
+  code += '  labs(title = "Sampling distribution of the ' + stat + ' (n = ' + n + ')",\n';
+  code += '       subtitle = "Red curve = the normal it is converging to") +\n';
+  code += '  theme_minimal()\n';
+  if (stat === 'max') {
+    code += '\n# Note: the CLT is about MEANS. The maximum has its own\n';
+    code += '# (extreme value) distribution and never becomes normal. 🎓\n';
+  }
+
+  document.getElementById('clt-output').textContent = code;
+}
+
+function showCLTGrid() {
+  const pop = document.getElementById('clt-pop').value;
+
+  let code = '# Watch normality emerge as n grows\n';
+  code += 'library(tidyverse)\nset.seed(301)\n\n';
+  code += 'population <- ' + cltPops[pop] + '\n\n';
+  code += 'sizes <- c(2, 5, 30, 100)\n\n';
+  code += 'results <- map_dfr(sizes, function(n) {\n';
+  code += '  tibble(n = n,\n';
+  code += '         mean = replicate(2000, mean(sample(population, n))))\n';
+  code += '})\n\n';
+  code += 'results %>%\n';
+  code += '  mutate(n = factor(paste("n =", n), levels = paste("n =", sizes))) %>%\n';
+  code += '  ggplot(aes(mean, fill = n)) +\n';
+  code += '  geom_histogram(bins = 40, color = "white") +\n';
+  code += '  facet_wrap(~ n, scales = "free") +\n';
+  code += '  scale_fill_viridis_d() +\n';
+  code += '  labs(title = "The Central Limit Theorem in action",\n';
+  code += '       subtitle = "Sampling distribution of the mean at four sample sizes") +\n';
+  code += '  theme_minimal() +\n';
+  code += '  theme(legend.position = "none")\n\n';
+  code += '# Also check the standard errors shrink like 1/sqrt(n):\n';
+  code += 'results %>% group_by(n) %>% summarize(se = sd(mean))\n';
+
+  document.getElementById('clt-output').textContent = code;
+}
+
+function clearCLTTool() {
+  document.getElementById('clt-pop').selectedIndex = 0;
+  document.getElementById('clt-n').value = '30';
+  document.getElementById('clt-reps').selectedIndex = 0;
+  document.getElementById('clt-stat').selectedIndex = 0;
+  document.getElementById('clt-output').textContent =
+    'Choose a population and click "Generate Simulation"!';
+}
+</script>
+```
+
+---
+
+# Part 3: Confidence Intervals 📏
+
+---
+
+## What a Confidence Interval Is
+
+::: {.callout-important icon="false"}
+**A 95% CI is a range built by a procedure that captures the true parameter
+95% of the time in repeated sampling.**
+:::
+
+```{r ci-manual}
+#| echo: true
+
+set.seed(301)
+heights <- rnorm(30, mean = 170, sd = 10)   # our one sample
+
+x_bar <- mean(heights)
+s     <- sd(heights)
+n     <- length(heights)
+se    <- s / sqrt(n)
+
+# Use the t distribution: sigma is unknown and n is small
+t_crit <- qt(0.975, df = n - 1)
+
+ci <- c(x_bar - t_crit * se, x_bar + t_crit * se)
+round(c(mean = x_bar, se = se, lower = ci[1], upper = ci[2]), 2)
+```
+
+---
+
+## The One-Line Version
+
+```{r ci-ttest}
+#| echo: true
+
+# t.test() computes the same interval (and much more - see Week 9)
+t.test(heights)$conf.int
+
+# Change the confidence level
+t.test(heights, conf.level = 0.99)$conf.int
+
+# CI for a proportion: 42 successes out of 100 trials
+prop.test(42, 100)$conf.int
+```
+
+::: {.callout-tip}
+Wider confidence = wider interval. A 99% CI is more likely to be right and less
+informative. There is no free lunch. 🥪
+:::
+
+---
+
+## What 95% Actually Means 🎯
+
+```{r ci-coverage}
+#| echo: true
+#| fig-width: 11
+#| fig-height: 4
+
+set.seed(301)
+
+# Build 100 confidence intervals from 100 different samples
+cis <- map_dfr(1:100, function(i) {
+  s  <- rnorm(30, mean = 170, sd = 10)
+  tt <- t.test(s)
+  tibble(trial = i, est = mean(s),
+         lower = tt$conf.int[1], upper = tt$conf.int[2])
+}) %>%
+  mutate(captures = lower <= 170 & upper >= 170)
+
+cat("Intervals containing the true mean:", sum(cis$captures), "out of 100\n")
+```
+
+
+
+## What 95% Actually Means Plot 🎯
+:::{.callout}
+```r
+ggplot(cis, aes(trial, est, color = captures)) +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0) +
+  geom_point(size = 1) +
+  geom_hline(yintercept = 170, color = "black", linewidth = 0.8) +
+  scale_color_manual(values = c("FALSE" = "#E74C3C", "TRUE" = "#27AE60")) +
+  labs(title = "100 samples, 100 confidence intervals",
+       subtitle = "Red intervals missed the true mean of 170",
+       x = "Sample number", y = "Mean height (cm)", color = "Captured?") +
+  theme_minimal(base_size = 11)
+```
+
+```{r ci-coverage-plot}
+#| echo: false
+#| fig-width: 11
+#| fig-height: 4
+
+set.seed(301)
+
+# Build 100 confidence intervals from 100 different samples
+cis <- map_dfr(1:100, function(i) {
+  s  <- rnorm(30, mean = 170, sd = 10)
+  tt <- t.test(s)
+  tibble(trial = i, est = mean(s),
+         lower = tt$conf.int[1], upper = tt$conf.int[2])
+}) %>%
+  mutate(captures = lower <= 170 & upper >= 170)
+
+#cat("Intervals containing the true mean:", sum(cis$captures), "out of 100\n")
+
+ggplot(cis, aes(trial, est, color = captures)) +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0) +
+  geom_point(size = 1) +
+  geom_hline(yintercept = 170, color = "black", linewidth = 0.8) +
+  scale_color_manual(values = c("FALSE" = "#E74C3C", "TRUE" = "#27AE60")) +
+  labs(title = "100 samples, 100 confidence intervals",
+       subtitle = "Red intervals missed the true mean of 170",
+       x = "Sample number", y = "Mean height (cm)", color = "Captured?") +
+  theme_minimal(base_size = 11)
+```
+:::
+
+::: {.callout}
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+
+95% confidence means that if we were to repeat this process many times, about 95% of the resulting confidence intervals would contain the true mean. Here, five of the 100 confidence intervals missed the true mean of 170.
+:::
+:::
+---
+
+## The Interpretation Trap 🪤
+
+::: {.columns}
+::: {.column}
+**❌ Wrong**
+
+"There is a 95% probability that μ is between 167 and 173."
+
+The true μ is a fixed number. It is either in your interval or it is not — no
+probability involved. 🎲
+:::
+
+::: {.column}
+**✅ Right**
+
+"We are 95% confident..." meaning: *this method* produces intervals that
+capture μ 95% of the time.
+
+The randomness lives in the **interval**, not in μ.
+:::
+:::
+
+::: {.callout-tip icon="true"}
+## The Practical Reading
+A CI tells you which values are **compatible** with your data. If a claimed
+value falls outside your interval, your data argues against it. 📊
+:::
+
+---
+
+## Interactive: Confidence Interval Calculator 🎮
+
+```{=html}
+<div class="interactive-tool">
+  <h3>📏 Confidence Interval Calculator</h3>
+
+  <div class="tool-controls">
+    <div class="control-group">
+      <label>Estimating a:</label>
+      <select id="ci-type">
+        <option value="mean">Mean (numeric data)</option>
+        <option value="prop">Proportion (yes/no data)</option>
+        <option value="diff">Difference of two means</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>Confidence level:</label>
+      <select id="ci-level">
+        <option value="0.95">95%</option>
+        <option value="0.90">90%</option>
+        <option value="0.99">99%</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>Data source:</label>
+      <select id="ci-source">
+        <option value="mtcars|mpg">mtcars$mpg</option>
+        <option value="iris|Sepal.Length">iris$Sepal.Length</option>
+        <option value="airquality|Ozone">airquality$Ozone (has NAs)</option>
+        <option value="manual">Type my own summary numbers</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>Also show:</label>
+      <select id="ci-extra">
+        <option value="none">Just the interval</option>
+        <option value="manual">Manual formula, step by step</option>
+        <option value="plot">A plot with error bars</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="tool-buttons">
+    <button class="tool-button" onclick="generateCICode()">Generate Code</button>
+    <button class="tool-button secondary" onclick="showSampleSize()">Sample Size Planner</button>
+    <button class="tool-button secondary" onclick="clearCITool()">Clear</button>
+  </div>
+
+  <div class="tool-output-container">
+    <button class="copy-button" onclick="copyToClipboard('ci-output', this)">📋 Copy</button>
+    <div class="tool-output" id="ci-output">Choose what you are estimating and click "Generate Code"!</div>
+  </div>
+</div>
+
+<script>
+function generateCICode() {
+  const type = document.getElementById('ci-type').value;
+  const level = document.getElementById('ci-level').value;
+  const src = document.getElementById('ci-source').value;
+  const extra = document.getElementById('ci-extra').value;
+  const parts = src.split('|');
+  const data = parts[0], v = parts[1];
+
+  let code = 'library(tidyverse)\n\n';
+
+  if (type === 'prop') {
+    code += '# --- CI for a proportion ------------------------\n';
+    code += '# Example: 42 "yes" answers out of 100 respondents\n';
+    code += 'successes <- 42\n';
+    code += 'n         <- 100\n\n';
+    code += 'prop.test(successes, n, conf.level = ' + level + ')$conf.int\n\n';
+    code += '# From real data: what fraction of mtcars are manual?\n';
+    code += 'prop.test(sum(mtcars$am == 1), nrow(mtcars),\n';
+    code += '          conf.level = ' + level + ')\n\n';
+    code += '# Rule of thumb: needs at least ~10 successes AND ~10 failures\n';
+    document.getElementById('ci-output').textContent = code;
+    return;
+  }
+
+  if (type === 'diff') {
+    code += '# --- CI for a difference of two means -----------\n';
+    code += '# Do manual cars get better mileage than automatics?\n';
+    code += 't.test(mpg ~ am, data = mtcars, conf.level = ' + level + ')$conf.int\n\n';
+    code += '# The full output includes the interval AND the test\n';
+    code += 't.test(mpg ~ am, data = mtcars, conf.level = ' + level + ')\n\n';
+    code += '# If the interval excludes 0, the groups differ at this level.\n';
+    code += '# (Week 9 covers the test itself in detail.)\n';
+    document.getElementById('ci-output').textContent = code;
+    return;
+  }
+
+  if (src === 'manual') {
+    code += '# --- CI for a mean, from summary numbers --------\n';
+    code += 'x_bar <- 25.4   # sample mean\n';
+    code += 's     <- 6.1    # sample sd\n';
+    code += 'n     <- 40     # sample size\n\n';
+  } else {
+    code += '# --- CI for a mean ------------------------------\n';
+    code += 'data(' + data + ')\n';
+    code += 'x <- ' + data + '$' + v + '\n';
+    code += 'x <- x[!is.na(x)]      # drop missing values first\n\n';
+    code += 'x_bar <- mean(x)\n';
+    code += 's     <- sd(x)\n';
+    code += 'n     <- length(x)\n\n';
+  }
+
+  if (extra === 'manual' || src === 'manual') {
+    code += '# Step 1: the standard error\n';
+    code += 'se <- s / sqrt(n)\n\n';
+    code += '# Step 2: the t critical value (two-tailed)\n';
+    code += 'alpha  <- ' + (1 - parseFloat(level)).toFixed(2) + '\n';
+    code += 't_crit <- qt(1 - alpha / 2, df = n - 1)\n\n';
+    code += '# Step 3: the margin of error\n';
+    code += 'moe <- t_crit * se\n\n';
+    code += '# Step 4: the interval\n';
+    code += 'c(lower = x_bar - moe, upper = x_bar + moe)\n\n';
+  }
+
+  if (src !== 'manual') {
+    code += '# The built-in shortcut (same answer)\n';
+    code += 't.test(x, conf.level = ' + level + ')$conf.int\n\n';
+  }
+
+  if (extra === 'plot') {
+    code += '# Visualize the estimate with its uncertainty\n';
+    code += 'tt <- t.test(x, conf.level = ' + level + ')\n\n';
+    code += 'tibble(group = "' + (v || 'sample') + '",\n';
+    code += '       est = mean(x),\n';
+    code += '       lower = tt$conf.int[1],\n';
+    code += '       upper = tt$conf.int[2]) %>%\n';
+    code += '  ggplot(aes(group, est)) +\n';
+    code += '  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.15,\n';
+    code += '                color = "#2E86C1", linewidth = 1) +\n';
+    code += '  geom_point(size = 4, color = "#2E86C1") +\n';
+    code += '  labs(title = "' + (level * 100) + '% confidence interval",\n';
+    code += '       x = NULL, y = "Estimate") +\n';
+    code += '  theme_minimal()\n';
+  }
+
+  document.getElementById('ci-output').textContent = code;
+}
+
+function showSampleSize() {
+  const level = document.getElementById('ci-level').value;
+  let code = '# How big a sample do I need? 📐\n\n';
+  code += '# Margin of error = z * sigma / sqrt(n)\n';
+  code += '# Solve for n:   n = (z * sigma / moe)^2\n\n';
+  code += 'plan_n <- function(sigma, moe, conf = ' + level + ') {\n';
+  code += '  z <- qnorm(1 - (1 - conf) / 2)\n';
+  code += '  ceiling((z * sigma / moe)^2)\n';
+  code += '}\n\n';
+  code += '# Example: sd is about 10, and I want +/- 2 units\n';
+  code += 'plan_n(sigma = 10, moe = 2)\n\n';
+  code += '# Halving the margin of error quadruples the sample:\n';
+  code += 'plan_n(sigma = 10, moe = 1)\n\n';
+  code += '# For a proportion, the worst case is p = 0.5\n';
+  code += 'plan_n_prop <- function(moe, conf = ' + level + ') {\n';
+  code += '  z <- qnorm(1 - (1 - conf) / 2)\n';
+  code += '  ceiling(0.25 * (z / moe)^2)\n';
+  code += '}\n\n';
+  code += 'plan_n_prop(moe = 0.03)   # the classic "+/- 3 points" poll\n';
+
+  document.getElementById('ci-output').textContent = code;
+}
+
+function clearCITool() {
+  ['ci-type','ci-level','ci-source','ci-extra'].forEach(function(id) {
+    document.getElementById(id).selectedIndex = 0;
+  });
+  document.getElementById('ci-output').textContent =
+    'Choose what you are estimating and click "Generate Code"!';
+}
+</script>
+```
+
+---
+
+## Knowledge Check 🧠
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    You quadruple your sample size from 100 to 400. What happens to the width
+    of your confidence interval?
+  </div>
+
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkProbQuiz2(this, false)">It shrinks to one quarter of its width</div>
+    <div class="quiz-option" onclick="checkProbQuiz2(this, true)">It shrinks to about half its width</div>
+    <div class="quiz-option" onclick="checkProbQuiz2(this, false)">It stays the same — the confidence level did not change</div>
+    <div class="quiz-option" onclick="checkProbQuiz2(this, false)">It doubles</div>
+  </div>
+
+  <div id="prob-quiz2-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkProbQuiz2(element, isCorrect) {
+  const box = element.closest('.quiz-box');
+  box.querySelectorAll('.quiz-option').forEach(function(opt) {
+    opt.classList.remove('correct', 'incorrect');
+  });
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+  const feedback = document.getElementById('prob-quiz2-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  if (isCorrect) {
+    feedback.textContent = '✅ Correct! Width depends on s/sqrt(n). sqrt(400)/sqrt(100) = 2, so the interval is half as wide. Precision is expensive.';
+  } else {
+    feedback.textContent = '❌ Not quite! Look at the formula: the standard error divides by the SQUARE ROOT of n, not n.';
+  }
+}
+</script>
+```
+
+---
+
+# Quick Challenges! 🧠
+
+## Challenge 1: Picking the Prefix
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    A factory's bolts have length ~ Normal(50mm, 0.4mm). You need the proportion
+    that fall outside 49mm-51mm (the reject rate). Which expression is right?
+  </div>
+
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkChallenge1(this, false)">dnorm(51, 50, 0.4) - dnorm(49, 50, 0.4)</div>
+    <div class="quiz-option" onclick="checkChallenge1(this, true)">1 - (pnorm(51, 50, 0.4) - pnorm(49, 50, 0.4))</div>
+    <div class="quiz-option" onclick="checkChallenge1(this, false)">qnorm(51, 50, 0.4) + qnorm(49, 50, 0.4)</div>
+    <div class="quiz-option" onclick="checkChallenge1(this, false)">mean(rnorm(1000, 50, 0.4) > 51)</div>
+  </div>
+
+  <div id="challenge1-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkChallenge1(element, isCorrect) {
+  const box = element.closest('.quiz-box');
+  box.querySelectorAll('.quiz-option').forEach(function(opt) {
+    opt.classList.remove('correct', 'incorrect');
+  });
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+  const feedback = document.getElementById('challenge1-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  if (isCorrect) {
+    feedback.textContent = '✅ Correct! p gives area up to a point, so the difference is the middle area, and 1 minus that is both tails. About 1.24% get rejected. (The last option is close but only counts ONE tail — and it is a noisy estimate.)';
+  } else {
+    feedback.textContent = '❌ Not quite! You want AREA, not height, and you want BOTH tails. Which prefix gives cumulative area?';
+  }
+}
+</script>
+```
+
+---
+
+## Challenge 2: CLT Limits
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    Your data is strongly right-skewed with n = 45. Which statement is true?
+  </div>
+
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkChallenge2(this, false)">The CLT makes your data normally distributed</div>
+    <div class="quiz-option" onclick="checkChallenge2(this, false)">You cannot compute a confidence interval on skewed data</div>
+    <div class="quiz-option" onclick="checkChallenge2(this, true)">A CI for the MEAN is reasonable, but the mean may not be the statistic you want to report</div>
+    <div class="quiz-option" onclick="checkChallenge2(this, false)">n = 45 guarantees the sampling distribution is exactly normal</div>
+  </div>
+
+  <div id="challenge2-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkChallenge2(element, isCorrect) {
+  const box = element.closest('.quiz-box');
+  box.querySelectorAll('.quiz-option').forEach(function(opt) {
+    opt.classList.remove('correct', 'incorrect');
+  });
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+  const feedback = document.getElementById('challenge2-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  if (isCorrect) {
+    feedback.textContent = '✅ Correct! Two separate questions: (1) is the method valid? Usually yes at n = 45. (2) is the mean meaningful? On skewed data the median often describes people better — remember Week 6.';
+  } else {
+    feedback.textContent = '❌ Not quite! The CLT is about the sampling distribution of the mean, and it is an approximation that improves with n — never a guarantee.';
+  }
+}
+</script>
+```
+
+---
+
+## Challenge 3: Reading an Interval
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    A study reports a 95% CI for a treatment effect of <code>[-0.5, 8.2]</code> points.
+    What is the best summary?
+  </div>
+
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkChallenge3(this, false)">The treatment definitely does not work</div>
+    <div class="quiz-option" onclick="checkChallenge3(this, false)">The treatment works, with an effect of 3.85 points</div>
+    <div class="quiz-option" onclick="checkChallenge3(this, true)">The data is compatible with anything from a tiny harm to a large benefit — the study is inconclusive</div>
+    <div class="quiz-option" onclick="checkChallenge3(this, false)">There is a 95% chance the effect is 3.85 points</div>
+  </div>
+
+  <div id="challenge3-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkChallenge3(element, isCorrect) {
+  const box = element.closest('.quiz-box');
+  box.querySelectorAll('.quiz-option').forEach(function(opt) {
+    opt.classList.remove('correct', 'incorrect');
+  });
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+  const feedback = document.getElementById('challenge3-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  if (isCorrect) {
+    feedback.textContent = '✅ Correct! The interval includes 0, so "no effect" is compatible — but so is an 8-point benefit. "Not significant" is NOT the same as "no effect". The honest answer is: we need more data.';
+  } else {
+    feedback.textContent = '❌ Not quite! Look at the whole range, not just whether it crosses zero. What values are compatible with this data?';
+  }
+}
+</script>
+```
+
+---
+
+## Challenge 4: Write the Code
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    <strong>Write code</strong> that simulates rolling five dice 10,000 times, and
+    estimates the probability that the total is 20 or more. Then compare your
+    simulation to a normal approximation.
+    <button class="tool-button" onclick="showChallenge4Solution(this)" style="margin-top: 10px;">Show Solution</button>
+  </div>
+
+  <div id="challenge4-solution" style="display: none; margin-top: 15px;">
+    <div class="quiz-feedback correct">
+      <strong>Solution:</strong><br>
+      <code style="display: block; background: #f5f5f5; padding: 10px; margin-top: 8px; border-radius: 4px;">
+library(tidyverse)<br>
+set.seed(301)<br>
+<br>
+# One trial = sum of five dice; replicate it 10,000 times<br>
+totals &lt;- replicate(10000, sum(sample(1:6, 5, replace = TRUE)))<br>
+<br>
+# Simulated probability<br>
+p_sim &lt;- mean(totals &gt;= 20)<br>
+p_sim<br>
+<br>
+# Normal approximation:<br>
+# one die has mean 3.5 and variance 35/12<br>
+mu&nbsp;&nbsp;&nbsp;&nbsp;&lt;- 5 * 3.5<br>
+sigma &lt;- sqrt(5 * 35 / 12)<br>
+<br>
+# Continuity correction: P(X &gt;= 20) uses 19.5<br>
+p_norm &lt;- pnorm(19.5, mu, sigma, lower.tail = FALSE)<br>
+<br>
+c(simulated = p_sim, normal_approx = p_norm)<br>
+<br>
+# The CLT at work: five dice already look bell-shaped<br>
+ggplot(tibble(t = totals), aes(t)) +<br>
+&nbsp;&nbsp;geom_bar(fill = "#8E44AD") +<br>
+&nbsp;&nbsp;theme_minimal()
+      </code>
+    </div>
+  </div>
+</div>
+
+<script>
+function showChallenge4Solution(btn) {
+  document.getElementById('challenge4-solution').style.display = 'block';
+  btn.textContent = '✓ Solution Shown';
+  btn.disabled = true;
+}
+</script>
+```
+
+---
+
+## Cheat Sheet
+
+:::{.callout-note}
+| Task | Code |
+|:-----|:-----|
+| Random sample | `sample(x, n, replace = TRUE)` |
+| Reproducibility | `set.seed(301)` |
+| Density / mass | `dnorm()`, `dbinom()`, `dpois()` |
+| P(X ≤ q) | `pnorm(q, mean, sd)` |
+| P(X > q) | `pnorm(q, ..., lower.tail = FALSE)` |
+| Quantile | `qnorm(p, mean, sd)` |
+| Random draws | `rnorm(n, mean, sd)` |
+| Repeat a simulation | `replicate(n, expr)` |
+| Standard error | `sd(x) / sqrt(length(x))` |
+| CI for a mean | `t.test(x)$conf.int` |
+| CI for a proportion | `prop.test(successes, n)$conf.int` |
+| t critical value | `qt(0.975, df = n - 1)` |
+
+:::
+
+---
