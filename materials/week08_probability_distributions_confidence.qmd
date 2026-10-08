@@ -1039,13 +1039,9 @@ ggplot(tibble(x = population), aes(x)) +
 ```
 
 
-## Another Way Sample Means are Not the Same as the Population Mean
+##  Another View Sample Means != Population Mean!!
 
-```{r another-visual}
-#| echo: true
-#| fig-width: 11
-#| fig-height: 3.6
-
+```r
 # Load libraries
 library(ggplot2)
 library(dplyr)
@@ -1121,74 +1117,11 @@ ggplot(simulated_samples, aes(x = sample_mean)) +
   theme(legend.position = "bottom")
 ```
 
-##  Another Way Sample Means are Not the Same as the Population Mean Plot
+##  Another View Sample Means != Population Mean Plot!!
 
-```{r another-visual2}
-#| echo: false
-#| fig-width: 11
-#| fig-height: 3.6
-
-# Load libraries
-library(ggplot2)
-library(dplyr)
-
-# 1. Set up the parameters
-set.seed(42)
-pop_mean <- 100        # True Population Mean (μ)
-pop_sd <- 15           # Population Standard Deviation (σ)
-sample_size <- 30      # Sample size (n)
-
-# 2. Simulate 1,000 different samples of size n and calculate their means
-simulated_samples <- tibble(
-  sample_id = 1:1000
-) %>%
-  rowwise() %>%
-  mutate(
-    # Pull a random sample and compute its mean
-    sample_mean = mean(rnorm(sample_size, mean = pop_mean, sd = pop_sd))
-  ) %>%
-  ungroup()
-
-# Calculate the Standard Error (SE = σ / √n)
-standard_error <- pop_sd / sqrt(sample_size)
-
-# Highlight one specific "lucky" sample to show how it differs from the truth
-single_sample_mean <- simulated_samples$sample_mean[1]
-ci_lower <- single_sample_mean - (1.96 * standard_error)
-ci_upper <- single_sample_mean + (1.96 * standard_error)
-
-# 3. Create the ggplot
-ggplot(simulated_samples, aes(x = sample_mean)) +
-  # Distribution of all possible sample means
-  geom_histogram(aes(y = ..density..), bins = 35, fill = "skyblue", alpha = 0.6) +
-  geom_density(color = "blue", size = 1) +
-  
-  # True Population Mean Line (The Truth 🎯)
-  geom_vline(aes(xintercept = pop_mean, color = "True Population Mean (μ)"), 
-             linetype = "dashed", size = 1.2) +
-  
-  # Our Single Sample Mean (The Estimate 📍)
-  geom_vline(aes(xintercept = single_sample_mean, color = "Your Sample Mean (x̄)"), 
-             size = 1.2) +
-  
-  # Confidence Interval Bracket for that single sample
-  geom_rect(aes(xmin = ci_lower, xmax = ci_upper, ymin = 0, ymax = Inf, 
-                fill = "95% Confidence Interval"), 
-            alpha = 0.005) +
-  
-  # Custom Formatting
-  scale_color_manual(name = "Parameters", values = c("True Population Mean (μ)" = "darkgreen", "Your Sample Mean (x̄)" = "red")) +
-  scale_fill_manual(name = "Uncertainty", values = c("95% Confidence Interval" = "gray")) +
-  labs(
-    title = "Your Sample Mean is Not the Population Mean",
-    subtitle = paste0("Sampling Distribution of 1,000 samples (n = ", sample_size, "). How far off might you be?"),
-    x = "Value of Sample Mean",
-    y = "Density"
-  ) +
-  theme_minimal() +
-  theme(legend.position = "bottom")
-```
-
+<center>
+![](graphics/sampleMean.png){width="90%"}
+</center>
 ---
 
 ## Standard Error: The Key Formula 🔑
