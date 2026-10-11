@@ -1,0 +1,610 @@
+---
+title: "Confidence Concepts"
+subtitle: "Statistical Inference: confidence intervals"
+# author: "CS301 - Data Science with R"
+# date: "Fall 2026"
+format:
+  revealjs:
+    theme: custom_ds.css
+    slide-number: true
+    chalkboard: true
+    preview-links: auto
+    scrollable: true
+    width: 1200
+    height: 800
+    margin: 0.05
+fig-width: 10
+fig-height: 5.5
+fig-align: center
+---
+
+# Up for Today
+
+::: {.callout-tip icon="true"}
+## From Description to Inference
+* **Binwidths** — choosing the right width for histograms
+* **Probability** — quantifying uncertainty
+* **Distributions** — normal, binomial, Poisson
+* **The d/p/q/r Family** — R's four-letter superpower
+* **Sampling** — why samples differ from populations
+* **Central Limit Theorem** — the most surprising result in statistics
+* **Confidence Intervals** — putting error bars on everything
+:::
+
+
+# Confidence Intervals 📏
+
+---
+
+## What a Confidence Interval Is
+
+::: {.callout-important icon="false"}
+**A 95% CI is a range built by a procedure that captures the true parameter
+95% of the time in repeated sampling.**
+:::
+
+```{r ci-manual}
+#| echo: true
+
+set.seed(301)
+heights <- rnorm(30, mean = 170, sd = 10)   # our one sample
+
+x_bar <- mean(heights)
+s     <- sd(heights)
+n     <- length(heights)
+se    <- s / sqrt(n)
+
+# Use the t distribution: sigma is unknown and n is small
+t_crit <- qt(0.975, df = n - 1)
+
+ci <- c(x_bar - t_crit * se, x_bar + t_crit * se)
+round(c(mean = x_bar, se = se, lower = ci[1], upper = ci[2]), 2)
+```
+
+---
+
+## The One-Line Version
+
+```{r ci-ttest}
+#| echo: true
+
+# t.test() computes the same interval (and much more - see Week 9)
+t.test(heights)$conf.int
+
+# Change the confidence level
+t.test(heights, conf.level = 0.99)$conf.int
+
+# CI for a proportion: 42 successes out of 100 trials
+prop.test(42, 100)$conf.int
+```
+
+::: {.callout-tip}
+Wider confidence = wider interval. A 99% CI is more likely to be right and less
+informative. There is no free lunch. 🥪
+:::
+
+---
+
+## What 95% Actually Means 🎯
+
+```{r ci-coverage}
+#| echo: true
+#| fig-width: 11
+#| fig-height: 4
+library(tidyverse)
+
+set.seed(301)
+
+# Build 100 confidence intervals from 100 different samples
+cis <- map_dfr(1:100, function(i) {
+  s  <- rnorm(30, mean = 170, sd = 10)
+  tt <- t.test(s)
+  tibble(trial = i, est = mean(s),
+         lower = tt$conf.int[1], upper = tt$conf.int[2])
+}) %>%
+  mutate(captures = lower <= 170 & upper >= 170)
+
+cat("Intervals containing the true mean:", sum(cis$captures), "out of 100\n")
+```
+
+
+
+## What 95% Actually Means Plot 🎯
+:::{.callout}
+```r
+ggplot(cis, aes(trial, est, color = captures)) +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0) +
+  geom_point(size = 1) +
+  geom_hline(yintercept = 170, color = "black", linewidth = 0.8) +
+  scale_color_manual(values = c("FALSE" = "#E74C3C", "TRUE" = "#27AE60")) +
+  labs(title = "100 samples, 100 confidence intervals",
+       subtitle = "Red intervals missed the true mean of 170",
+       x = "Sample number", y = "Mean height (cm)", color = "Captured?") +
+  theme_minimal(base_size = 11)
+```
+
+```{r ci-coverage-plot}
+#| echo: false
+#| fig-width: 11
+#| fig-height: 4
+
+set.seed(301)
+
+# Build 100 confidence intervals from 100 different samples
+cis <- map_dfr(1:100, function(i) {
+  s  <- rnorm(30, mean = 170, sd = 10)
+  tt <- t.test(s)
+  tibble(trial = i, est = mean(s),
+         lower = tt$conf.int[1], upper = tt$conf.int[2])
+}) %>%
+  mutate(captures = lower <= 170 & upper >= 170)
+
+#cat("Intervals containing the true mean:", sum(cis$captures), "out of 100\n")
+
+ggplot(cis, aes(trial, est, color = captures)) +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0) +
+  geom_point(size = 1) +
+  geom_hline(yintercept = 170, color = "black", linewidth = 0.8) +
+  scale_color_manual(values = c("FALSE" = "#E74C3C", "TRUE" = "#27AE60")) +
+  labs(title = "100 samples, 100 confidence intervals",
+       subtitle = "Red intervals missed the true mean of 170",
+       x = "Sample number", y = "Mean height (cm)", color = "Captured?") +
+  theme_minimal(base_size = 11)
+```
+:::
+
+::: {.callout}
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+
+95% confidence means that if we were to repeat this process many times, about 95% of the resulting confidence intervals would contain the true mean. Here, five of the 100 confidence intervals missed the true mean of 170.
+:::
+:::
+---
+
+## The Interpretation Trap 🪤
+
+::: {.columns}
+::: {.column}
+**❌ Wrong**
+
+"There is a 95% probability that μ is between 167 and 173."
+
+The true μ is a fixed number. It is either in your interval or it is not — no
+probability involved. 🎲
+:::
+
+::: {.column}
+**✅ Right**
+
+"We are 95% confident..." meaning: *this method* produces intervals that
+capture μ 95% of the time.
+
+The randomness lives in the **interval**, not in μ.
+:::
+:::
+
+::: {.callout-tip icon="true"}
+## The Practical Reading
+A CI tells you which values are **compatible** with your data. If a claimed
+value falls outside your interval, your data argues against it. 📊
+:::
+
+---
+
+## Interactive: Confidence Interval Calculator 🎮
+
+```{=html}
+<div class="interactive-tool">
+  <h3>📏 Confidence Interval Calculator</h3>
+
+  <div class="tool-controls">
+    <div class="control-group">
+      <label>Estimating a:</label>
+      <select id="ci-type">
+        <option value="mean">Mean (numeric data)</option>
+        <option value="prop">Proportion (yes/no data)</option>
+        <option value="diff">Difference of two means</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>Confidence level:</label>
+      <select id="ci-level">
+        <option value="0.95">95%</option>
+        <option value="0.90">90%</option>
+        <option value="0.99">99%</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>Data source:</label>
+      <select id="ci-source">
+        <option value="mtcars|mpg">mtcars$mpg</option>
+        <option value="iris|Sepal.Length">iris$Sepal.Length</option>
+        <option value="airquality|Ozone">airquality$Ozone (has NAs)</option>
+        <option value="manual">Type my own summary numbers</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>Also show:</label>
+      <select id="ci-extra">
+        <option value="none">Just the interval</option>
+        <option value="manual">Manual formula, step by step</option>
+        <option value="plot">A plot with error bars</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="tool-buttons">
+    <button class="tool-button" onclick="generateCICode()">Generate Code</button>
+    <button class="tool-button secondary" onclick="showSampleSize()">Sample Size Planner</button>
+    <button class="tool-button secondary" onclick="clearCITool()">Clear</button>
+  </div>
+
+  <div class="tool-output-container">
+    <button class="copy-button" onclick="copyToClipboard('ci-output', this)">📋 Copy</button>
+    <div class="tool-output" id="ci-output">Choose what you are estimating and click "Generate Code"!</div>
+  </div>
+</div>
+
+<script>
+function generateCICode() {
+  const type = document.getElementById('ci-type').value;
+  const level = document.getElementById('ci-level').value;
+  const src = document.getElementById('ci-source').value;
+  const extra = document.getElementById('ci-extra').value;
+  const parts = src.split('|');
+  const data = parts[0], v = parts[1];
+
+  let code = 'library(tidyverse)\n\n';
+
+  if (type === 'prop') {
+    code += '# --- CI for a proportion ------------------------\n';
+    code += '# Example: 42 "yes" answers out of 100 respondents\n';
+    code += 'successes <- 42\n';
+    code += 'n         <- 100\n\n';
+    code += 'prop.test(successes, n, conf.level = ' + level + ')$conf.int\n\n';
+    code += '# From real data: what fraction of mtcars are manual?\n';
+    code += 'prop.test(sum(mtcars$am == 1), nrow(mtcars),\n';
+    code += '          conf.level = ' + level + ')\n\n';
+    code += '# Rule of thumb: needs at least ~10 successes AND ~10 failures\n';
+    document.getElementById('ci-output').textContent = code;
+    return;
+  }
+
+  if (type === 'diff') {
+    code += '# --- CI for a difference of two means -----------\n';
+    code += '# Do manual cars get better mileage than automatics?\n';
+    code += 't.test(mpg ~ am, data = mtcars, conf.level = ' + level + ')$conf.int\n\n';
+    code += '# The full output includes the interval AND the test\n';
+    code += 't.test(mpg ~ am, data = mtcars, conf.level = ' + level + ')\n\n';
+    code += '# If the interval excludes 0, the groups differ at this level.\n';
+    code += '# (Week 9 covers the test itself in detail.)\n';
+    document.getElementById('ci-output').textContent = code;
+    return;
+  }
+
+  if (src === 'manual') {
+    code += '# --- CI for a mean, from summary numbers --------\n';
+    code += 'x_bar <- 25.4   # sample mean\n';
+    code += 's     <- 6.1    # sample sd\n';
+    code += 'n     <- 40     # sample size\n\n';
+  } else {
+    code += '# --- CI for a mean ------------------------------\n';
+    code += 'data(' + data + ')\n';
+    code += 'x <- ' + data + '$' + v + '\n';
+    code += 'x <- x[!is.na(x)]      # drop missing values first\n\n';
+    code += 'x_bar <- mean(x)\n';
+    code += 's     <- sd(x)\n';
+    code += 'n     <- length(x)\n\n';
+  }
+
+  if (extra === 'manual' || src === 'manual') {
+    code += '# Step 1: the standard error\n';
+    code += 'se <- s / sqrt(n)\n\n';
+    code += '# Step 2: the t critical value (two-tailed)\n';
+    code += 'alpha  <- ' + (1 - parseFloat(level)).toFixed(2) + '\n';
+    code += 't_crit <- qt(1 - alpha / 2, df = n - 1)\n\n';
+    code += '# Step 3: the margin of error\n';
+    code += 'moe <- t_crit * se\n\n';
+    code += '# Step 4: the interval\n';
+    code += 'c(lower = x_bar - moe, upper = x_bar + moe)\n\n';
+  }
+
+  if (src !== 'manual') {
+    code += '# The built-in shortcut (same answer)\n';
+    code += 't.test(x, conf.level = ' + level + ')$conf.int\n\n';
+  }
+
+  if (extra === 'plot') {
+    code += '# Visualize the estimate with its uncertainty\n';
+    code += 'tt <- t.test(x, conf.level = ' + level + ')\n\n';
+    code += 'tibble(group = "' + (v || 'sample') + '",\n';
+    code += '       est = mean(x),\n';
+    code += '       lower = tt$conf.int[1],\n';
+    code += '       upper = tt$conf.int[2]) %>%\n';
+    code += '  ggplot(aes(group, est)) +\n';
+    code += '  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.15,\n';
+    code += '                color = "#2E86C1", linewidth = 1) +\n';
+    code += '  geom_point(size = 4, color = "#2E86C1") +\n';
+    code += '  labs(title = "' + (level * 100) + '% confidence interval",\n';
+    code += '       x = NULL, y = "Estimate") +\n';
+    code += '  theme_minimal()\n';
+  }
+
+  document.getElementById('ci-output').textContent = code;
+}
+
+function showSampleSize() {
+  const level = document.getElementById('ci-level').value;
+  let code = '# How big a sample do I need? 📐\n\n';
+  code += '# Margin of error = z * sigma / sqrt(n)\n';
+  code += '# Solve for n:   n = (z * sigma / moe)^2\n\n';
+  code += 'plan_n <- function(sigma, moe, conf = ' + level + ') {\n';
+  code += '  z <- qnorm(1 - (1 - conf) / 2)\n';
+  code += '  ceiling((z * sigma / moe)^2)\n';
+  code += '}\n\n';
+  code += '# Example: sd is about 10, and I want +/- 2 units\n';
+  code += 'plan_n(sigma = 10, moe = 2)\n\n';
+  code += '# Halving the margin of error quadruples the sample:\n';
+  code += 'plan_n(sigma = 10, moe = 1)\n\n';
+  code += '# For a proportion, the worst case is p = 0.5\n';
+  code += 'plan_n_prop <- function(moe, conf = ' + level + ') {\n';
+  code += '  z <- qnorm(1 - (1 - conf) / 2)\n';
+  code += '  ceiling(0.25 * (z / moe)^2)\n';
+  code += '}\n\n';
+  code += 'plan_n_prop(moe = 0.03)   # the classic "+/- 3 points" poll\n';
+
+  document.getElementById('ci-output').textContent = code;
+}
+
+function clearCITool() {
+  ['ci-type','ci-level','ci-source','ci-extra'].forEach(function(id) {
+    document.getElementById(id).selectedIndex = 0;
+  });
+  document.getElementById('ci-output').textContent =
+    'Choose what you are estimating and click "Generate Code"!';
+}
+</script>
+```
+
+---
+
+## Knowledge Check 🧠
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    You quadruple your sample size from 100 to 400. What happens to the width
+    of your confidence interval?
+  </div>
+
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkProbQuiz2(this, false)">It shrinks to one quarter of its width</div>
+    <div class="quiz-option" onclick="checkProbQuiz2(this, true)">It shrinks to about half its width</div>
+    <div class="quiz-option" onclick="checkProbQuiz2(this, false)">It stays the same — the confidence level did not change</div>
+    <div class="quiz-option" onclick="checkProbQuiz2(this, false)">It doubles</div>
+  </div>
+
+  <div id="prob-quiz2-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkProbQuiz2(element, isCorrect) {
+  const box = element.closest('.quiz-box');
+  box.querySelectorAll('.quiz-option').forEach(function(opt) {
+    opt.classList.remove('correct', 'incorrect');
+  });
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+  const feedback = document.getElementById('prob-quiz2-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  if (isCorrect) {
+    feedback.textContent = '✅ Correct! Width depends on s/sqrt(n). sqrt(400)/sqrt(100) = 2, so the interval is half as wide. Precision is expensive.';
+  } else {
+    feedback.textContent = '❌ Not quite! Look at the formula: the standard error divides by the SQUARE ROOT of n, not n.';
+  }
+}
+</script>
+```
+
+---
+
+# Quick Challenges! 🧠
+
+## Challenge 1: Picking the Prefix
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    A factory's bolts have length ~ Normal(50mm, 0.4mm). You need the proportion
+    that fall outside 49mm-51mm (the reject rate). Which expression is right?
+  </div>
+
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkChallenge1(this, false)">dnorm(51, 50, 0.4) - dnorm(49, 50, 0.4)</div>
+    <div class="quiz-option" onclick="checkChallenge1(this, true)">1 - (pnorm(51, 50, 0.4) - pnorm(49, 50, 0.4))</div>
+    <div class="quiz-option" onclick="checkChallenge1(this, false)">qnorm(51, 50, 0.4) + qnorm(49, 50, 0.4)</div>
+    <div class="quiz-option" onclick="checkChallenge1(this, false)">mean(rnorm(1000, 50, 0.4) > 51)</div>
+  </div>
+
+  <div id="challenge1-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkChallenge1(element, isCorrect) {
+  const box = element.closest('.quiz-box');
+  box.querySelectorAll('.quiz-option').forEach(function(opt) {
+    opt.classList.remove('correct', 'incorrect');
+  });
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+  const feedback = document.getElementById('challenge1-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  if (isCorrect) {
+    feedback.textContent = '✅ Correct! p gives area up to a point, so the difference is the middle area, and 1 minus that is both tails. About 1.24% get rejected. (The last option is close but only counts ONE tail — and it is a noisy estimate.)';
+  } else {
+    feedback.textContent = '❌ Not quite! You want AREA, not height, and you want BOTH tails. Which prefix gives cumulative area?';
+  }
+}
+</script>
+```
+
+---
+
+## Challenge 2: CLT Limits
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    Your data is strongly right-skewed with n = 45. Which statement is true?
+  </div>
+
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkChallenge2(this, false)">The CLT makes your data normally distributed</div>
+    <div class="quiz-option" onclick="checkChallenge2(this, false)">You cannot compute a confidence interval on skewed data</div>
+    <div class="quiz-option" onclick="checkChallenge2(this, true)">A CI for the MEAN is reasonable, but the mean may not be the statistic you want to report</div>
+    <div class="quiz-option" onclick="checkChallenge2(this, false)">n = 45 guarantees the sampling distribution is exactly normal</div>
+  </div>
+
+  <div id="challenge2-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkChallenge2(element, isCorrect) {
+  const box = element.closest('.quiz-box');
+  box.querySelectorAll('.quiz-option').forEach(function(opt) {
+    opt.classList.remove('correct', 'incorrect');
+  });
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+  const feedback = document.getElementById('challenge2-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  if (isCorrect) {
+    feedback.textContent = '✅ Correct! Two separate questions: (1) is the method valid? Usually yes at n = 45. (2) is the mean meaningful? On skewed data the median often describes people better — remember Week 6.';
+  } else {
+    feedback.textContent = '❌ Not quite! The CLT is about the sampling distribution of the mean, and it is an approximation that improves with n — never a guarantee.';
+  }
+}
+</script>
+```
+
+---
+
+## Challenge 3: Reading an Interval
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    A study reports a 95% CI for a treatment effect of <code>[-0.5, 8.2]</code> points.
+    What is the best summary?
+  </div>
+
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkChallenge3(this, false)">The treatment definitely does not work</div>
+    <div class="quiz-option" onclick="checkChallenge3(this, false)">The treatment works, with an effect of 3.85 points</div>
+    <div class="quiz-option" onclick="checkChallenge3(this, true)">The data is compatible with anything from a tiny harm to a large benefit — the study is inconclusive</div>
+    <div class="quiz-option" onclick="checkChallenge3(this, false)">There is a 95% chance the effect is 3.85 points</div>
+  </div>
+
+  <div id="challenge3-feedback" style="display: none;"></div>
+</div>
+
+<script>
+function checkChallenge3(element, isCorrect) {
+  const box = element.closest('.quiz-box');
+  box.querySelectorAll('.quiz-option').forEach(function(opt) {
+    opt.classList.remove('correct', 'incorrect');
+  });
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+  const feedback = document.getElementById('challenge3-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  if (isCorrect) {
+    feedback.textContent = '✅ Correct! The interval includes 0, so "no effect" is compatible — but so is an 8-point benefit. "Not significant" is NOT the same as "no effect". The honest answer is: we need more data.';
+  } else {
+    feedback.textContent = '❌ Not quite! Look at the whole range, not just whether it crosses zero. What values are compatible with this data?';
+  }
+}
+</script>
+```
+
+---
+
+## Challenge 4: Write the Code
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    <strong>Write code</strong> that simulates rolling five dice 10,000 times, and
+    estimates the probability that the total is 20 or more. Then compare your
+    simulation to a normal approximation.
+    <button class="tool-button" onclick="showChallenge4Solution(this)" style="margin-top: 10px;">Show Solution</button>
+  </div>
+
+  <div id="challenge4-solution" style="display: none; margin-top: 15px;">
+    <div class="quiz-feedback correct">
+      <strong>Solution:</strong><br>
+      <code style="display: block; background: #f5f5f5; padding: 10px; margin-top: 8px; border-radius: 4px;">
+library(tidyverse)<br>
+set.seed(301)<br>
+<br>
+# One trial = sum of five dice; replicate it 10,000 times<br>
+totals &lt;- replicate(10000, sum(sample(1:6, 5, replace = TRUE)))<br>
+<br>
+# Simulated probability<br>
+p_sim &lt;- mean(totals &gt;= 20)<br>
+p_sim<br>
+<br>
+# Normal approximation:<br>
+# one die has mean 3.5 and variance 35/12<br>
+mu&nbsp;&nbsp;&nbsp;&nbsp;&lt;- 5 * 3.5<br>
+sigma &lt;- sqrt(5 * 35 / 12)<br>
+<br>
+# Continuity correction: P(X &gt;= 20) uses 19.5<br>
+p_norm &lt;- pnorm(19.5, mu, sigma, lower.tail = FALSE)<br>
+<br>
+c(simulated = p_sim, normal_approx = p_norm)<br>
+<br>
+# The CLT at work: five dice already look bell-shaped<br>
+ggplot(tibble(t = totals), aes(t)) +<br>
+&nbsp;&nbsp;geom_bar(fill = "#8E44AD") +<br>
+&nbsp;&nbsp;theme_minimal()
+      </code>
+    </div>
+  </div>
+</div>
+
+<script>
+function showChallenge4Solution(btn) {
+  document.getElementById('challenge4-solution').style.display = 'block';
+  btn.textContent = '✓ Solution Shown';
+  btn.disabled = true;
+}
+</script>
+```
+
+---
+
+## Cheat Sheet
+
+:::{.callout-note}
+| Task | Code |
+|:-----|:-----|
+| Random sample | `sample(x, n, replace = TRUE)` |
+| Reproducibility | `set.seed(301)` |
+| Density / mass | `dnorm()`, `dbinom()`, `dpois()` |
+| P(X ≤ q) | `pnorm(q, mean, sd)` |
+| P(X > q) | `pnorm(q, ..., lower.tail = FALSE)` |
+| Quantile | `qnorm(p, mean, sd)` |
+| Random draws | `rnorm(n, mean, sd)` |
+| Repeat a simulation | `replicate(n, expr)` |
+| Standard error | `sd(x) / sqrt(length(x))` |
+| CI for a mean | `t.test(x)$conf.int` |
+| CI for a proportion | `prop.test(successes, n)$conf.int` |
+| t critical value | `qt(0.975, df = n - 1)` |
+
+:::
+
+---

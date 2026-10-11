@@ -106,6 +106,7 @@
 .callout-blue {
     background-color: #e3f2fd;
     border-left: 5px solid #2196f3;
+    font-size: 0.6em;
 }
 
 .callout-tip {
