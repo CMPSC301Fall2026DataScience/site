@@ -222,6 +222,7 @@ Is our data a single huge square!? When binwidth is too large, the data appears 
 
 ## What Does "Probability" Mean?
 
+:::{.callout-blue}
 **The long-run frequency view**
 
 P(event) = the fraction of times it happens if you repeat the experiment
@@ -229,7 +230,9 @@ forever.
 
 You cannot repeat forever — but you *can* repeat 100,000 times in R. 💻
 
-::: {.callout-note}
+:::
+
+::: {.callout-important}
 **Key vocabulary**
 
 - **Experiment** — a repeatable procedure
