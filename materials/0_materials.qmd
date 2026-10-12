@@ -116,4 +116,14 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 
 ---
 
+:::{.callout-important}
+**Midterm Exam for CS301**
+
+The midterm exam will be held on Thursday, 22nd October 2026 at 2:30pm (during lab time).
+
+I encourage you to start preparing for the exam by reviewing the material covered in the first eight weeks of the course, focusing on the challenge problems and key concepts. A study guide will be provided closer to the exam date. The exam will be paper-based, closed-book and closed-notes.
+:::
+
+---
+
 *Materials are updated throughout the semester. Check back weekly for new content!*
