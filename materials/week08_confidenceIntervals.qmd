@@ -22,12 +22,6 @@ fig-align: center
 
 ::: {.callout-tip icon="true"}
 ## From Description to Inference
-* **Binwidths** — choosing the right width for histograms
-* **Probability** — quantifying uncertainty
-* **Distributions** — normal, binomial, Poisson
-* **The d/p/q/r Family** — R's four-letter superpower
-* **Sampling** — why samples differ from populations
-* **Central Limit Theorem** — the most surprising result in statistics
 * **Confidence Intervals** — putting error bars on everything
 :::
 
@@ -36,56 +30,9 @@ fig-align: center
 
 ---
 
-## What a Confidence Interval Is
-
-::: {.callout-important icon="false"}
-**A 95% CI is a range built by a procedure that captures the true parameter
-95% of the time in repeated sampling.**
-:::
-
-```{r ci-manual}
-#| echo: true
-
-set.seed(301)
-heights <- rnorm(30, mean = 170, sd = 10)   # our one sample
-
-x_bar <- mean(heights)
-s     <- sd(heights)
-n     <- length(heights)
-se    <- s / sqrt(n)
-
-# Use the t distribution: sigma is unknown and n is small
-t_crit <- qt(0.975, df = n - 1)
-
-ci <- c(x_bar - t_crit * se, x_bar + t_crit * se)
-round(c(mean = x_bar, se = se, lower = ci[1], upper = ci[2]), 2)
-```
-
 ---
 
-## The One-Line Version
-
-```{r ci-ttest}
-#| echo: true
-
-# t.test() computes the same interval (and much more - see Week 9)
-t.test(heights)$conf.int
-
-# Change the confidence level
-t.test(heights, conf.level = 0.99)$conf.int
-
-# CI for a proportion: 42 successes out of 100 trials
-prop.test(42, 100)$conf.int
-```
-
-::: {.callout-tip}
-Wider confidence = wider interval. A 99% CI is more likely to be right and less
-informative. There is no free lunch. 🥪
-:::
-
----
-
-## What 95% Actually Means 🎯
+## What 95% Confidence Actually Means (Visually)
 
 ```{r ci-coverage}
 #| echo: true
@@ -107,9 +54,8 @@ cis <- map_dfr(1:100, function(i) {
 cat("Intervals containing the true mean:", sum(cis$captures), "out of 100\n")
 ```
 
+## What 95% ConfidenceActually Means Visually Plot
 
-
-## What 95% Actually Means Plot 🎯
 :::{.callout}
 ```r
 ggplot(cis, aes(trial, est, color = captures)) +
@@ -159,6 +105,115 @@ ggplot(cis, aes(trial, est, color = captures)) +
 95% confidence means that if we were to repeat this process many times, about 95% of the resulting confidence intervals would contain the true mean. Here, five of the 100 confidence intervals missed the true mean of 170.
 :::
 :::
+
+---
+
+## What a Confidence Interval Is
+
+::: {.callout-important icon="false"}
+**A 95% CI is a range built by a procedure that captures the true parameter
+95% of the time in repeated sampling.**
+:::
+
+::: {.callout-note icon="false"}
+## Let's Try It Out
+
+We calculate a 95% confidence interval for the population mean height using a random sample of 30 people. It uses the t-distribution because the population standard deviation is unknown and is estimated using the sample data.
+
+Calculating a confidence interval is a four-step process:
+
+- Compute the sample mean and standard error.
+- Find the critical value from the t-distribution (or z-distribution if sigma is known).
+- Compute the margin of error.
+- Construct the interval: mean ± margin of error.
+
+:::
+
+## Code to compute a 95% confidence interval for the mean height from a random sample of 30 people
+
+```{r ci-manual}
+#| echo: true
+
+set.seed(301)
+
+# Generate a random sample of 30 heights (in cm) from a normal distribution
+heights <- rnorm(30, mean = 170, sd = 10)   # one random normal sample
+
+# Compute the sample mean and standard error
+# heights refers to the 30 simulated observations
+x_bar <- mean(heights) # avg of 30 sample means
+s     <- sd(heights) # sample standard deviation
+n     <- length(heights) # Find the sample size
+se    <- s / sqrt(n) # Find the standard error of the mean
+
+# Note: The standard error estimates how much the
+# sample mean would vary across repeated random samples
+# of the same size.
+
+# Find the critical value from the t-distribution.
+# The sigma value is unknown, so we use the 
+# t-distribution with n-1 degrees of freedom
+# How to find the critical value? For a 95%
+# confidence level, we want the value that leaves 2.5% in each tail.
+
+t_crit <- qt(0.975, df = n - 1)
+
+# We calculate the lower and upper bounds of the 95%
+# confidence interval
+# The interval provides a range of plausible values for the
+# population mean, based on the sample data and the assumptions 
+# of the t-interval method.
+ci <- c(x_bar - t_crit * se, x_bar + t_crit * se)
+round(c(mean = x_bar, se = se, lower = ci[1], upper = ci[2]), 2)
+```
+
+::: {.callout-tip icon="true"}
+The standard error (se) estimates how much the sample mean would vary across repeated random samples of the same size.
+:::
+
+___
+
+## How to make Sense of a Confidence Interval
+
+:::{.callout-tip icon="true"}
+## Some ideas about confidence intervals
+
+- Purpose: A confidence interval estimates a plausible range for the unknown population mean height.
+
+- A 95% confidence interval means that if we were to repeat this process many times, about 95% of the resulting confidence intervals would contain the true mean. Here, five of the 100 confidence intervals missed the true mean of 170.
+
+- Confidence level: A 95% confidence interval is produced by using the 0.975 quantile of the t-distribution.
+
+:::
+
+::: {.callout-important icon="true"}
+
+- Interpretation: If we repeatedly collected samples of 30 people and calculated a confidence interval in the same way, approximately 95% of those intervals would contain the true population mean, assuming the model's conditions hold.
+
+:::
+
+---
+
+## The One-Line Version to Compute a Confidence Intervals
+
+```{r ci-ttest}
+#| echo: true
+
+# t.test() computes the same interval (and much more - see Week 9)
+t.test(heights)$conf.int
+
+# Change the confidence level
+t.test(heights, conf.level = 0.99)$conf.int
+
+# CI for a proportion: 42 successes out of 100 trials
+prop.test(42, 100)$conf.int
+```
+
+::: {.callout-tip}
+Wider confidence = wider interval. A 99% CI is more likely to be right and less
+informative. A measure of certainty of the estimate is traded off against precision of the estimate.
+:::
+
 ---
 
 ## The Interpretation Trap 🪤
@@ -587,7 +642,7 @@ function showChallenge4Solution(btn) {
 
 ---
 
-## Cheat Sheet
+## Cheat Sheet (This Week's Most Useful Commands)
 
 :::{.callout-note}
 | Task | Code |
