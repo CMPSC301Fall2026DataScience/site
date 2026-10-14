@@ -913,7 +913,7 @@ function checkProbQuiz1(element, isCorrect) {
 
 ---
 
-# Part 2: Sampling & the Central Limit Theorem (CLT)✨
+# Part 2: Sampling & the Central Limit Theorem (CLT)
 
 ---
 
@@ -923,15 +923,53 @@ function checkProbQuiz1(element, isCorrect) {
 The central limit theorem establishes that when independent events are added the sum tends toward a normal distribution (a bell curve) even if the original variables themselves are not normally distributed.
 ::: 
 
+```{r clt-example}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 3.6
+#| 
+library(tidyverse)
+
+set.seed(301)
+draws <- rnorm(1000, mean = 100, sd = 15)
+
+#mean(draws)
+#sd(draws)
+
+ggplot(tibble(x = draws), aes(x)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30,
+                 fill = "#3498DB", color = "white") +
+  stat_function(fun = dnorm, args = list(mean = 100, sd = 15),
+                color = "#E74C3C", linewidth = 1) +
+  labs(title = "Means of Samples", x = "Means", y ="Magnitude") +
+  
+  theme_minimal()
+```
+
+---
+
+## For Example
+
+::: {.callout-blue icon="false"}
+If you repeatedly roll a die and take the average of the rolls, the distribution of those averages will approach a normal distribution as the number of rolls increases, regardless of the uniform distribution of a single die roll.
+:::
+
+<center>
+![](graphics/variousSizes.png){width=70%}
+</center>
+
+
 ## An Example Central Limit Theorem?
 
 <center>
-![](graphics/cltDemo.png){width=70%}
+![](graphics/cltDemo.png){width=60%}
 </center>
+
 :::{.callout-blue icon="false"}
 Random 0s and 1s were generated, and then their means calculated for sample sizes ranging from 1 to 512. Note that as the sample size increases the tails become thinner and the distribution becomes more concentrated around the mean. Ref: https://www.ml-science.com/central-limit-theorem
 :::
-## Population vs Sample 🎯
+
+## Population vs Sample
 
 ::: {.columns}
 ::: {.column}
@@ -965,9 +1003,13 @@ a single number is computed. ⚖️
 :::
 :::
 
+<center>
+![](graphics/vache_i.png){width=30%}
+</center>
+
 ---
 
-## Samples Vary 🎰
+## Samples Vary
 
 ```{r sampling-variation}
 #| echo: true
@@ -991,7 +1033,7 @@ thing statistics measures. 📏
 
 ---
 
-## The Sampling Distribution Part 1📊
+## The Sampling Distribution Part 1
 
 ```{r sampling-distribution1}
 #| echo: true
@@ -1009,7 +1051,7 @@ cat("SD of sample means:   ", round(sd(sample_means), 2), "\n")
 cat("Theory: sigma/sqrt(n) =", round(10 / sqrt(25), 2), "\n")
 ```
 
-## The Sampling Distribution Part 2📊
+## The Sampling Distribution Part 2
 
 ```{r sampling-distribution2}
 #| echo: true
