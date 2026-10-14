@@ -242,8 +242,8 @@ You cannot repeat forever — but you *can* repeat 100,000 times in R. 💻
 :::
 
 ## Frequency of Heads in Coin Flips
-```r
-#| echo: false
+```{r prob-frequency}
+#| echo: true
 #| fig-width: 6
 #| fig-height: 3.6
 
@@ -1256,7 +1256,7 @@ ggplot(simulated_samples, aes(x = sample_mean)) +
 
 **What is Standard Error?** The standard deviation *of the sample mean* — how much your estimate wobbles.
 
-SE is a the standard deviation of the means of the samples drawn from the population and is a measurement of how much variability there is in the sample means. 
+SE is the standard deviation of the means of the samples drawn from the population and is a measurement of how much variability there is in the sample means. 
 
 :::
 
