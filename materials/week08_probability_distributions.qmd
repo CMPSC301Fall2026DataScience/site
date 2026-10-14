@@ -1241,20 +1241,29 @@ ggplot(simulated_samples, aes(x = sample_mean)) +
 <center>
 ![](graphics/sampleMean.png){width="90%"}
 </center>
+
 ---
+
+## Is There a Way to Predict The Error in Our Sample Mean?
+
+![](graphics/interesting.png){width=100%}
 
 ## Standard Error: The Key Formula 🔑
 
+::: {.callout-important icon="false"}
+
+**SE = σ / √n**  (in practice: **s / √n** for *s* = sample standard deviation and *n* = sample size.
+
+**What is Standard Error?** The standard deviation *of the sample mean* — how much your estimate wobbles.
+
+SE is a the standard deviation of the means of the samples drawn from the population and is a measurement of how much variability there is in the sample means. 
+
+:::
+
+
 ::: {.callout icon="false"}
-
-**SE = σ / √n**  (in practice: **s / √n**)
-
-What is Standard Error? The standard deviation *of the sample mean* — how much your estimate wobbles.
-
-- For the mean, the standard error (SE) equals the standard deviation (σ or s) divided by the square root of the sample size (n).
--  The standard error of the mean is a measure of the dispersion of sample means around the population mean.
-- It measures the precision and uncertainty of a sample estimate (like a mean or median).
-- A smaller number means your sample estimate is closer and more precise to the actual population value.
+## More on that SE Thing
+- The smaller the SE, the more precise your estimate of the population mean is.
 - It shrinks as your sample size grows larger.
 :::
 
@@ -1291,18 +1300,17 @@ ggplot(se_table, aes(n, standardError)) +
 :::
 
 ::: {.callout}
-Want twice the precision? You need **four times** the data. This is why big
-studies are expensive. 💰
+Notice that the smaller the SE, the more precise your estimate of the population mean is. Want twice the precision? You need four times the data.
 :::
 
 ---
 
-## The Central Limit Theorem ✨
+## The Central Limit Theorem 
 
 ::: {.callout-important icon="true"}
 ## The Most Surprising Result in Statistics
 No matter how weird the population's shape, the distribution of **sample
-means** approaches a normal curve as n grows. 🤯
+means** approaches a normal curve as n grows.
 :::
 
 ```r
@@ -1336,7 +1344,7 @@ p0 <- ggplot(tibble(x = pop), aes(x)) +
 
 ---
 
-## Why the CLT Matters 🎁
+## Why the CLT Matters 
 
 ::: {.columns}
 ::: {.column}
@@ -1349,7 +1357,7 @@ p0 <- ggplot(tibble(x = pop), aes(x)) +
 :::
 
 ::: {.column}
-**The fine print** ⚠️
+**The fine print** 
 
 ⚠️ It is about **means**, not individual values  
 ⚠️ "Large enough n" depends on how skewed the population is (n ≥ 30 is a rule
