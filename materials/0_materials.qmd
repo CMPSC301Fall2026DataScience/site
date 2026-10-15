@@ -116,7 +116,12 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
   - <a href="week08_confidenceIntervals.html" target="_blank">Slides</a>
 
 - **Lab 4**: Preparation for Midterm Exam
+  
+  - <a href="https://forms.gle/mThZReAjgttwqmcE6" target="_blank">Speaker Form</a>
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/lab04/accept" target="_blank">Lab04</a> 
+  
+  
+
 
 ---
 
