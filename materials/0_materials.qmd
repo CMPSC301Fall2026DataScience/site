@@ -53,7 +53,6 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - News Analyses
   - [What Article Is This?](1_activity.html)
 
-
 ## W2. Introduction to R Basics
 
 - **R Fundamentals, Part 1 (Installing R and RStudio, Variables, and Basic Operations)** 
@@ -72,7 +71,6 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 
 - **Activity 2**: Data Origins
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/activity02/accept" target="_blank">Activity02</a>  
-
 
 ## W4. R Fundamentals Part 3 (Dplyr Data Manipulation, and Visualization)
 
@@ -93,7 +91,6 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **Lab 3**: Video Game Sales and Ratings Analysis
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/lab03/accept" target="_blank">Lab03</a> 
 
-
 - **Activity 4**: Working with Missing Data
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/activity04/accept" target="_blank">Activity04</a>
 
@@ -111,11 +108,15 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/activity05/accept" target="_blank">Activity05</a>
 
 ## W8. Probability Distributions
+
 - **Probability Distributions and Confidence Intervals**
   - <a href="week08_probability_distributions.html" target="_blank">Slides</a>
 
 - **Confidence Intervals**
   - <a href="week08_confidenceIntervals.html" target="_blank">Slides</a>
+
+- **Lab 4**: Preparation for Midterm Exam
+  - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/lab04/accept" target="_blank">Lab04</a> 
 
 ---
 
