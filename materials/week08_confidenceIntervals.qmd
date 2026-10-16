@@ -194,15 +194,15 @@ ___
 
 ---
 
-## The One-Line Version to Compute a Confidence Intervals
+## The One-Line Version to Compute Confidence Intervals
 
 ```{r ci-ttest}
 #| echo: true
 
-# t.test() computes the same interval (and much more - see Week 9)
+# t.test() computes the same interval at 95% confidence level by default
 t.test(heights)$conf.int
 
-# Change the confidence level
+# Change the confidence level to 99% using the conf.level argument
 t.test(heights, conf.level = 0.99)$conf.int
 
 # CI for a proportion: 42 successes out of 100 trials
