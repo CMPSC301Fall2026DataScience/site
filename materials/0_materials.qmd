@@ -121,6 +121,10 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/lab04/accept" target="_blank">Lab04</a> 
   
   
+## W9. Into Statistical Tests: Non-parametric Tests
+
+- **t-tests & the Truth About p-values**
+  - <a href="week09_parametric_tests_i.html" target="_blank">Slides</a>
 
 
 ---
