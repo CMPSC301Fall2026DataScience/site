@@ -137,7 +137,6 @@ print("Tidyverse is ready to use")
 names(diamonds)  # Displays column names of the diamonds dataset
 ```
 
-
 ```r
 View(diamonds)  # Opens the diamonds dataset in a spreadsheet-like viewer
 ```
