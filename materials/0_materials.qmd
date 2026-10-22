@@ -127,9 +127,10 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **t-tests & the Truth About p-values**
   - <a href="week09_parametric_tests_i.html" target="_blank">Slides</a>
 
-<!-- - **Activity 6**: Using Quarto to Create Reports and Presentations
+
+- **Activity 6**: Using Quarto to Create Reports and Presentations
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/activity06/accept" target="_blank">Activity06</a>
- -->
+
 
 ---
 
