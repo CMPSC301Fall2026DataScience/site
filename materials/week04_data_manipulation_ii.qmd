@@ -125,17 +125,18 @@ names(diamonds)  # Displays column names of the diamonds dataset
 
 ## Viewing the Dataset
 
-```r
+```{r}
 # Install and load the tidyverse package
-# if (!requireNamespace("tidyverse", quietly = TRUE)) {
-#   install.packages("tidyverse", quiet = TRUE)
-# }
+if (!requireNamespace("tidyverse", quietly = TRUE)) {
+  install.packages("tidyverse", quiet = TRUE)
+}
 
 library(tidyverse)
 print("Tidyverse is ready to use")
 
 names(diamonds)  # Displays column names of the diamonds dataset
 ```
+
 
 ```r
 View(diamonds)  # Opens the diamonds dataset in a spreadsheet-like viewer
