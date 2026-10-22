@@ -107,6 +107,7 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **Activity 5**: Analysis; Coffee Deserts and Oases (Mapping with ggplot2 and plotly)
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/activity05/accept" target="_blank">Activity05</a>
 
+
 ## W8. Probability Distributions
 
 - **Probability Distributions and Confidence Intervals**
@@ -126,6 +127,9 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **t-tests & the Truth About p-values**
   - <a href="week09_parametric_tests_i.html" target="_blank">Slides</a>
 
+<!-- - **Activity 6**: Using Quarto to Create Reports and Presentations
+  - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/activity06/accept" target="_blank">Activity06</a>
+ -->
 
 ---
 
