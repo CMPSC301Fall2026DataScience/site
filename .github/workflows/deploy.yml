@@ -57,6 +57,7 @@ jobs:
             any::plotly
             any::RColorBrewer
             any::patchwork
+            any::HSAUR2
 
 
 
