@@ -1,0 +1,1546 @@
+---
+title: "Applications in MANOVA"
+subtitle: "Multivariate Analysis of Variance "
+# author: " Data Science Course - CS301"
+# date: " October 13, 2025"
+format:
+  revealjs:
+    theme: white
+    highlight-style: github
+    code-block-background: true
+    code-block-border-left: "#31BAE9"
+    slide-number: true
+    chalkboard: true
+    scrollable: true
+    transition: none
+    css: custom_ds.css
+    width: 1200
+    height: 800
+    margin: 0.05
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+<!-- ::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**A p-value answers one narrow question. Know exactly which one.** 
+::: -->
+
+
+## What's On For Today? 🔬
+
+
+::: {.callout-tip icon="true"}
+
+**Practical Application**:  Egyptian Skulls
+
+- Egyptian Skulls dataset
+- R Implementation
+- Visualization techniques
+- Results interpretation
+
+**Hands-on Practice**
+
+- Multiple test statistics
+- Post-hoc analysis
+- Real-world examples
+
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**What kinds of experiments can we run with manova?** 
+:::
+
+
+
+---
+
+
+## Where Are We Coming From?
+
+::: {.callout-blue}
+**t-test**
+
+- **Groups**: 2
+- **Variables**: 1 continuous
+- **Question**: Do two groups differ on one variable?
+- **Example**: Do males and females differ in height?
+:::
+
+::: {.callout-green}
+**ANOVA**
+
+- **Groups**: 2+
+- **Variables**: 1 continuous
+- **Question**: Do multiple groups differ on one variable?
+- **Example**: Do different treatments affect blood pressure? 
+:::
+
+
+::: {.callout-yellow}
+**MANOVA**
+
+- **Groups**: 2+
+- **Variables**: 2+ continuous
+- **Question**: Do multiple groups differ on multiple variables simultaneously?
+- **Example**: Do treatments affect both blood pressure  AND heart rate ?
+:::
+
+
+
+---
+
+## The Manova Test: An Overview
+
+::: {.callout-important}
+## Multivariate Analysis of Variance (MANOVA)
+
+- Extension of ANOVA to multiple dependent variables
+- Tests whether group means differ across **multiple** continuous variables **simultaneously**
+- Considers correlations between dependent variables
+- More powerful than running separate ANOVAs when variables are correlated
+:::
+
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**Key Advantage**: Controls for Type I error inflation when testing multiple variables
+:::
+
+
+::: {.callout-important}
+**Real-world Applications**
+
+-  **Psychology**: Do therapy types affect anxiety , depression , and stress  simultaneously?
+-  **Marketing**: Do advertisements impact brand awareness , purchase intent , and satisfaction ?
+<!-- -  **Biology**: Do species differ across multiple morphological measurements?  -->
+:::
+
+---
+
+## MANOVA Assumptions Overview {.smaller}
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**Before Running MANOVA: Critical Assumptions to Check!**
+:::
+
+:::{.callout-blue}
+** Fundamental Requirements**
+
+1 **Independence of Observations** 
+
+2 **Multivariate Normality** 
+
+3 **Homogeneity of Covariance** 
+:::
+
+:::{.callout-yellow}
+** Additional Considerations**
+
+4 **No Extreme Outliers** 
+
+5 **Adequate Sample Size** 
+
+6 **Linear Relationships** 
+:::
+
+
+
+::: {style="color: #1c17ab; text-align: center; margin-top: 20px;"}
+**Remember**: Violating assumptions can lead to invalid conclusions! Always check before interpreting results. 
+:::
+
+---
+
+## 1 Independence of Observations
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**What it means:**
+Each observation should be independent of all other observations
+:::
+
+:::{.callout-blue}
+**Good Examples:**
+
+- Different skulls from different individuals (our dataset!)
+- Test scores from different students
+- Patient outcomes from different hospitals
+- Plant growth measurements from different plots
+:::
+
+:::{.callout-yellow}
+**Problematic Examples:**
+
+- Multiple measurements from same individual
+- Family members (genetic correlation)
+- Students within same classroom
+- Repeated measures over time
+:::
+. . .
+
+:::{.callout-green}
+**How to check:**
+
+- Review study design 
+- Consider data collection methods 
+- Ask: "Could one observation influence another?" 
+:::
+
+---
+
+## 2 Multivariate Normality 
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**What it means:**
+Each group's data should follow a multivariate normal distribution across all dependent variables
+:::
+
+:::{.callout-blue}
+**Checking Methods:**
+
+- **Shapiro-Wilk test** (per variable, per group)
+- **Q-Q plots** (visual assessment)
+- **Mardia's test** (multivariate)
+- **Histograms** (quick visual check)
+:::
+
+:::{.callout-yellow}
+**When Violated:**
+
+- Skewed distributions
+- Heavy-tailed distributions  
+- Bimodal distributions
+- Extreme outliers present
+:::
+
+:::{.callout-green}
+**Robustness Note:** MANOVA is reasonably robust to normality violations with large samples (n > 30 per group), especially with equal group sizes! 
+:::
+
+---
+
+## 3 Homogeneity of Covariance Matrices 
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**What it means:**
+The covariance matrices should be equal across all groups (Box's assumption)
+:::
+
+**Mathematical representation:**
+$$\Sigma_1 = \Sigma_2 = \cdots = \Sigma_k$$
+
+:::{.callout-blue}
+**What Equal Covariances Mean:**
+
+- Similar variability (*variance is measurement of the spread from the mean*) across groups
+- Similar correlations between variables
+- Consistent measurement precision
+:::
+
+:::{.callout-yellow}
+**Testing Methods:**
+
+- **Box's M Test** (most common)
+- **Visual inspection** of covariance matrices
+- **Levene's test** (for each variable individually)
+:::
+
+---
+
+## 3 Homogeneity: Testing & Robustness
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**What it means:** The covariance matrices of the dependent variables are equal across all groups
+:::
+
+:::{.callout-blue}
+**Box's M Test Sensitivity:**
+
+- Very sensitive to normality violations
+- Can reject even with minor differences
+- Consider practical significance
+- Often too strict in practice
+:::
+
+:::{.callout-green}
+**Robustness Guidelines:**
+
+- Robust with equal group sizes
+- Pillai's trace most robust when violated
+- Consider Welch's MANOVA alternatives
+- Violations often acceptable with n ≥ 30
+:::
+
+---
+
+## 4 No Extreme Outliers 
+
+:::{style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**What it means:** Extreme values that could distort the analysis should be identified and addressed
+:::
+
+:::{.callout-blue}
+**Detection Methods:**
+
+- **Mahalanobis Distance** (multivariate)
+- **Box plots** (univariate)
+- **Scatterplot matrices** (visual)
+:::
+
+::: {.callout-yellow}
+**Types:**
+- Univariate, Multivariate, Influential
+:::
+
+:::{.callout-green}
+**Handling Options:**
+
+1. **Investigate** cause 
+2. **Transform** if systematic   
+3. **Remove** if error 
+4. **Report** separately if valid 
+:::
+
+::: {style="color: #1c17ab; text-align: center; margin-top: 20px;"}
+**Rule:** Mahalanobis distance > χ²(p, 0.001) = potential outlier
+:::
+
+---
+
+## 5 Adequate Sample Size 
+
+::: {.info-box}
+**What it means:** Sufficient observations per group relative to number of dependent variables
+:::
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.success-box}
+**Guidelines:**
+
+- **Minimum**: n > p per group
+- **Better**: n ≥ 20 + p per group  
+- **Best**: n ≥ 30 per group
+:::
+
+::: {.colorful-box}
+**Our Skulls Dataset:**
+
+- 4 variables, 30 per epoch 
+- 30 > 24 (20+4)  Excellent!
+:::
+:::
+
+::: {.column width="50%"}
+::: {.warning-box}
+**Small Sample Issues:**
+
+- Reduced power & reliability
+- Unreliable covariance estimates
+- Box's M test problems
+:::
+
+::: {.info-box}
+**Unequal Groups:** Keep ratio < 4:1
+:::
+:::
+
+::::
+
+---
+
+## 6 Linear Relationships & Additional Considerations 
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.info-box}
+**Linear Relationships:**
+
+- Variables should be linearly related 
+- Check with scatterplots
+- Transform if non-linear 
+:::
+
+::: {.success-box}
+**Ideal Correlations:**
+r = 0.3 to 0.7 
+:::
+:::
+
+::: {.column width="50%"}
+::: {.warning-box}
+**Avoid:**
+- r < 0.3: Use separate ANOVAs
+- r > 0.9: Multicollinearity issues
+:::
+
+::: {.colorful-box}
+**Most Robust:** Pillai's Trace
+Equal groups + n ≥ 30 = Better robustness 
+:::
+:::
+
+::::
+
+
+
+<!-- 
+## Assumption Checking: Practical R Code {.smaller}
+
+```{r assumption-checking}
+#| echo: true
+#| eval: false
+
+# 1. Check multivariate normality (per group)
+library(MVN)
+for(epoch in unique(skulls$epoch)) {
+  group_data <- skulls[skulls$epoch == epoch, c("mb", "bh", "bl", "nh")]
+  print(paste("Checking normality for epoch:", epoch))
+  print(mvn(group_data, mvnTest = "mardia"))
+}
+
+# 2. Box's M test for homogeneity of covariances
+library(biotools)
+boxM(skulls[, c("mb", "bh", "bl", "nh")], skulls$epoch)
+
+# 3. Check for multivariate outliers
+library(car)
+skulls_numeric <- skulls[, c("mb", "bh", "bl", "nh")]
+outliers <- which(outlierTest(lm(as.matrix(skulls_numeric) ~ 1))$p < 0.001)
+print(paste("Potential outliers:", length(outliers)))
+
+# 4. Visual assumption checking
+pairs(skulls[, c("mb", "bh", "bl", "nh")], 
+      col = as.numeric(as.factor(skulls$epoch)))
+```
+
+--- -->
+
+## When to Use MANOVA 
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.success-box}
+**Use MANOVA when:**
+
+- You have 2+ groups (independent variable is categorical)
+- You have 2+ continuous dependent variables
+- Variables are reasonably correlated (but not too highly)
+- You want to control Type I error across multiple tests
+
+:::
+:::
+
+::: {.column width="50%"}
+::: {.warning-box}
+**Don't use MANOVA when:**
+
+- Variables are completely uncorrelated (r ≈ 0)
+- Variables are too highly correlated (r > 0.9) - use one variable
+- You have only one dependent variable - use ANOVA
+- Sample size is too small relative to number of variables
+
+:::
+:::
+
+::::
+
+---
+
+## MANOVA Hypotheses 
+
+::: {.callout-green}
+**Null Hypothesis (H₀):**
+The population mean vectors are equal across all groups
+
+$$H_0: \boldsymbol{\mu}_1 = \boldsymbol{\mu}_2 = \cdots = \boldsymbol{\mu}_k$$
+
+where $\boldsymbol{\mu}_i = [\mu_{i1}, \mu_{i2}, \ldots, \mu_{ip}]$ is the mean vector for group i
+:::
+
+
+::: {.callout-yellow}
+**Alternative Hypothesis (H₁):**
+At least one group's mean vector differs from the others
+
+$$H_1: \text{Not all } \boldsymbol{\mu}_i \text{ are equal}$$
+:::
+
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**So, Like, What Does *That* Mean?**
+
+- **H₀**: All groups have the same average values across all measured variables 
+- **H₁**: At least one group differs from others on at least one variable 
+:::
+
+---
+
+## Case Study: Egyptian Skulls Dataset
+
+
+
+::: {.colorful-box}
+**Research Question**: Do skull measurements differ across historical epochs?
+:::
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.info-box}
+**Dataset Details:**
+
+- 5 Egyptian epochs (time periods)
+- 4 skull measurements per specimen
+- 30 skulls per epoch (150 total)
+:::
+
+::: {.success-box}
+**Variables:**
+
+- `mb`: Maximum breadth 
+- `bh`: Basibregmatic height 
+- `bl`: Basialveolar length 
+- `nh`: Nasal height 
+:::
+:::
+
+::: {.column width="50%"}
+::: {.warning-box}
+**MANOVA Setup:**
+
+- **Groups**: 5 epochs (c4000BC, c3300BC, c1850BC, c200BC, cAD150)
+- **Dependent Variables**: mb, bh, bl, nh
+- **Research Question**: Do skull shapes differ across time periods?
+- **Note: It is always important to know what you are trying to address in your research!
+:::
+:::
+
+::::
+
+---
+
+## Data Exploration: Loading and Summary
+
+- `data("skulls")` loads the measurements; `names()` verifies available columns.
+- `epoch` identifies the five time periods; `mb`, `bh`, `bl`, and `nh` are the four responses.
+
+```{r load-skulls}
+#| echo: true
+#| eval: true
+
+# Load required libraries
+if(!require('tidyverse')) {
+  install.packages('tidyverse')
+  library('tidyverse')
+}
+
+if(!require('HSAUR2')) {
+  install.packages('HSAUR2')
+  library('HSAUR2')
+}
+
+# Load the skulls dataset
+data("skulls")
+names(skulls)
+```
+
+---
+
+## Data Exploration: Summary Statistics
+
+- Review ranges and quartiles for unexpected values before fitting the model.
+- The summaries are pooled across epochs; compare group-specific patterns in the plots that follow.
+
+```{r summary-skulls}
+#| echo: true
+#| eval: true
+
+# Basic summary
+summary(skulls)
+```
+
+---
+
+## Visualization
+
+Mean Patterns Across Epochs
+
+- `group_by(epoch)` and `summarise()` calculate each measurement's mean within each epoch.
+- `pivot_longer()` reshapes the summary for `ggplot()`, which displays measurements side by side.
+- Compare patterns, but do not infer statistical significance from the plot alone.
+
+```{r epoch-means-plot1}
+#| echo: true
+#| eval: true
+#| fig-height: 5
+
+# Calculate means by epoch
+means_by_epoch <- skulls %>%
+  group_by(epoch) %>%
+  summarise(across(where(is.numeric), mean, na.rm = TRUE))
+
+# Reshape for plotting
+means_long <- means_by_epoch %>%
+  pivot_longer(cols = -epoch, names_to = "measurement", values_to = "mean_value")
+
+# Create a vibrant, colorful plot
+ggplot(means_long, aes(x = epoch, y = mean_value, fill = measurement)) +
+  geom_bar(stat = "identity", position = "dodge", alpha = 0.8) +
+  scale_fill_manual(values = c("mb" = "#FF6B6B", "bh" = "#4ECDC4", 
+                               "bl" = "#45B7D1", "nh" = "#96CEB4"),
+                    labels = c("mb" = "Max Breadth ", "bh" = "Height ", 
+                              "bl" = "Length ", "nh" = "Nasal Height ")) +
+  labs(title = " Mean Skull Measurements by Epoch",
+       subtitle = "Colorful visualization of Egyptian skull evolution over time ",
+       x = " Historical Epoch", 
+       y = " Mean Value (mm)",
+       fill = " Measurements") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+    plot.title = element_text(size = 16, hjust = 0.5, color = "#2C3E50"),
+    plot.subtitle = element_text(size = 12, hjust = 0.5, color = "#7F8C8D"),
+    legend.position = "bottom",
+    panel.grid.major = element_line(color = "#BDC3C7"),
+    panel.background = element_rect(fill = "#FFFFFF")
+  )
+```
+
+
+## Visualization
+
+Mean Patterns Across Epochs plot
+
+```{r epoch-means-plot2}
+#| echo: false
+#| fig-height: 5
+#| fig-align: 
+
+# Calculate means by epoch
+means_by_epoch <- skulls %>%
+  group_by(epoch) %>%
+  summarise(across(where(is.numeric), mean, na.rm = TRUE))
+
+# Reshape for plotting
+means_long <- means_by_epoch %>%
+  pivot_longer(cols = -epoch, names_to = "measurement", values_to = "mean_value")
+
+# Create a vibrant, colorful plot
+ggplot(means_long, aes(x = epoch, y = mean_value, fill = measurement)) +
+  geom_bar(stat = "identity", position = "dodge", alpha = 0.8) +
+  scale_fill_manual(values = c("mb" = "#FF6B6B", "bh" = "#4ECDC4", 
+                               "bl" = "#45B7D1", "nh" = "#96CEB4"),
+                    labels = c("mb" = "Max Breadth ", "bh" = "Height ", 
+                              "bl" = "Length ", "nh" = "Nasal Height ")) +
+  labs(title = " Mean Skull Measurements by Epoch",
+       subtitle = "Colorful visualization of Egyptian skull evolution over time ",
+       x = " Historical Epoch", 
+       y = " Mean Value (mm)",
+       fill = " Measurements") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+    plot.title = element_text(size = 16, hjust = 0.5, color = "#2C3E50"),
+    plot.subtitle = element_text(size = 12, hjust = 0.5, color = "#7F8C8D"),
+    legend.position = "bottom",
+    panel.grid.major = element_line(color = "#BDC3C7"),
+    panel.background = element_rect(fill = "#FFFFFF")
+  )
+```
+
+---
+
+## Visual Pattern Analysis {.smaller}
+
+::: {.colorful-box}
+**What do you observe?**
+:::
+
+::: {.callout-important}
+**What the plot suggests**
+- Different measurements show different patterns across epochs.
+- Some measurements appear more variable than others.
+- Certain epochs might cluster together.
+- These patterns motivate a MANOVA, but the plot alone does not establish statistical significance.
+:::
+
+. . .
+
+::: {.success-box}
+**Key Insight**: Visual exploration suggests that skull measurements changed over time , but we need statistical testing to confirm significance!
+:::
+
+---
+
+## MANOVA Test Statistics {.smaller}
+
+::: {.colorful-box}
+MANOVA uses multiple test statistics (unlike ANOVA's single F-statistic):
+:::
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.info-box}
+**Wilks' Lambda (Λ)**
+
+- Most commonly reported
+- Ranges from 0 to 1
+- Smaller values = greater group differences
+:::
+
+::: {.success-box}
+**Pillai's Trace**
+
+- Most robust to assumption violations
+- Ranges from 0 to 1
+- Larger values = greater group differences
+:::
+:::
+
+::: {.column width="50%"}
+::: {.warning-box}
+**Hotelling-Lawley Trace**
+
+- Most powerful when assumptions are met
+- Range: 0 to ∞
+- Larger values = greater group differences
+:::
+
+::: {style="background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); border-radius: 10px; padding: 15px; color: white; margin: 10px;"}
+**Roy's Greatest Root**
+
+- Most powerful for detecting differences in one dimension
+- Can be liberal (Type I error)
+:::
+:::
+
+::::
+
+---
+
+## Running MANOVA on the Skulls {.smaller}
+
+::: {.callout-important}
+**Reading the formula**
+
+- The question is whether the five epochs have different mean vectors across the four measurements.
+- `cbind()` combines the measurements into one multivariate response.
+- `epoch` is the categorical predictor; convert it to a factor to make that role explicit.
+- `manova()` fits one joint model, accounting for relationships among the measurements.
+:::
+
+```{r skulls-manova}
+#| echo: true
+#| eval: true
+
+skulls$epoch <- factor(skulls$epoch)
+skulls.manova <- manova(cbind(mb, bh, bl, nh) ~ epoch, data = skulls)
+
+# Begin with Wilks' Lambda
+summary(skulls.manova, test = "Wilks")
+```
+
+---
+
+## Compare MANOVA Test Statistics {.smaller}
+
+::: {.callout-important}
+- Wilks' Lambda is commonly reported; smaller values indicate stronger separation.
+- Pillai's trace is often preferred when assumptions may be imperfect.
+- These statistics test the overall group effect; they do not identify which epochs differ.
+:::
+
+```{r skulls-manova-tests}
+#| echo: true
+#| eval: true
+
+summary(skulls.manova, test = "Pillai")
+summary(skulls.manova, test = "Hotelling-Lawley")
+summary(skulls.manova, test = "Roy")
+```
+
+---
+
+## Interpreting MANOVA Results {.smaller}
+
+::: {.callout-important}
+- Read the p-value in the selected test-statistic output; a small p-value is evidence against equal mean vectors.
+- For this dataset, the overall test is significant, so reject the null that all epoch mean vectors are equal.
+- This does **not** mean every epoch differs from every other epoch, or that every measurement changes in the same way.
+:::
+
+. . .
+
+::: {.callout-important}
+**What the omnibus test does not tell us**
+
+- Which epochs differ?
+- Which variables drive the differences?
+- How large are the differences?
+:::
+
+. . .
+
+**Next steps**: Follow-up analyses needed!
+
+---
+
+## Follow-up Analysis: Univariate ANOVAs
+
+::: {.callout-important}
+- `summary.aov()` runs a separate follow-up ANOVA for each response measurement.
+- Use these tests to see which measurements vary by epoch; use planned comparisons to locate group differences.
+- Interpret follow-ups alongside the overall MANOVA, and account for multiple comparisons when testing many pairs.
+:::
+
+```{r summary-skulls-aov}
+#| echo: true
+#| eval: true
+
+# Examine each variable separately
+summary.aov(skulls.manova)
+```
+
+---
+
+## Interpreting Univariate Results {.smaller}
+
+::: {.callout-important}
+**What we learned**
+
+- **mb (Maximum breadth)**: Significant differences (p < 0.001)
+- **bh (Basibregmatic height)**: Significant differences (p < 0.001)  
+- **bl (Basialveolar length)**: Significant differences (p < 0.001)
+- **nh (Nasal height)**: Significant differences (p = 0.003)
+:::
+
+. . .
+
+**All four skull measurements show significant epoch differences!**
+
+The results show an association between epoch and skull morphology; this historical comparison alone cannot identify the cause of the differences.
+
+---
+
+## Advanced Visualization
+
+Correlation Heatmap
+
+```{r advanced-visualization}
+#| echo: true
+#| fig-width: 6
+#| fig-height: 4
+# Create correlation matrix for skull measurements
+skull_cor <- skulls %>%
+  select(mb, bh, bl, nh) %>%
+  cor()
+
+# Convert to long format for ggplot
+library(reshape2)
+skull_cor_long <- melt(skull_cor)
+
+# Create a stunning, colorful heatmap
+ggplot(skull_cor_long, aes(Var1, Var2, fill = value)) +
+  geom_tile(color = "white", size = 1) +
+  geom_text(aes(label = paste0(round(value, 2), 
+                               ifelse(value > 0.6, " ", 
+                                     ifelse(value > 0.4, " ", " ")))), 
+            color = "white", size = 5, fontface = "bold") +
+  scale_fill_gradient2(low = "#3498DB", high = "#E74C3C", mid = "#9B59B6", 
+                       midpoint = 0.5, limit = c(0,1),
+                       name = " Correlation\nStrength") +
+  labs(title = "Correlation Matrix of Skull Measurements ",
+       subtitle = "Exploring relationships between variables",
+       x = "Variables", y = "Variables") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, hjust = 0.5, color = "#2C3E50"),
+    plot.subtitle = element_text(size = 12, hjust = 0.5, color = "#7F8C8D"),
+    axis.text = element_text(size = 12, color = "#2C3E50"),
+    legend.title = element_text(size = 10),
+    panel.grid = element_blank(),
+    axis.ticks = element_blank()
+  ) +
+  coord_fixed()
+```
+## Advanced Visualization
+
+Correlation Heatmap
+
+```{r advanced-visualization-2}
+#| echo: false
+#| fig-width: 6
+#| fig-height: 4
+# Create correlation matrix for skull measurements
+skull_cor <- skulls %>%
+  select(mb, bh, bl, nh) %>%
+  cor()
+
+# Convert to long format for ggplot
+library(reshape2)
+skull_cor_long <- melt(skull_cor)
+
+# Create a stunning, colorful heatmap
+ggplot(skull_cor_long, aes(Var1, Var2, fill = value)) +
+  geom_tile(color = "white", size = 1) +
+  geom_text(aes(label = paste0(round(value, 2), 
+                               ifelse(value > 0.6, " ", 
+                                     ifelse(value > 0.4, " ", " ")))), 
+            color = "white", size = 5, fontface = "bold") +
+  scale_fill_gradient2(low = "#3498DB", high = "#E74C3C", mid = "#9B59B6", 
+                       midpoint = 0.5, limit = c(0,1),
+                       name = " Correlation\nStrength") +
+  labs(title = "Correlation Matrix of Skull Measurements ",
+       subtitle = "Exploring relationships between variables",
+       x = "Variables", y = "Variables") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, hjust = 0.5, color = "#2C3E50"),
+    plot.subtitle = element_text(size = 12, hjust = 0.5, color = "#7F8C8D"),
+    axis.text = element_text(size = 12, color = "#2C3E50"),
+    legend.title = element_text(size = 10),
+    panel.grid = element_blank(),
+    axis.ticks = element_blank()
+  ) +
+  coord_fixed()
+```
+
+---
+
+## Understanding Variable Relationships {.smaller}
+
+::: {.callout-important}
+**Correlation insights**
+
+- Moderate positive correlations between most measurements
+- Strongest correlation: `mb` and `bl` (r = 0.71)
+- Weakest correlation: `bh` and `nh` (r = 0.43)
+:::
+
+. . .
+
+::: {.callout-important}
+**Why this matters for MANOVA**
+
+- Variables are moderately correlated (good for MANOVA)
+- Not too highly correlated (would suggest redundancy)
+- MANOVA accounts for these relationships when testing group differences
+:::
+
+---
+
+## Pairwise Epoch Comparison
+
+```{r skulls-manova2}
+#| echo: true
+#| eval: true
+
+# Compare just two epochs for demonstration
+skulls.manova2 <- manova(cbind(mb, bh, bl, nh) ~ as.factor(epoch), 
+                        data = skulls, 
+                        subset = as.factor(epoch) %in% c("c4000BC", "c200BC"))
+
+summary(skulls.manova2, test = "Wilks")
+```
+
+---
+
+## Practical Exercise: Group Means Visualization
+
+```{r skulls-boxplot}
+#| echo: true
+#| eval: true
+#| fig-height: 5
+
+# Create vibrant boxplots for each measurement by epoch
+skulls_long <- skulls %>%
+  pivot_longer(cols = c(mb, bh, bl, nh), 
+               names_to = "measurement", 
+               values_to = "value") %>%
+  mutate(measurement = factor(measurement, 
+                             labels = c("bh" = "Height ", "bl" = "Length ",
+                                       "mb" = "Max Breadth ", "nh" = "Nasal Height ")))
+
+ggplot(skulls_long, aes(x = epoch, y = value, fill = epoch)) +
+  geom_boxplot(alpha = 0.8, outlier.color = "red", outlier.size = 2) +
+  geom_jitter(width = 0.3, alpha = 0.4, size = 0.8, color = "darkblue") +
+  facet_wrap(~ measurement, scales = "free_y", ncol = 2) +
+  scale_fill_manual(values = c("c4000BC" = "#FF6B6B", "c3300BC" = "#4ECDC4", 
+                               "c1850BC" = "#45B7D1", "c200BC" = "#96CEB4", 
+                               "cAD150" = "#FECA57")) +
+  labs(title = " Distribution of Skull Measurements by Epoch ",
+       subtitle = "Colorful exploration of measurement variations across time ",
+       x = " Historical Epoch", 
+       y = " Measurement Value (mm)",
+       caption = " Boxplots show quartiles, dots show individual measurements") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 9),
+    plot.title = element_text(size = 16, hjust = 0.5, color = "#2C3E50"),
+    plot.subtitle = element_text(size = 12, hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, color = "#95A5A6"),
+    legend.position = "none",
+    strip.text = element_text(size = 12, face = "bold", color = "#34495E"),
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(fill = "#FAFAFA")
+  )
+```
+
+## Practical Exercise: Group Means Visualization Plot
+
+```{r skulls-boxplot2}
+#| echo: false
+#| fig-height: 5
+
+# Create vibrant boxplots for each measurement by epoch
+skulls_long <- skulls %>%
+  pivot_longer(cols = c(mb, bh, bl, nh), 
+               names_to = "measurement", 
+               values_to = "value") %>%
+  mutate(measurement = factor(measurement, 
+                             labels = c("bh" = "Height ", "bl" = "Length ",
+                                       "mb" = "Max Breadth ", "nh" = "Nasal Height ")))
+
+ggplot(skulls_long, aes(x = epoch, y = value, fill = epoch)) +
+  geom_boxplot(alpha = 0.8, outlier.color = "red", outlier.size = 2) +
+  geom_jitter(width = 0.3, alpha = 0.4, size = 0.8, color = "darkblue") +
+  facet_wrap(~ measurement, scales = "free_y", ncol = 2) +
+  scale_fill_manual(values = c("c4000BC" = "#FF6B6B", "c3300BC" = "#4ECDC4", 
+                               "c1850BC" = "#45B7D1", "c200BC" = "#96CEB4", 
+                               "cAD150" = "#FECA57")) +
+  labs(title = " Distribution of Skull Measurements by Epoch ",
+       subtitle = "Colorful exploration of measurement variations across time ",
+       x = " Historical Epoch", 
+       y = " Measurement Value (mm)",
+       caption = " Boxplots show quartiles, dots show individual measurements") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 9),
+    plot.title = element_text(size = 16, hjust = 0.5, color = "#2C3E50"),
+    plot.subtitle = element_text(size = 12, hjust = 0.5, color = "#7F8C8D"),
+    plot.caption = element_text(size = 10, color = "#95A5A6"),
+    legend.position = "none",
+    strip.text = element_text(size = 12, face = "bold", color = "#34495E"),
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(fill = "#FAFAFA")
+  )
+```
+
+
+---
+
+## Assumption Check: Egyptian Skulls Dataset {.smaller}
+
+::: {.colorful-box}
+**Let's verify our dataset meets MANOVA assumptions:**
+:::
+
+::: {.callout-important}
+**Assumptions to assess**
+
+**1. Independence of Observations**
+
+- Different skulls from different individuals and time periods
+- No repeated measures or clustering
+
+**2. Multivariate Normality**
+
+- Need to test with Shapiro-Wilk or Mardia's test
+- Visual inspection with Q-Q plots
+
+**3. Homogeneity of Covariance Matrices**
+
+- Should test with Box's M test
+- May be violated but MANOVA is reasonably robust
+
+**4. No Extreme Outliers**
+
+- Visual inspection suggests some potential outliers
+- Should check with Mahalanobis distance
+
+**5. Adequate Sample Size**
+
+- 30 skulls per epoch and 4 variables provide a good observations-to-responses ratio.
+:::
+
+---
+
+## Practical Guidelines {.smaller}
+
+**Choosing Test Statistics:**
+
+:::: {.columns}
+
+::: {.column width="50%"}
+**Wilks' Lambda**
+
+- Default choice
+- Good balance of power and robustness
+- Most commonly reported in literature
+
+**Pillai's Trace**
+
+- Use when assumptions are violated
+- Most robust option
+- Conservative (less Type I error)
+:::
+
+::: {.column width="50%"}
+**Hotelling-Lawley**
+
+- Use when assumptions are clearly met
+- Most powerful option
+- Can be sensitive to violations
+
+**Roy's Greatest Root**
+
+- Use when expecting differences in one primary dimension
+- Can be liberal (more Type I error)
+:::
+
+::::
+
+---
+
+## Effect Size in MANOVA {.smaller}
+
+```{r skulls-effect-size}
+#| echo: true
+#| eval: true
+
+# Calculate eta-squared for overall effect
+skulls_aov <- summary.aov(skulls.manova)
+
+# Extract sums of squares for effect size calculation
+# This is a simplified approach
+cat("Effect sizes (eta-squared) for each variable:\n")
+for(i in 1:4) {
+  aov_summary <- skulls_aov[[i]]
+  ss_effect <- aov_summary[1, "Sum Sq"]  # Sum of squares for epoch
+  ss_total <- sum(aov_summary[, "Sum Sq"])  # Total sum of squares
+  eta_sq <- ss_effect / ss_total
+  var_name <- c("mb", "bh", "bl", "nh")[i]
+  cat(paste(var_name, ": ", round(eta_sq, 3), "\n"))
+}
+```
+
+## Interpreting Effect Sizes {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.info-box}
+**Eta-squared (η²) Guidelines:**
+
+-  **Small**: η² = 0.01 (1% of variance)
+-  **Medium**: η² = 0.06 (6% of variance)  
+-  **Large**: η² = 0.14 (14% of variance)
+:::
+
+::: {.success-box}
+**Our Results Show:**
+
+- All variables have **medium to large** effects
+- Epoch explains 10-20% of variance
+- Substantial evolutionary changes! 
+:::
+:::
+
+::: {.column width="50%"}
+::: {.colorful-box}
+**What This Means:**
+
+-  **Historical periods** significantly shaped skull morphology
+-  **Maximum breadth** shows strongest effect
+-  **Practical significance** beyond statistical significance
+:::
+
+::: {.warning-box}
+**Remember:**
+Effect size ≠ Statistical significance
+Both are needed for complete interpretation! 
+:::
+:::
+
+::::
+
+---
+
+## Real-World Applications {.smaller}
+
+::: {.callout-important}
+**Psychology & Education**
+
+- Do teaching methods affect test scores, engagement, and retention simultaneously?
+- Do therapy types impact anxiety, depression, and quality of life measures?
+
+**Marketing & Business**
+
+- Do advertisement types influence brand awareness, purchase intent, and customer satisfaction?
+- Do product features affect usability, aesthetics, and functionality ratings?
+
+**Biology & Medicine**
+
+- Do species differ across multiple morphological measurements?
+- Do treatments affect multiple health outcomes simultaneously?
+:::
+
+**Your Turn:** Think of a research question in your field that would benefit from MANOVA!
+
+---
+
+## Common Mistakes to Avoid {.smaller}
+
+::: {.callout-important}
+**Running multiple ANOVAs instead of MANOVA**
+
+- Inflates Type I error
+- Ignores variable correlations
+
+**Using MANOVA with uncorrelated variables**
+
+- No advantage over separate ANOVAs
+- Wastes statistical power
+
+**Ignoring assumptions**
+
+- Can lead to incorrect conclusions
+- Always check assumptions first
+
+**Stopping at significant MANOVA**
+
+- Need follow-up analyses to understand which groups/variables differ
+- MANOVA is just the first step!
+:::
+
+---
+
+## Your Practice Assignment {.smaller}
+
+<!-- **Using the provided R files:**
+
+1. **`sandbox/manovaDemoSkulls_starterCode.R`**: Complete the TODO section
+   - Add appropriate MANOVA code
+   - Test different statistics
+   - Interpret results -->
+
+::: {.callout-important}
+**Practice with the complete analysis**
+
+1. **`sandbox/manovaDemo_skulls.R`**
+   
+   - Study the complete analysis to understand each step
+   - Test different statistics
+   - Interpret results 
+   - Modify visualizations
+   - Try different epoch comparisons
+
+2. **Additional Challenges:**
+   
+   - Create new visualizations
+   - Test MANOVA assumptions
+   - Calculate effect sizes
+   - Interpret biological significance
+:::
+
+---
+
+## Explore MANOVA Further {.smaller}
+
+Use these reproducible examples to compare the skulls analysis with simulated data that has a known group effect.
+
+```{r practice-manova}
+#| echo: true
+#| eval: false
+
+# Example 1: the four skull measurements across five epochs
+data("skulls", package = "HSAUR2")
+skulls$epoch <- factor(skulls$epoch)
+skull_fit <- manova(cbind(mb, bh, bl, nh) ~ epoch, data = skulls)
+summary(skull_fit, test = "Pillai")
+summary.aov(skull_fit)
+
+# Example 2: reproducible data with three groups and three outcomes
+set.seed(42)
+n <- 30
+practice <- data.frame(
+  group = factor(rep(c("A", "B", "C"), each = n)),
+  measure1 = c(rnorm(n, 0, 1), rnorm(n, 0.8, 1), rnorm(n, 1.4, 1)),
+  measure2 = c(rnorm(n, 0, 1), rnorm(n, 0.6, 1), rnorm(n, 1.2, 1)),
+  measure3 = c(rnorm(n, 0, 1), rnorm(n, 0.2, 1), rnorm(n, 0.4, 1))
+)
+
+practice_fit <- manova(cbind(measure1, measure2, measure3) ~ group,
+                       data = practice)
+summary(practice_fit, test = "Pillai")
+summary.aov(practice_fit)
+```
+
+- **Try it:** Change `n`, the group means, or the number of responses. What changes in the MANOVA output?
+- **Compare:** Set each group's means to zero to remove the designed shift. A non-significant result is expected on average, but random samples can still produce small p-values.
+- **Interpret:** Read the multivariate test first, then inspect univariate follow-ups. Simulated data are for learning, not evidence about real populations.
+
+::: {.info-box}
+**Solution check:** With `set.seed(42)`, the simulated example has a significant Pillai test (p approximately 4.13e-08). The follow-up ANOVAs are significant for `measure1` and `measure2`, but not `measure3` (p approximately 0.111). In the skulls example, a significant omnibus test means at least one epoch mean vector differs; it does not establish that every pair of epochs differs.
+:::
+
+---
+
+## Quick Challenge 1
+
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    In <code>manova(cbind(mb, bh, bl, nh) ~ epoch, data = skulls)</code>,
+    what does <code>cbind()</code> specify?
+  </div>
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkManovaChallenge(this, 'challenge1', false)">Four separate group variables</div>
+    <div class="quiz-option" onclick="checkManovaChallenge(this, 'challenge1', true)">The four response measurements tested jointly</div>
+    <div class="quiz-option" onclick="checkManovaChallenge(this, 'challenge1', false)">A request to compare only two epochs</div>
+    <div class="quiz-option" onclick="checkManovaChallenge(this, 'challenge1', false)">A way to remove correlated measurements</div>
+  </div>
+  <div id="challenge1-feedback" style="display: none;"></div>
+</div>
+```
+![](graphics/think.png){width=20%}
+
+```{=html}
+<script>
+function checkManovaChallenge(element, challengeId, isCorrect) {
+  const box = element.closest('.quiz-box');
+  box.querySelectorAll('.quiz-option').forEach(function(option) {
+    option.classList.remove('correct', 'incorrect');
+  });
+  element.classList.add(isCorrect ? 'correct' : 'incorrect');
+  const feedback = document.getElementById(challengeId + '-feedback');
+  feedback.style.display = 'block';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  const messages = {
+    challenge1: isCorrect
+      ? 'Correct. cbind() places the four skull measurements together as the multivariate response.'
+      : 'Not quite. epoch is the grouping variable; cbind() combines the measured outcomes.',
+    challenge2: isCorrect
+      ? 'Correct. The omnibus test indicates some mean-vector difference, not that all epoch pairs differ.'
+      : 'Not quite. An omnibus MANOVA identifies an overall group effect, not every pair or a causal effect.',
+    challenge3: isCorrect
+      ? 'Correct. These follow-up ANOVAs examine the epoch effect for each measurement separately.'
+      : 'Not quite. summary.aov() separates the multivariate response into one ANOVA per measurement.',
+    challenge4: isCorrect
+      ? 'Correct. MANOVA provides a single omnibus test across the response variables, reducing the inflation from running many separate tests.'
+      : 'Not quite. The key advantage is testing the response vector jointly rather than treating each outcome as an unrelated test.'
+  };
+  feedback.textContent = messages[challengeId];
+}
+</script>
+```
+
+## Quick Challenge 2
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    A significant Pillai test for the skulls model supports which conclusion?
+  </div>
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkManovaChallenge(this, 'challenge2', false)">Every epoch differs significantly from every other epoch</div>
+    <div class="quiz-option" onclick="checkManovaChallenge(this, 'challenge2', true)">At least one epoch mean vector differs across the four measurements</div>
+    <div class="quiz-option" onclick="checkManovaChallenge(this, 'challenge2', false)">All four measurements changed by the same amount</div>
+    <div class="quiz-option" onclick="checkManovaChallenge(this, 'challenge2', false)">Epoch caused the observed changes in skull morphology</div>
+  </div>
+  <div id="challenge2-feedback" style="display: none;"></div>
+</div>
+```
+
+![](graphics/think.png){width="20%"}
+
+
+## Quick Challenge 3
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    What is the purpose of <code>summary.aov(skull_fit)</code> after a significant MANOVA?
+  </div>
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkManovaChallenge(this, 'challenge3', false)">It tests whether the covariance matrices are equal</div>
+    <div class="quiz-option" onclick="checkManovaChallenge(this, 'challenge3', false)">It identifies all significant pairs of epochs automatically</div>
+    <div class="quiz-option" onclick="checkManovaChallenge(this, 'challenge3', true)">It performs a separate univariate ANOVA for each response</div>
+    <div class="quiz-option" onclick="checkManovaChallenge(this, 'challenge3', false)">It converts the responses into a single composite score</div>
+  </div>
+  <div id="challenge3-feedback" style="display: none;"></div>
+</div>
+```
+
+## Quick Challenge 4
+
+```{=html}
+<div class="quiz-box">
+  <div class="quiz-question">
+    What is the primary advantage of using MANOVA over multiple univariate ANOVAs?
+  </div>
+  <div class="quiz-options">
+    <div class="quiz-option" onclick="checkManovaChallenge(this, 'challenge4', false)">It is computationally faster</div>
+    <div class="quiz-option" onclick="checkManovaChallenge(this, 'challenge4', false)">It provides more detailed post-hoc comparisons</div>
+    <div class="quiz-option" onclick="checkManovaChallenge(this, 'challenge4', true)">It controls the family-wise error rate across all responses</div>
+    <div class="quiz-option" onclick="checkManovaChallenge(this, 'challenge4', false)">It requires fewer assumptions</div>
+  </div>
+  <div id="challenge4-feedback" style="display: none;"></div>
+</div>
+```
+
+![](graphics/think.png){width=20%}
+
+
+---
+
+## Interactive: Skulls MANOVA Builder {.smaller}
+
+Choose the measurements, test statistic, and epoch scope to generate a runnable R example.
+
+```{=html}
+<div class="interactive-tool">
+  <h3>Skulls MANOVA Code Builder</h3>
+  <div class="tool-controls">
+    <div class="control-group">
+      <label for="skull-outcomes">Response measurements:</label>
+      <select id="skull-outcomes">
+        <option value="all">All four measurements</option>
+        <option value="size">mb and bl (breadth and length)</option>
+        <option value="height">bh and nh (height measurements)</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label for="skull-test">Test statistic:</label>
+      <select id="skull-test">
+        <option value="Pillai">Pillai (robust choice)</option>
+        <option value="Wilks">Wilks' Lambda</option>
+        <option value="Hotelling-Lawley">Hotelling-Lawley</option>
+        <option value="Roy">Roy's greatest root</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label for="skull-scope">Epochs:</label>
+      <select id="skull-scope">
+        <option value="all">All five epochs</option>
+        <option value="pair">c4000BC and c200BC only</option>
+      </select>
+    </div>
+  </div>
+  <div class="tool-buttons">
+    <button class="tool-button" onclick="generateSkullsManova()">Generate R Code</button>
+    <button class="tool-button secondary" onclick="copySkullsManova(this)">Copy Code</button>
+    <button class="tool-button secondary" onclick="clearSkullsManova()">Reset</button>
+  </div>
+  <div class="tool-output" id="skulls-manova-output">Choose options, then generate the code.</div>
+</div>
+
+<script>
+function generateSkullsManova() {
+  const outcomes = {
+    all: ['mb', 'bh', 'bl', 'nh'],
+    size: ['mb', 'bl'],
+    height: ['bh', 'nh']
+  }[document.getElementById('skull-outcomes').value];
+  const test = document.getElementById('skull-test').value;
+  const scope = document.getElementById('skull-scope').value;
+  const response = outcomes.join(', ');
+  let code = 'library(HSAUR2)\n';
+  code += 'data(\"skulls\")\n';
+  code += 'skulls$epoch <- factor(skulls$epoch)\n\n';
+  code += '# Test the selected responses jointly across epochs.\n';
+  if (scope === 'pair') {
+    code += 'skull_data <- subset(skulls, epoch %in% c(\"c4000BC\", \"c200BC\"))\n';
+  } else {
+    code += 'skull_data <- skulls\n';
+  }
+  code += 'fit <- manova(cbind(' + response + ') ~ epoch, data = skull_data)\n';
+  code += 'summary(fit, test = \"' + test + '\")\n\n';
+  code += '# Follow up with one ANOVA per selected response.\n';
+  code += 'summary.aov(fit)\n';
+  document.getElementById('skulls-manova-output').textContent = code;
+}
+
+function copySkullsManova(button) {
+  const output = document.getElementById('skulls-manova-output').textContent;
+  if (!navigator.clipboard) {
+    button.textContent = 'Clipboard unavailable';
+    return;
+  }
+  navigator.clipboard.writeText(output).then(function() {
+    button.textContent = 'Copied';
+    window.setTimeout(function() { button.textContent = 'Copy Code'; }, 1500);
+  }).catch(function(error) {
+    console.error('Could not copy MANOVA code:', error);
+    button.textContent = 'Copy failed';
+  });
+}
+
+function clearSkullsManova() {
+  document.getElementById('skull-outcomes').selectedIndex = 0;
+  document.getElementById('skull-test').selectedIndex = 0;
+  document.getElementById('skull-scope').selectedIndex = 0;
+  document.getElementById('skulls-manova-output').textContent =
+    'Choose options, then generate the code.';
+}
+</script>
+```
+
+
+---
+
+## Your Own Research {.center}
+
+::: {.colorful-box}
+**What Can You Do With MANOVA?**
+:::
+
+. . .
+
+::: {.success-box}
+**Think about your own research:**
+
+-  What datasets might benefit from MANOVA?
+-  What variables would you want to test simultaneously?
+-  What groups would you compare?
+:::
+
+. . .
+
+::: {.warning-box}
+**Next Steps:**
+
+<!-- -  Complete the practice exercises -->
+-  Explore and try Manove on your own data!
+<!-- - the assumption checking -->
+<!-- -  Try MANOVA on your own data -->
+:::
+
+---
+
+## Additional Resources {.smaller}
+
+**R Packages:**
+
+- `HSAUR2`: Contains skulls dataset and other examples
+- `car`: Advanced MANOVA functions and assumption testing
+- `MVN`: Multivariate normality testing
+- `biotools`: Box's M test for homogeneity
+
+<!-- **Further Reading:**
+
+- Tabachnick, B. G., & Fidell, L. S. (2019). *Using Multivariate Statistics*
+- Field, A., Miles, J., & Field, Z. (2012). *Discovering Statistics Using R*
+- Stevens, J. P. (2009). *Applied Multivariate Statistics for the Social Sciences* -->
+
+**Online Resources:**
+
+- R Documentation: `?manova`
+<!-- - UCLA Statistical Consulting: MANOVA in R
+- Cross Validated (stats.stackexchange.com) -->

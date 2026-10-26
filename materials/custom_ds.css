@@ -109,6 +109,17 @@
     font-size: 0.6em;
 }
 
+.callout-green {
+    background-color: #e8f5e8;
+    border-left: 5px solid #4caf50;
+    font-size: 0.6em;
+}
+
+.callout-yellow {
+    background-color: #fff8e1;
+    border-left: 5px solid #ffc107;
+    font-size: 0.6em;
+}
 .callout-tip {
     background-color: #e8f5e8;
     border-left: 5px solid #4caf50;

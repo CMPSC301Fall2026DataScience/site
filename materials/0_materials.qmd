@@ -137,6 +137,8 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **ANOVA Hypothesis Testing**
   - <a href="week10_anova.html" target="_blank">Slides</a>
 
+- **MANOVA Hypothesis Testing**
+  - <a href="week10_manova.html" target="_blank">Slides</a>
 ---
 
 <!-- 
