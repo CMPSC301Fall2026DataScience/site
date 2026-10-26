@@ -618,8 +618,7 @@ Mean Patterns Across Epochs plot
 ```{r epoch-means-plot2}
 #| echo: false
 #| fig-height: 5
-#| fig-align: 
-
+#| fig-width: 10
 # Calculate means by epoch
 means_by_epoch <- skulls %>%
   group_by(epoch) %>%
