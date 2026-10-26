@@ -58,6 +58,7 @@ jobs:
             any::RColorBrewer
             any::patchwork
             any::HSAUR2
+            any::reshape2
 
 
 
