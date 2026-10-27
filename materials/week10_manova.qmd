@@ -1597,14 +1597,7 @@ function clearSkullsManova() {
 - `MVN`: Multivariate normality testing
 - `biotools`: Box's M test for homogeneity
 
-<!-- **Further Reading:**
-
-- Tabachnick, B. G., & Fidell, L. S. (2019). *Using Multivariate Statistics*
-- Field, A., Miles, J., & Field, Z. (2012). *Discovering Statistics Using R*
-- Stevens, J. P. (2009). *Applied Multivariate Statistics for the Social Sciences* -->
-
 **Online Resources:**
 
 - R Documentation: `?manova`
-<!-- - UCLA Statistical Consulting: MANOVA in R
-- Cross Validated (stats.stackexchange.com) -->
+- <a href="https://cran.stat.unipd.it/web/packages/HSAUR3/vignettes/Ch_analysis_of_variance.pdf" target="_blank">A Handbook of Statistical Analyses Using R</a> by Torsten Hothorn and Brian S. Everitt
