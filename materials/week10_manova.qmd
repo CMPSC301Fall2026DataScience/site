@@ -853,9 +853,12 @@ summary(skulls.manova, test = "Roy")
 
 ## Interpreting MANOVA Results {.smaller}
 
+:::{.callout-note}
+**The skull measurements differ across epochs**: For this dataset, the overall test is significant, so reject the null that all epoch mean vectors are equal.
+:::
+
 ::: {.callout-important}
 - Read the p-value in the selected test-statistic output; a small p-value is evidence against equal mean vectors.
-- For this dataset, the overall test is significant, so reject the null that all epoch mean vectors are equal.
 - This does **not** mean every epoch differs from every other epoch, or that every measurement changes in the same way.
 :::
 
@@ -1302,33 +1305,17 @@ Both are needed for complete interpretation!
 
 ---
 
-## Your Practice Assignment {.smaller}
+## Practice Time {.smaller}
 
-<!-- **Using the provided R files:**
+Try using the following datasets to complete basic manova analyses. Check assumptions, create plots, run the tests, and interpret the results.
 
-1. **`sandbox/manovaDemoSkulls_starterCode.R`**: Complete the TODO section
-   - Add appropriate MANOVA code
-   - Test different statistics
-   - Interpret results -->
+- `mtcars` dataset: Compare mpg, hp, and wt across different numbers of cylinders (cyl).
+- `iris` dataset: Compare Sepal.Length, Sepal.Width, Petal.Length, and Petal.Width across species.
+- `ToothGrowth` dataset: Compare len, supp, and dose across different supplement types and doses.
+- `PlantGrowth` dataset: Compare weight, group, and treatment across different treatment groups.
+- `penguins` dataset (from the `palmerpenguins` package): Compare bill length, bill depth, and flipper length across species and islands.
+- `gapminder` dataset (from the `gapminder` package): Compare life expectancy, GDP per capita, and population across continents and years.
 
-::: {.callout-important}
-**Practice with the complete analysis**
-
-1. **`sandbox/manovaDemo_skulls.R`**
-   
-   - Study the complete analysis to understand each step
-   - Test different statistics
-   - Interpret results 
-   - Modify visualizations
-   - Try different epoch comparisons
-
-2. **Additional Challenges:**
-   
-   - Create new visualizations
-   - Test MANOVA assumptions
-   - Calculate effect sizes
-   - Interpret biological significance
-:::
 
 ---
 
