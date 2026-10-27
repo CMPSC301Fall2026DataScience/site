@@ -27,6 +27,9 @@ execute:
 **A p-value answers one narrow question. Know exactly which one.** 
 ::: -->
 
+<!-- ::: {style="background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); border-radius: 10px; padding: 15px; color: white; margin: 10px;"} -->
+<!-- **Roy's Greatest Root** -->
+<!-- ::: -->
 
 ## What's On For Today? 🔬
 
@@ -176,7 +179,7 @@ Each observation should be independent of all other observations
 - Students within same classroom
 - Repeated measures over time
 :::
-. . .
+
 
 :::{.callout-green}
 **How to check:**
@@ -525,8 +528,10 @@ $$H_1: \text{Not all } \boldsymbol{\mu}_i \text{ are equal}$$
 
 ## Data Exploration: Loading and Summary
 
+:::{.callout-green}
 - `data("skulls")` loads the measurements; `names()` verifies available columns.
 - `epoch` identifies the five time periods; `mb`, `bh`, `bl`, and `nh` are the four responses.
+:::
 
 ```{r load-skulls}
 #| echo: true
@@ -548,12 +553,13 @@ data("skulls")
 names(skulls)
 ```
 
----
 
 ## Data Exploration: Summary Statistics
 
+:::{.callout-green}
 - Review ranges and quartiles for unexpected values before fitting the model.
 - The summaries are pooled across epochs; compare group-specific patterns in the plots that follow.
+:::
 
 ```{r summary-skulls}
 #| echo: true
@@ -563,20 +569,99 @@ names(skulls)
 summary(skulls)
 ```
 
+## Data Exploration: Means
+
+:::{.callout-green}
+- The `aggregate()` function is used to compute the mean of each measurement for each epoch.
+- The resulting data frame `means` contains the average values for each measurement across the five epochs.
+:::
+
+
+```{r skulls-means}
+means <- aggregate(skulls[,c("mb", "bh", "bl", "nh")], 
+  list(epoch = skulls$epoch), mean)
+means
+```
+
+## Getting a Visual on the Means?
+
+
+<!-- ::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"} -->
+:::{.callout-green}
+We note that many of the means seem similar across epochs, but some measurements show more variation than others. This motivates a MANOVA to formally test for differences.
+:::
+
+```{r skulls-means-plot1}
+#| echo: true
+#| eval: true
+#| fig-height: 5
+#| fig-width: 10
+
+means_long <- means |>
+  pivot_longer(
+    cols = c(mb, bh, bl, nh),
+    names_to = "measurement",
+    values_to = "mean"
+  )
+
+ggplot(means_long, aes(x = epoch, y = mean, group = 1,  color = epoch)) +
+  geom_line() +
+  geom_point(size = 3) +
+  facet_wrap(~measurement) +
+  labs(
+    x = "Epoch",
+    y = "Mean measurement",
+    title = "Mean skull measurements across epochs"  ) +
+  theme_minimal()
+```
+
+
+
+## Getting a Visual on the Means Plot
+
+```{r skulls-means-plot2}
+#| echo: false
+#| eval: true
+#| fig-height: 5
+#| fig-width: 10
+
+means_long <- means |>
+  pivot_longer(
+    cols = c(mb, bh, bl, nh),
+    names_to = "measurement",
+    values_to = "mean"
+  )
+
+ggplot(means_long, aes(x = epoch, y = mean, group = 1,  color = epoch)) +
+  geom_line() +
+  geom_point(size = 3) +
+  facet_wrap(~measurement) +
+  labs(
+    x = "Epoch",
+    y = "Mean measurement",
+    title = "Mean skull measurements across epochs"  ) +
+  theme_minimal()
+```
+
+
+
 ---
 
 ## Visualization
 
 Mean Patterns Across Epochs
 
+:::{.callout-green}
 - `group_by(epoch)` and `summarise()` calculate each measurement's mean within each epoch.
 - `pivot_longer()` reshapes the summary for `ggplot()`, which displays measurements side by side.
 - Compare patterns, but do not infer statistical significance from the plot alone.
+:::
 
 ```{r epoch-means-plot1}
 #| echo: true
 #| eval: true
 #| fig-height: 5
+#| fig-width: 10
 
 # Calculate means by epoch
 means_by_epoch <- skulls %>%
@@ -661,13 +746,13 @@ ggplot(means_long, aes(x = epoch, y = mean_value, fill = measurement)) +
 
 ::: {.callout-important}
 **What the plot suggests**
+
 - Different measurements show different patterns across epochs.
 - Some measurements appear more variable than others.
 - Certain epochs might cluster together.
 - These patterns motivate a MANOVA, but the plot alone does not establish statistical significance.
 :::
 
-. . .
 
 ::: {.success-box}
 **Key Insight**: Visual exploration suggests that skull measurements changed over time , but we need statistical testing to confirm significance!
@@ -675,8 +760,7 @@ ggplot(means_long, aes(x = epoch, y = mean_value, fill = measurement)) +
 
 ---
 
-## MANOVA Test Statistics {.smaller}
-
+## MANOVA Test Statistics
 ::: {.colorful-box}
 MANOVA uses multiple test statistics (unlike ANOVA's single F-statistic):
 :::
@@ -688,7 +772,7 @@ MANOVA uses multiple test statistics (unlike ANOVA's single F-statistic):
 **Wilks' Lambda (Λ)**
 
 - Most commonly reported
-- Ranges from 0 to 1
+<!-- - Ranges from 0 to 1 -->
 - Smaller values = greater group differences
 :::
 
@@ -696,7 +780,7 @@ MANOVA uses multiple test statistics (unlike ANOVA's single F-statistic):
 **Pillai's Trace**
 
 - Most robust to assumption violations
-- Ranges from 0 to 1
+<!-- - Ranges from 0 to 1 -->
 - Larger values = greater group differences
 :::
 :::
@@ -706,15 +790,17 @@ MANOVA uses multiple test statistics (unlike ANOVA's single F-statistic):
 **Hotelling-Lawley Trace**
 
 - Most powerful when assumptions are met
-- Range: 0 to ∞
+<!-- - Range: 0 to ∞ -->
 - Larger values = greater group differences
 :::
 
-::: {style="background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); border-radius: 10px; padding: 15px; color: white; margin: 10px;"}
+<!-- ::: {style="background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); border-radius: 10px; padding: 15px; color: white; margin: 10px;"} -->
+::: {.success-box}
 **Roy's Greatest Root**
 
 - Most powerful for detecting differences in one dimension
 - Can be liberal (Type I error)
+<!-- ::: -->
 :::
 :::
 
@@ -773,7 +859,6 @@ summary(skulls.manova, test = "Roy")
 - This does **not** mean every epoch differs from every other epoch, or that every measurement changes in the same way.
 :::
 
-. . .
 
 ::: {.callout-important}
 **What the omnibus test does not tell us**
@@ -783,7 +868,6 @@ summary(skulls.manova, test = "Roy")
 - How large are the differences?
 :::
 
-. . .
 
 **Next steps**: Follow-up analyses needed!
 
@@ -818,7 +902,7 @@ summary.aov(skulls.manova)
 - **nh (Nasal height)**: Significant differences (p = 0.003)
 :::
 
-. . .
+
 
 **All four skull measurements show significant epoch differences!**
 
@@ -828,7 +912,7 @@ The results show an association between epoch and skull morphology; this histori
 
 ## Advanced Visualization
 
-Correlation Heatmap
+Correlation Heatmap, also known as a Correlation Matrix
 
 ```{r advanced-visualization}
 #| echo: true
@@ -869,7 +953,7 @@ ggplot(skull_cor_long, aes(Var1, Var2, fill = value)) +
 ```
 ## Advanced Visualization
 
-Correlation Heatmap
+Correlation Heatmap, also known as a Correlation Matrix
 
 ```{r advanced-visualization-2}
 #| echo: false
@@ -921,7 +1005,6 @@ ggplot(skull_cor_long, aes(Var1, Var2, fill = value)) +
 - Weakest correlation: `bh` and `nh` (r = 0.43)
 :::
 
-. . .
 
 ::: {.callout-important}
 **Why this matters for MANOVA**
@@ -1033,11 +1116,11 @@ ggplot(skulls_long, aes(x = epoch, y = value, fill = epoch)) +
 
 ---
 
-## Assumption Check: Egyptian Skulls Dataset {.smaller}
+## Assumption Check: Egyptian Skulls Dataset 
 
-::: {.colorful-box}
+<!-- ::: {.colorful-box}
 **Let's verify our dataset meets MANOVA assumptions:**
-:::
+::: -->
 
 ::: {.callout-important}
 **Assumptions to assess**
@@ -1500,7 +1583,6 @@ function clearSkullsManova() {
 **What Can You Do With MANOVA?**
 :::
 
-. . .
 
 ::: {.success-box}
 **Think about your own research:**
@@ -1509,8 +1591,6 @@ function clearSkullsManova() {
 -  What variables would you want to test simultaneously?
 -  What groups would you compare?
 :::
-
-. . .
 
 ::: {.warning-box}
 **Next Steps:**
