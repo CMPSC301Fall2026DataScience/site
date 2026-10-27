@@ -1,6 +1,6 @@
 ---
 title: "Applications in MANOVA"
-subtitle: "Multivariate Analysis of Variance "
+subtitle: "Multivariate Analysis of Variance"
 # author: " Data Science Course - CS301"
 # date: " October 13, 2025"
 format:
@@ -1216,10 +1216,7 @@ for(i in 1:4) {
 
 ## Interpreting Effect Sizes {.smaller}
 
-:::: {.columns}
-
-::: {.column width="50%"}
-::: {.info-box}
+:::{.callout-blue}
 **Eta-squared (η²) Guidelines:**
 
 -  **Small**: η² = 0.01 (1% of variance)
@@ -1227,17 +1224,15 @@ for(i in 1:4) {
 -  **Large**: η² = 0.14 (14% of variance)
 :::
 
-::: {.success-box}
+:::{.callout-green}
 **Our Results Show:**
 
 - All variables have **medium to large** effects
 - Epoch explains 10-20% of variance
 - Substantial evolutionary changes! 
 :::
-:::
 
-::: {.column width="50%"}
-::: {.colorful-box}
+:::{.callout-yellow}
 **What This Means:**
 
 -  **Historical periods** significantly shaped skull morphology
@@ -1245,14 +1240,12 @@ for(i in 1:4) {
 -  **Practical significance** beyond statistical significance
 :::
 
-::: {.warning-box}
+:::{.callout-red}
 **Remember:**
-Effect size ≠ Statistical significance
-Both are needed for complete interpretation! 
-:::
-:::
 
-::::
+- Effect size ≠ Statistical significance
+- Both are needed for complete interpretation! 
+:::
 
 ---
 
@@ -1307,6 +1300,7 @@ Both are needed for complete interpretation!
 
 ## Practice Time {.smaller}
 
+:::{.callout-important}
 Try using the following datasets to complete basic manova analyses. Check assumptions, create plots, run the tests, and interpret the results.
 
 - `mtcars` dataset: Compare mpg, hp, and wt across different numbers of cylinders (cyl).
@@ -1315,7 +1309,7 @@ Try using the following datasets to complete basic manova analyses. Check assump
 - `PlantGrowth` dataset: Compare weight, group, and treatment across different treatment groups.
 - `penguins` dataset (from the `palmerpenguins` package): Compare bill length, bill depth, and flipper length across species and islands.
 - `gapminder` dataset (from the `gapminder` package): Compare life expectancy, GDP per capita, and population across continents and years.
-
+:::
 
 ---
 
@@ -1446,6 +1440,10 @@ function checkManovaChallenge(element, challengeId, isCorrect) {
   <div id="challenge3-feedback" style="display: none;"></div>
 </div>
 ```
+
+
+![](graphics/think.png){width="20%"}
+
 
 ## Quick Challenge 4
 
