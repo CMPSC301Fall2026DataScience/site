@@ -140,6 +140,8 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **MANOVA Hypothesis Testing**
   - <a href="week10_manova.html" target="_blank">Slides</a>
 
+- <a href="https://forms.gle/mThZReAjgttwqmcE6" target="_blank">Speaker Form</a>
+
 ---
 
 <!-- 
