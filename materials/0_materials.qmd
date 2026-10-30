@@ -142,6 +142,9 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 
 - <a href="https://forms.gle/mThZReAjgttwqmcE6" target="_blank">Speaker Form</a>
 
+- **Lab 5**: t-test, ANOVA and MANOVA
+  - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/lab05/accept" target="_blank">Lab05</a>
+
 ---
 
 <!-- 
