@@ -1,0 +1,929 @@
+---
+title: "Discovering Linear Regression"
+subtitle: " Discovering How Linear Regression Helps in Making Predictions"
+#author: "CS301 - Data Science with R"
+#date: "Fall 2026"
+format:
+  revealjs:
+    theme: white
+    highlight-style: github
+    code-block-background: true
+    code-block-border-left: "#31BAE9"
+    slide-number: true
+    chalkboard: true
+    scrollable: true
+    transition: none
+    css: custom_ds.css
+    width: 1200
+    height: 800
+    margin: 0.05
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+<!-- ::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**A p-value answers one narrow question. Know exactly which one.**
+::: -->
+
+<!-- #|echo: true
+#|eval: true -->
+
+```{r setup}
+#| echo: false
+library(tidyverse)
+options(knitr.kable.NA = "")
+
+# Show a long data set as side-by-side blocks so it fits on one slide
+side_by_side <- function(df, blocks = 2) {
+  n <- ceiling(nrow(df) / blocks)
+  parts <- split(as.data.frame(df), ceiling(seq_len(nrow(df)) / n))
+  parts <- map(parts, \(p) { if (nrow(p) < n) p[(nrow(p) + 1):n, ] <- NA; p })
+  knitr::kable(bind_cols(parts, .name_repair = "minimal"), align = "c")
+}
+```
+
+# What's On For Today? 🔬
+
+::: {.callout-tip icon="true"}
+
+**Group Work** - discover how linear regression works, and how to use it to make predictions
+
+- **The Research Question** - What are we trying to determine?
+- **Evaluating the data** - Will this data help us answer the question?
+- **Plots** - What kinds of plots will help us understand the data?
+- **Prediction** - How can we use a plot to make predictions?
+- **Validation** - How can we validate our prediction? Is our prediction *even* accurate?
+- **Communication** - Communicate our findings to others?
+
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**A p-value answers one narrow question. Know exactly which one.**
+:::
+
+
+
+# Models: The "Stuff" of Predictive Knowledge
+
+::: {.columns}
+
+::: {.column}
+
+**What is a model?**
+
+- An (over)-simplified representation of reality, used to make predictions or understand relationships between variables.
+- Use variables (predictors) to explain or predict an outcome (response).
+- Have shelf lives: they are only valid for the data and context they were built for. Extrapolating beyond that is risky.
+- Do not prove causation; they describe associations. Correlation is not causation.
+
+:::
+
+::: {.column}
+
+![](graphics/stuffOfKnowledge.png){fig-align="center" width="80%"}
+:::
+
+:::
+
+
+## Lots of Different ways to Predict With Models
+
+:::{.callout-blue}
+**Linear Models**
+
+- Simple linear regression : one variable predicting another
+- Multiple linear regression : two or more variables predicting another
+- Logistic regression (generalized linear in its parameters) : predicting a binary outcome
+
+**Nonlinear Models**
+
+- Polynomial regression : curved relationships
+- Spline regression : piecewise polynomials for flexible curves
+- Generalized additive models (GAMs) : smooth functions of predictors
+:::
+
+```{r lin_versus_nonlin}
+#| echo: false
+#| fig-align: center
+#| fig-width: 10
+#| fig-height: 3
+# SETUP & RANDOM DATA GENERATION
+# library(tidyverse)
+
+set.seed(301) # Set seed for reproducibility
+
+# Generate predictor variable
+x <- seq(1, 100, by = 1)
+
+# Generate random normal noise
+noise <- rnorm(100, mean = 0, sd = 5)
+
+# 1. Linear Data: y directly proportional to x
+y_linear <- 2.5 * x + 10 + noise
+
+# 2. Nonlinear Data: Exponential decay trend
+# (Adding a larger standard deviation to scale with higher starting values)
+noise_nl <- rnorm(100, mean = 0, sd = 15)
+y_nonlinear <- 500 * exp(-0.05 * x) + 20 + noise_nl
+
+# Store everything in a dataframe
+df <- data.frame(x = x, y_lin = y_linear, y_nonlin = y_nonlinear)
+
+# 1. LINEAR MODEL (Ordinary Least Squares)
+
+# Fit using standard linear regression function 'lm'
+linear_model <- lm(y_lin ~ x, data = df)
+
+#print("--- LINEAR MODEL SUMMARY ---")
+#summary(linear_model)
+
+
+# 2. NONLINEAR MODEL (Nonlinear Least Squares)
+
+# Fit an exponential decay curve using 'nls' 
+# formula structure: y = a * exp(-b * x) + c
+nonlinear_model <- nls(y_nonlin ~ a * exp(-b * x) + c, 
+                       data = df, 
+                       start = list(a = 400, b = 0.1, c = 10))
+
+#print("--- NONLINEAR MODEL SUMMARY ---")
+#summary(nonlinear_model)
+
+
+# VISUALIZATION
+
+# Set up a side-by-side plotting area
+par(mfrow = c(1, 2))
+
+# Plot 1: Linear Model
+plot(df$x, df$y_lin, main = "Linear Regression Model", 
+     xlab = "X", ylab = "Y (Linear Data)", col = "darkblue", pch = 16)
+abline(linear_model, col = "red", lwd = 2.5) # Plots the lm fit line directly
+
+# Plot 2: Nonlinear Model
+plot(df$x, df$y_nonlin, main = "Nonlinear Regression Model", 
+     xlab = "X", ylab = "Y (Nonlinear Data)", col = "darkgreen", pch = 16)
+lines(df$x, predict(nonlinear_model), col = "orange", lwd = 2.5) # Map predicted line
+
+# Reset plotting window defaults
+par(mfrow = c(1, 1))
+```
+
+
+
+
+## Supervised Models
+
+:::{.callout-note}
+
+- **Models are trained on labeled data, where the correct answers (labels) are known.**
+- The goal is to make predictions on new, unseen data.
+- Common tasks include classification (predicting categories) and regression (predicting continuous values).
+
+:::
+
+:::{.callout-green}
+
+**Examples**
+
+- Linear Regression *(We're gonna talk about this today!)*
+- Logistic Regression
+- Decision Trees
+- Random Forests
+- Support Vector Machines (SVM)
+- Neural Networks
+  
+:::
+
+## Unsupervised Models
+
+:::{.callout-note}
+- **Models are trained on unlabeled data, where the correct answers are not known.**
+- The goal is to discover hidden patterns or structures in the data.
+- Common tasks include clustering (grouping similar data points) and dimensionality reduction (reducing the number of variables).
+:::
+
+:::{.callout-yellow}
+
+**Examples**
+
+- K-Means Clustering
+- Hierarchical Clustering
+- Principal Component Analysis (PCA)
+- Independent Component Analysis (ICA)
+- Autoencoders
+  
+:::
+
+---
+
+# Group Activity
+
+(Oh yeah! This is where the fun begins!)
+
+## Activity: Making Predictions from Visualizations
+
+::: {style="text-align: center; font-size: 1.4em; margin-top: 30px; margin-bottom: 30px;"}
+[**Data**]{.blue-text} → [**Pattern**]{.purple-text} → [**Line**]{.green-text} → [**Prediction**]{.orange-text} → [**Model**]{.red-text}
+:::
+
+::: {.callout-note icon="true"}
+
+## Today you will *discover* each step of this chain for yourselves
+
+- [**Data**]{.blue-text} - What was measured? What are the units? How many observations?
+- [**Pattern**]{.purple-text} - Is there a *non-random* relationship when we plot one variable against the other?
+- [**Line**]{.green-text} - Can a straight line summarise that pattern?
+- [**Prediction**]{.orange-text} - Can we use the line to estimate values we did not observe?
+- [**Model**]{.red-text} - How much should we trust the line? Where does it work, and where does it fail?
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**We will not define regression. Rather, let the data show you what it does.**
+:::
+
+## How Today Works
+
+::: {.callout-tip icon="true"}
+## Groups of four or five - each group gets its own data and research question
+
+1. **Read** your research question and inspect your data (what are the variables? units? range?)
+2. **Plot** your data. Is there a pattern, or does it look random?
+3. **Fit** a line with `lm()` and draw it on your plot
+4. **Predict** - use your line to answer the prediction questions for your project
+5. **Test** - before reading `summary()`, write down what you *expect* the p-value to say. Were you right?
+6. **Discuss** your project questions, then the general questions
+7. **Prepare** one group member to explain your findings and method to the class (today or next class)
+:::
+
+<!-- ::: {.callout-yellow icon="true"}
+Suggested timing (about 50 minutes)
+
+- Inspect and plot: 10 min 
+- Fit, draw and predict: 10 min 
+- Test with `lm()`: 5 min 
+- Discuss: 15 min 
+- Prepare presenter: 10 min
+::: -->
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+- **Nothing to submit, just participation.**
+
+- Groups will present during next class
+:::
+
+
+## What Your Group Will Produce
+
+To help you make a prediction and answer your project questions, your group will need to produce the following:
+
+::: {.callout-tip icon="true"}
+## To Address
+- A scatterplot of your data **with the fitted line drawn on it**
+- The **equation** of your line: $\hat{y} = b_0 + b_1 x$ (with your numbers filled in)
+- Your **predictions** for the values asked about in your project questions
+- Your **prediction about the p-value** written *before* running `summary()`, and what actually happened
+- Spoken answers to your **project questions** and the **general questions** (please be sure to take notes as you work)
+:::
+
+:::{.callout-blue}
+
+***Prepare a conversation for the class about your findings***
+
+- A fiveminute explanation for the class from your Presenter
+- (That's why you will need the notes!)
+:::
+
+# Your R Toolkit 🧰
+
+## The Six-Step Workflow
+
+::: {.callout-important icon="true"}
+## Run these in order - and stop after each one to ask *"What did I just learn?"*
+:::
+
+:::{.callout-green icon="true"}
+|Step | R command | What you will discover|
+|:---:|---|---|
+| 1 | `plot(x, y)`| Visual relationship|
+| 2 | `model <- lm(y ~ x)`| Fitting a mathematical relationship|
+| 3 | `abline(model)` | Drawing the fitted line|
+| 4 |`predict(model, newdata)`|Using the line to make predictions|
+| 5 |`residuals(model)`|Difference between observed and predicted values|
+| 6 |`summary(model)`|Understanding model results|
+:::
+
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**The `~` reads as "is modelled by":  `lm(y ~ x)` means "model y using x".**
+:::
+
+## Starter Code: Steps 1 to 3
+
+
+::: {.callout-green icon="true"}
+This code will get you started but you might need to add to it in some way (e.g., adding plots, and changing variable names to match your data similar). You may have to look up some of these commands to help you use them. Use `?` before the command to get help (e.g., `?plot()` for help on making plots, `?lm()` for help on the linear model function, or for help on making predictions, use `?predict()`).
+:::
+
+```{r starter-1}
+#| eval: false
+# Replace mydata, x and y with your own data frame and column names
+
+# Clean up workspace
+rm(list = ls()) # clear variables from previous work.
+graphics.off() # clear out all old plots
+cat("\014") # clear the console
+
+library(tidyverse)
+mydata <- read_csv("data/groupN_something.csv")   # or paste the tibble from your group's slide
+head(mydata)       # what do the first rows look like?
+summary(mydata)    # what is the range of each variable?
+
+# Step 1: look before you model
+# Note: edit the code to match your variable names and units
+
+plot(mydata$x, mydata$y,
+     xlab = "x (units)", ylab = "y (units)",
+     main = "y versus x", pch = 19, col = "steelblue")
+
+# Step 2: fit a straight line
+model <- lm(y ~ x, data = mydata) # edit x and y to match your variable names
+model # the two numbers printed are the intercept and the slope
+
+# Step 3: draw the line on top of the points
+abline(model, col = "red", lwd = 2)
+```
+
+## Starter Code: Steps 4 to 6
+
+```{r starter-2}
+#| eval: false
+# Step 4: use the line to predict y for new x values
+new_points <- tibble(x = c(10, 20)) # the column name must match your x variable's name
+predict(model, newdata = new_points)
+predict(model, newdata = new_points, interval = "prediction")  # a range, not just one number
+
+# Step 5: how far is each point from the line?
+residuals(model)
+plot(mydata$x, residuals(model), pch = 19,
+     xlab = "x", ylab = "Residual (observed - predicted)")
+abline(h = 0, lty = 2)                         # a good line leaves residuals scattered around 0
+
+# Step 6: the full report
+summary(model)     # find the slope's p-value, and "Multiple R-squared"
+```
+
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**Note: Edit this code to match your own variables (e.g., `x` and `y` are not `x` and `y` in your data)!**
+
+:::
+
+## Testing Your Prediction with `lm()`
+
+::: {.callout-important icon="true"}
+## The experiment
+`summary(model)` tests one specific claim about your line:
+
+- **Null hypothesis** $H_0$: the slope is zero (x has *no* linear relationship with y)
+- **Alternative** $H_1$: the slope is not zero
+:::
+
+::: {.callout-tip icon="true"}
+## Before you run `summary()` - write down your group's prediction
+1. Based on your plot, do you expect the slope to be positive, negative or zero?
+2. Do you expect the p-value for the slope to be **small** (below 0.05) or **large**? Why?
+3. After running it: were you right? What does the p-value let you conclude, and what does it **not** tell you?
+:::
+
+```{r pvalue-hint}
+#| eval: false
+summary(model)$coefficients            # the slope row, column "Pr(>|t|)", is the p-value
+summary(model)$r.squared               # proportion of the variation in y explained by x
+```
+
+## Code Ideas for Special Situations
+
+::: {.columns}
+::: {.column}
+```{r ideas-1}
+#| eval: false
+# Fit a model WITHOUT one observation
+model_all  <- lm(y ~ x, data = mydata)
+model_drop <- lm(y ~ x,
+                 data = filter(mydata, id != 12))
+
+# Draw both lines on the same plot
+plot(mydata$x, mydata$y, pch = 19)
+abline(model_all,  col = "red",  lwd = 2)
+abline(model_drop, col = "blue", lwd = 2, lty = 2)
+legend("topleft", c("All data", "Without #12"),
+       col = c("red", "blue"), lty = 1:2)
+
+# Highlight one point
+points(mydata$x[12], mydata$y[12],
+       col = "orange", pch = 19, cex = 2)
+```
+:::
+::: {.column}
+```{r ideas-2}
+#| eval: false
+# Predicting far outside your data
+predict(model, newdata = tibble(x = 250))
+range(mydata$x)    # is 250 inside this range?
+
+# A curved model (a parabola) instead of a line
+model_curve <- lm(y ~ x + I(x^2), data = mydata)
+summary(model_curve)$r.squared
+
+# Draw the curve
+grid <- tibble(x = seq(min(mydata$x), max(mydata$x),
+                       length.out = 100))
+lines(grid$x, predict(model_curve, grid),
+      col = "darkgreen", lwd = 2)
+
+# The ggplot way to draw a line
+ggplot(mydata, aes(x, y)) + geom_point() +
+  geom_smooth(method = "lm", se = TRUE)
+```
+:::
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+This code could come in useful if your group wants to explore the effect of outliers, extrapolation, or curves.
+:::
+
+# General Discussion Questions 💬
+
+## For Every Group: The Line and the Prediction
+
+::: {.callout-important icon="true"}
+## Answer these using *your* data and *your* model
+1. Write your fitted equation $\hat{y} = b_0 + b_1 x$ with your numbers. Say the **slope** as a sentence that includes the units.
+2. What does the **intercept** mean for your data? Is $x = 0$ a sensible value, or is the intercept only a mathematical anchor for the line?
+3. What is a **residual**? Which observation has the largest residual, and can you think of a reason why?
+4. Is each of your predictions an **interpolation** (inside the range of your data) or an **extrapolation** (outside it)? Which do you trust more?
+5. Why is `interval = "prediction"` a wider range than the single predicted value? What does that range say about predicting *one* individual?
+:::
+
+## For Every Group: The Model and the p-value
+
+::: {.callout-important icon="true"}
+## Answer these using *your* data and *your* model
+6. What null hypothesis does the p-value for the slope test? What did your group predict, and what did you find?
+7. A very small p-value tells you the slope is unlikely to be zero. Does it tell you the line is the **right shape**? That x **causes** y? That predictions will be **accurate**?
+8. What does **R-squared** measure? Can a model have a tiny p-value but still make poor predictions?
+9. What would make you **stop trusting** your model? (Think: outliers, curves, extrapolation, missing variables.)
+10. Trace your project through **Data → Pattern → Line → Prediction → Model**. At which step could things go wrong for your data?
+:::
+
+## Presenting Your Findings 🎤
+
+::: {.callout-tip icon="true"}
+## Your Group has about 5 minutes. Cover:
+1. **The question** - your research question in one sentence (e.g., questions are listed with the data.)
+2. **The data** - what was measured, how many observations, the units
+3. **The pattern** - show your scatterplot with the fitted line
+4. **The line** - your equation, and what the slope means in plain language
+5. **The prediction** - one prediction, and how much you trust it
+6. **The test** - what you predicted about the p-value, and what `summary()` showed
+7. **The discovery** - the one big lesson your project taught you about regression
+8. **Slides** - Use Google slides to show your plots and results. (*Who doesn't like slides!?*)
+  
+:::
+
+
+
+::: {style="text-align: center; font-size: 1.4em; margin-top: 30px; margin-bottom: 30px;"}
+[**Data**]{.blue-text} → [**Pattern**]{.purple-text} → [**Line**]{.green-text} → [**Prediction**]{.orange-text} → [**Model**]{.red-text}
+:::
+
+
+## Come prepared to present your findings to the class next time.
+
+:::{.callout-tip icon="true"}
+
+We will present in the order of the groups, so please be ready to present your findings when your group is called on. Bring slides, code, and notes to class. You will have about 5 minutes to present your findings. Everyone in the group should address one of the questions.
+:::
+
+# The Projects 🗂️
+
+## Which Group Are You?
+
+
+::: {.callout-green icon="true"}
+| Group | Topic | Predictor (x) | Response (y) | n |
+|:---:|---|---|---|:---:|
+| 1 | Study habits | Hours studied | Examination score | 20 |
+| 2 | Marketing | Advertising expenditure | Sales revenue | 16 |
+| 3 | Real estate | House size | Selling price | 22 |
+| 4 | Energy | Outdoor temperature | Electricity consumption | 18 |
+| 5 | Human resources | Years of experience | Salary | 16 |
+| 6 | Transport | Vehicle speed | Fuel efficiency | 14 |
+| 7 | Marketing | Campaign spend | Customer inquiries | 15 |
+| 8 | Retail | Daily high temperature | Ice cream sales | 22 |
+
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+In addition to added code in the slides, data sets also are available as CSV files <a href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>
+:::
+
+
+<!-- ============================ GROUP 1 ============================ -->
+
+# Group 1: Study Hours and Examination Scores 📚
+
+## Group 1: Research Question and Data
+
+::: {.callout-tip icon="true"}
+## Research question
+Is the number of hours a student studies associated with their examination score, and can study hours be used to *predict* a student's score?
+:::
+
+::: {.callout-note icon="true"}
+## About the data
+Twenty students in one course reported how many hours they studied for the final examination (`hours`) and their score out of 100 (`score`). File: `data/group1_study_exam.csv`, see <a  href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>.
+:::
+
+```{r g1-data}
+group1 <- tibble(
+  hours = c(2, 3, 4, 5, 5, 6, 7, 8, 8, 10, 10, 12, 12, 14, 15, 16, 18, 20, 22, 25),
+  score = c(57, 37, 60, 63, 59, 66, 63, 54, 64, 73, 82, 78, 70, 71, 70, 80, 80, 88, 85, 95)
+)
+```
+
+## Group 1: The Data
+
+::: {style="font-size: 0.8em;"}
+```{r g1-table}
+#| echo: false
+side_by_side(group1, blocks = 3)
+```
+:::
+
+## Group 1: Discussion Questions
+
+::: {.callout-important icon="true"}
+## Your project questions
+1. Does studying for more hours always guarantee a higher examination score?
+2. Why might two students who study for the same number of hours receive different examination scores?
+3. If a student studies for 15 hours, how could the fitted line help predict their examination score?
+4. Would you trust the prediction equally for a student studying 5 hours and one studying 50 hours? Why?
+:::
+
+::: {.callout-tip icon="true"}
+## Hints
+- Look for students in the data who studied the *same* number of hours.
+- Try `predict(model, newdata = tibble(hours = c(5, 15, 50)))`. Does every answer make sense for an exam out of 100?
+:::
+
+<!-- ============================ GROUP 2 ============================ -->
+
+# Group 2: Advertising and Sales 💰
+
+## Group 2: Research Question and Data
+
+::: {.callout-tip icon="true"}
+## Research question
+Is a company's monthly advertising expenditure associated with its monthly sales revenue, and can advertising expenditure be used to *forecast* sales?
+:::
+
+::: {.callout-note icon="true"}
+## About the data
+Sixteen months of records for one company: `advertising` is the monthly advertising budget and `sales` is that month's revenue, both in **thousands of dollars**. File: `data/group2_advertising_sales.csv`, see <a  href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>.
+:::
+
+```{r g2-data}
+group2 <- tibble(
+  month       = 1:16,
+  advertising = c(8, 12, 15, 10, 20, 22, 18, 25, 30, 28, 35, 32, 40, 38, 45, 42),
+  sales       = c(167, 207, 229, 191, 203, 250, 197, 271, 287, 249, 291, 308, 315, 314, 337, 328)
+)
+```
+
+## Group 2: The Data
+
+::: {style="font-size: 0.8em;"}
+```{r g2-table}
+#| echo: false
+side_by_side(group2, blocks = 2)
+```
+:::
+
+## Group 2: Discussion Questions
+
+::: {.callout-important icon="true"}
+## Your project questions
+1. Does the fitted line suggest that higher advertising expenditure is associated with higher sales?
+2. If the company increases its advertising budget by \$1,000, how could the line help estimate the change in sales?
+3. Can the company use the line to predict sales for an advertising budget it has never tried?
+4. Does the fitted line prove that advertising expenditure *causes* higher sales?
+:::
+
+::: {.callout-tip icon="true"}
+## Hints
+- Remember the units: an increase of \$1,000 is an increase of **1** in `advertising`.
+- Which budgets has the company *never* tried: \$33,000? \$100,000? Are those two questions equally safe?
+:::
+
+<!-- ============================ GROUP 3 ============================ -->
+
+# Group 3: House Size and Selling Price 🏠
+
+## Group 3: Research Question and Data
+
+::: {.callout-tip icon="true"}
+## Research question
+How is the size of a house related to its selling price, and can we *estimate* the price of a house from its size alone?
+:::
+
+::: {.callout-note icon="true"}
+## About the data
+Twenty-two houses sold in one town last year: `size` (square feet), `bedrooms`, `age` (years) and selling `price` (dollars). Your main analysis uses `size` and `price`. File: `data/group3_house_prices.csv`, see <a  href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>.
+:::
+
+```{r g3-data}
+group3 <- tibble(
+  size     = c(1150, 1300, 1420, 1500, 1580, 1650, 1720, 1800, 1880, 1950, 2050,
+               2100, 2200, 2280, 2350, 2450, 2600, 2700, 2850, 3000, 3150, 3300),
+  bedrooms = c(2, 2, 2, 2, 2, 3, 2, 2, 3, 2, 3, 4, 3, 4, 4, 4, 3, 5, 4, 4, 5, 5),
+  age      = c(49, 32, 54, 33, 53, 54, 31, 14, 31, 52, 36, 17, 3, 27, 48, 10, 33, 4, 6, 3, 14, 14),
+  price    = c(148000, 191000, 199000, 208000, 171500, 213500, 241500, 246000, 256500, 277000, 250500,
+               335500, 343000, 325500, 285000, 361000, 345000, 415000, 439000, 393500, 471000, 433000)
+)
+```
+
+## Group 3: The Data
+
+::: {style="font-size: 0.7em;"}
+```{r g3-table}
+#| echo: false
+side_by_side(group3, blocks = 2)
+```
+:::
+
+## Group 3: Discussion Questions
+
+::: {.callout-important icon="true"}
+## Your project questions
+1. What does the fitted line suggest about the relationship between house size and selling price?
+2. Can we estimate the selling price of a house that is 2,500 square feet?
+3. What does the slope of the line tell us about the relationship?
+4. Would a house of the same size always sell for the same price? What other variables might matter?
+:::
+
+::: {.callout-tip icon="true"}
+## Hints
+- The slope is measured in *dollars per square foot*. Say it as a sentence.
+- Compare two houses of similar size with very different prices. What else is different about them?
+- Curious? Try `lm(price ~ size + age, data = group3)`.
+:::
+
+<!-- ============================ GROUP 4 ============================ -->
+
+# Group 4: Temperature and Electricity Use ⚡
+
+## Group 4: Research Question and Data
+
+::: {.callout-tip icon="true"}
+## Research question
+How does the average daily outdoor temperature relate to household electricity consumption, and can temperature be used to *predict* how much electricity a household will use?
+:::
+
+::: {.callout-note icon="true"}
+## About the data
+Eighteen days between January and May for a household that heats with electricity: average outdoor `temperature` (°C) and `electricity` used that day (kWh). File: `data/group4_temperature_electricity.csv`, see <a  href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>.
+:::
+
+```{r g4-data}
+group4 <- tibble(
+  temperature = c(-8, -6, -5, -3, -2, 0, 1, 3, 4, 6, 7, 9, 10, 12, 13, 15, 16, 18),
+  electricity = c(54.3, 56, 53.2, 49.7, 49.6, 49, 45.4, 45.8, 41.3, 41.5, 37.6, 34.8,
+                  38.5, 31.4, 36.3, 28.6, 28.7, 21.9)
+)
+```
+
+## Group 4: The Data
+
+::: {style="font-size: 0.8em;"}
+```{r g4-table}
+#| echo: false
+side_by_side(group4, blocks = 3)
+```
+:::
+
+## Group 4: Discussion Questions
+
+::: {.callout-important icon="true"}
+## Your project questions
+1. Why does the fitted line slope downward?
+2. How does an increase in temperature relate to predicted electricity consumption?
+3. Can the line help predict electricity consumption at 20°C?
+4. Would the same relationship necessarily apply during extremely hot weather?
+:::
+
+::: {.callout-tip icon="true"}
+## Hints
+- What is this household using electricity *for* on a cold day? On a very hot day?
+- What is the warmest day in your data? Is 20°C inside or outside that range? What about 35°C?
+:::
+
+<!-- ============================ GROUP 5 ============================ -->
+
+# Group 5: Experience and Salary 💼
+
+## Group 5: Research Question and Data
+
+::: {.callout-tip icon="true"}
+## Research question
+How is an employee's years of experience related to their salary, and how much does the prediction model depend on a single unusual employee?
+:::
+
+::: {.callout-note icon="true"}
+## About the data
+Sixteen employees at one company: `experience` (years) and annual `salary` (**thousands of dollars**). Employee 16 is unusual. File: `data/group5_experience_salary.csv`, see <a  href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>.
+
+:::
+
+```{r g5-data}
+group5 <- tibble(
+  employee   = 1:16,
+  experience = c(1, 2, 2, 3, 4, 5, 5, 6, 7, 8, 9, 10, 11, 12, 13, 22),
+  salary     = c(48, 48, 46, 53, 53, 57, 56, 55, 62, 62, 64, 61, 65, 65, 70, 165)
+)
+```
+
+## Group 5: The Data
+
+::: {style="font-size: 0.8em;"}
+```{r g5-table}
+#| echo: false
+side_by_side(group5, blocks = 2)
+```
+:::
+
+## Group 5: Discussion Questions
+
+::: {.callout-important icon="true"}
+## Your project questions
+1. Does the fitted line represent all employees equally well?
+2. What happens to the line when the unusual salary observation is included?
+3. How does removing the unusual observation change the prediction model?
+4. Which model would you choose, and what justification would you provide?
+:::
+
+::: {.callout-tip icon="true"}
+## Hints
+- Fit **two** models: one with all 16 employees and one with `filter(group5, employee != 16)`. Draw both lines.
+- Compare the slopes, and compare the predicted salary for an employee with 10 years of experience.
+:::
+
+<!-- ============================ GROUP 6 ============================ -->
+
+# Group 6: Speed and Fuel Efficiency 🚗
+
+## Group 6: Research Question and Data
+
+::: {.callout-tip icon="true"}
+## Research question
+How does vehicle speed relate to fuel efficiency, and over what range of speeds can a straight-line model be trusted to *predict* fuel efficiency?
+:::
+
+::: {.callout-note icon="true"}
+## About the data
+One test car driven at a steady `speed` (km/h) on a test track; `efficiency` is the fuel efficiency measured at that speed (kilometres per litre, higher is better). File: `data/group6_speed_fuel.csv`, see <a  href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>.
+:::
+
+```{r g6-data}
+group6 <- tibble(
+  speed      = c(60, 65, 70, 75, 80, 85, 90, 100, 105, 110, 115, 120, 125, 130),
+  efficiency = c(18.3, 17, 18.2, 17.2, 16.6, 16.4, 16.3, 15, 14.7, 13.8, 14.1, 12.9, 12.4, 11.8)
+)
+```
+
+## Group 6: The Data
+
+::: {style="font-size: 0.8em;"}
+```{r g6-table}
+#| echo: false
+side_by_side(group6, blocks = 2)
+```
+:::
+
+## Group 6: Discussion Questions
+
+::: {.callout-important icon="true"}
+## Your project questions
+1. What does the downward slope tell us about speed and fuel efficiency?
+2. How can the line estimate fuel efficiency at 95 km/h?
+3. Does the line suggest that fuel efficiency changes by the same amount for every increase in speed?
+4. Would you recommend using this model to predict fuel efficiency at 250 km/h?
+:::
+
+::: {.callout-tip icon="true"}
+## Hints
+- The car was never tested at 95 km/h *or* at 250 km/h. What is the difference between those two cases?
+- Look closely at your residual plot. Do the residuals look random, or do they form a shape?
+:::
+
+<!-- ============================ GROUP 7 ============================ -->
+
+# Group 7: Campaign Spend and Customer Inquiries 📣
+
+## Group 7: Research Question and Data
+
+::: {.callout-tip icon="true"}
+## Research question
+Is spending more on an advertising campaign associated with more customer inquiries, and how does one unusual campaign affect the prediction model?
+:::
+
+::: {.callout-note icon="true"}
+## About the data
+Fifteen online advertising campaigns: `spend` (**hundreds of dollars**) and the number of customer `inquiries` received during the campaign. File: `data/group7_campaign_inquiries.csv`, see <a  href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>.
+:::
+
+```{r g7-data}
+group7 <- tibble(
+  campaign  = 1:15,
+  spend     = c(5, 8, 10, 12, 15, 18, 20, 22, 25, 28, 30, 32, 35, 38, 40),
+  inquiries = c(32, 45, 60, 64, 75, 63, 92, 87, 102, 108, 119, 310, 132, 135, 148)
+)
+```
+
+## Group 7: The Data
+
+::: {style="font-size: 0.8em;"}
+```{r g7-table}
+#| echo: false
+side_by_side(group7, blocks = 2)
+```
+:::
+
+## Group 7: Discussion Questions
+
+::: {.callout-important icon="true"}
+## Your project questions
+1. What pattern do you notice in the observations?
+2. How does the unusually high number of inquiries affect the fitted line?
+3. Which model gives more reasonable predictions: the model with all observations or the model without Campaign 12?
+4. Should we remove an unusual observation simply because it makes the regression line less representative?
+:::
+
+::: {.callout-tip icon="true"}
+## Hints
+- Fit two models and compare their slopes, their R-squared values *and* their p-values.
+- Imagine you learn that Campaign 12 was shared by a celebrity. Does that change your answer to question 4? What if it were a typing error?
+:::
+
+<!-- ============================ GROUP 8 ============================ -->
+
+# Group 8: Temperature and Ice Cream Sales 🍦
+
+## Group 8: Research Question and Data
+
+::: {.callout-tip icon="true"}
+## Research question
+How does the daily high temperature relate to ice cream sales, and is a straight line the right model for *predicting* sales?
+:::
+
+::: {.callout-note icon="true"}
+## About the data
+Twenty-two summer days at a beach-side ice cream shop: daily high `temperature` (°C) and the number of ice creams sold (`sales`). File: `data/group8_temperature_icecream.csv`, see <a  href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>.
+:::
+
+```{r g8-data}
+group8 <- tibble(
+  temperature = c(10, 12, 13, 15, 16, 18, 19, 20, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35),
+  sales       = c(64, 49, 62, 82, 85, 98, 93, 97, 113, 136, 127, 152, 182, 182, 194, 216, 262, 261,
+                  259, 314, 318, 341)
+)
+```
+
+## Group 8: The Data
+
+::: {style="font-size: 0.8em;"}
+```{r g8-table}
+#| echo: false
+side_by_side(group8, blocks = 3)
+```
+:::
+
+## Group 8: Discussion Questions
+
+::: {.callout-important icon="true"}
+## Your project questions
+1. Does the scatterplot suggest that sales increase at a constant rate as temperature increases?
+2. Does a straight line capture the entire pattern?
+3. What differences do you notice between the observations and the fitted linear regression line?
+4. Could a curved line represent the relationship more appropriately?
+:::
+
+::: {.callout-tip icon="true"}
+## Hints
+- Look at the residuals at the coldest, middle and hottest temperatures. Are they above or below the line?
+- Try `lm(sales ~ temperature + I(temperature^2), data = group8)` and compare R-squared values.
+:::
+

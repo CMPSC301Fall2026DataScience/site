@@ -1,0 +1,1136 @@
+---
+title: "Discovering Linear Regression: Solutions"
+subtitle: "Data → Pattern → Line → Prediction → Model, Worked Through for All Eight Groups"
+#author: "CS301 - Data Science with R"
+#date: "Fall 2026"
+format:
+  revealjs:
+    theme: white
+    highlight-style: github
+    code-block-background: true
+    code-block-border-left: "#31BAE9"
+    slide-number: true
+    chalkboard: true
+    scrollable: true
+    transition: none
+    css: custom_ds.css
+    width: 1200
+    height: 800
+    margin: 0.05
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r setup}
+#| echo: false
+library(tidyverse)
+options(knitr.kable.NA = "")
+
+# Show a long data set as side-by-side blocks so it fits on one slide
+side_by_side <- function(df, blocks = 2) {
+  n <- ceiling(nrow(df) / blocks)
+  parts <- split(as.data.frame(df), ceiling(seq_len(nrow(df)) / n))
+  parts <- map(parts, \(p) { if (nrow(p) < n) p[(nrow(p) + 1):n, ] <- NA; p })
+  knitr::kable(bind_cols(parts, .name_repair = "minimal"), align = "c")
+}
+
+# Helpers for numbers quoted in the slide text
+num   <- function(x, d = 2) format(round(x, d), big.mark = ",", nsmall = d)
+slope <- function(m) unname(coef(m)[2])
+icept <- function(m) unname(coef(m)[1])
+r2    <- function(m) summary(m)$r.squared
+pval  <- function(m) format.pval(summary(m)$coefficients[2, 4], digits = 3, eps = 0.001)
+pred  <- function(m, nd, int = "prediction") predict(m, newdata = nd, interval = int)
+
+blue <- "#2E86C1"; red <- "#E74C3C"; green <- "#27AE60"; purple <- "#8E44AD"; orange <- "#E67E22"
+```
+
+# What's On For Today? 🔬
+
+::: {.callout-tip icon="true"}
+
+**Completed Projects** - every group's analysis, step by step
+
+- **Reading `summary()`** - what each number in the output means
+- **Predictions** - single values *and* ranges, inside and outside the data
+- **Validation** - residual plots and checking the line against reality
+- **Discoveries** - the eight lessons, one per group
+
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**A p-value answers one narrow question. Know exactly which one.**
+:::
+
+## The Chain We Followed
+
+::: {style="text-align: center; font-size: 1.4em; margin-top: 30px; margin-bottom: 30px;"}
+[**Data**]{.blue-text} → [**Pattern**]{.purple-text} → [**Line**]{.green-text} → [**Prediction**]{.orange-text} → [**Model**]{.red-text}
+:::
+
+| Step | R command | What it gave us |
+|---|---|---|
+| [**Data**]{.blue-text} | `head()`, `summary()` | Variables, units, range of x |
+| [**Pattern**]{.purple-text} | `plot(x, y)` | Is the relationship non-random? Straight or curved? |
+| [**Line**]{.green-text} | `lm(y ~ x)`, `abline()` | $\hat{y} = b_0 + b_1 x$ |
+| [**Prediction**]{.orange-text} | `predict(model, newdata)` | $\hat{y}$ for x values we never observed |
+| [**Model**]{.red-text} | `residuals()`, `summary()` | How much to trust the line, and where |
+
+## The Line: Slope and Intercept
+
+::: {.callout-important icon="true"}
+## $\hat{y} = b_0 + b_1 x$
+- $\hat{y}$ ("y-hat") is the **predicted** value of y; the hat means *estimate*, not observation
+- $b_1$, the **slope**: the predicted change in y for each increase of **one unit** in x (units of y per unit of x)
+- $b_0$, the **intercept**: the predicted y when $x = 0$. Often this is outside the data and has no real meaning
+:::
+
+::: {.callout-tip icon="true"}
+## How does `lm()` choose the line?
+**Least squares**: of all possible straight lines, `lm()` picks the one that makes the sum of the squared residuals as small as possible.
+
+$$\text{residual}_i = y_i - \hat{y}_i \qquad\qquad \text{minimise } \sum_i (y_i - \hat{y}_i)^2$$
+:::
+
+## Reading `summary(model)`
+
+::: {.callout-blue icon="false"}
+**The parts of the output that matter today**
+
+| Output | Meaning |
+|---|---|
+| `Estimate` | $b_0$ (row `(Intercept)`) and $b_1$ (row named after x) |
+| `Std. Error` | How much the estimate would vary from sample to sample |
+| `t value` | Estimate ÷ Std. Error: how many standard errors the slope is from zero |
+| `Pr(>|t|)` | **p-value** for $H_0$: slope $= 0$. Small means "a slope this steep would be very unlikely if there were no relationship" |
+| `Residual standard error` | Typical size of a residual, in the units of y |
+| `Multiple R-squared` | Proportion of the variation in y that the line explains (0 to 1) |
+:::
+
+::: {.callout-important icon="true"}
+## What the p-value does **not** tell you
+It does not say the relationship is a straight line, that x causes y, that the predictions are accurate, or that the result is important.
+:::
+
+## Two Kinds of Interval from `predict()`
+
+::: {.columns}
+::: {.column}
+::: {.callout-tip icon="true"}
+## `interval = "confidence"`
+A range for the **average** y of *all* cases with this x value.
+
+*"Students who study 15 hours score, on average, between ... and ..."*
+:::
+:::
+::: {.column}
+::: {.callout-important icon="true"}
+## `interval = "prediction"`
+A range for **one new individual** with this x value. Always wider, because individuals scatter around the average.
+
+*"This particular student will probably score between ... and ..."*
+:::
+:::
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**Both intervals get wider as x moves away from the centre of the data, and they are only valid inside its range.**
+:::
+
+<!-- ============================ GROUP 1 ============================ -->
+
+# Group 1: Study Hours and Examination Scores 📚
+
+## Group 1: Question and Data
+
+::: {.callout-tip icon="true"}
+## Research question
+Is the number of hours a student studies associated with their examination score, and can study hours be used to *predict* a student's score?
+:::
+
+```{r g1-data}
+group1 <- read_csv("files/regression_in_class/data/group1_study_exam.csv")
+```
+
+::: {style="font-size: 0.75em;"}
+```{r g1-table}
+#| echo: false
+side_by_side(group1, blocks = 3)
+```
+:::
+
+## Group 1: Pattern and Line
+
+```{r g1-fit}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+# Step 1: look at the data
+plot(group1$hours, group1$score,
+     pch = 19, col = blue,
+     xlab = "Hours studied",
+     ylab = "Exam score (out of 100)",
+     main = "Study hours vs exam score")
+
+# Steps 2 and 3: fit and draw the line
+model1 <- lm(score ~ hours, data = group1)
+abline(model1, col = red, lwd = 2)
+
+coef(model1)
+```
+
+::: {.callout-note icon="true"}
+## The line
+$\widehat{\text{score}} = `r num(icept(model1))` + `r num(slope(model1))` \times \text{hours}$. Each extra hour of study is associated with about **`r num(slope(model1))` more points**, on average. The pattern is clearly upward, but the points scatter widely around the line.
+:::
+
+## Group 1: Predictions
+
+```{r g1-predict}
+new_students <- tibble(hours = c(5, 15, 50))
+predict(model1, newdata = new_students)                            # a single best guess
+predict(model1, newdata = new_students, interval = "prediction")   # a range for one student
+range(group1$hours)
+```
+
+::: {.callout-important icon="true"}
+## Interpreting the three predictions
+- **15 hours**: predicted score `r num(pred(model1, tibble(hours = 15))[1], 1)`, but one student could plausibly score anywhere from `r num(pred(model1, tibble(hours = 15))[2], 1)` to `r num(pred(model1, tibble(hours = 15))[3], 1)`
+- **5 hours**: inside the data (2 to 25 hours), so a reasonable *interpolation*
+- **50 hours**: predicts `r num(pred(model1, tibble(hours = 50))[1], 1)` points on a test **out of 100**. This is an impossible *extrapolation*
+:::
+
+## Group 1: Prediction Bands
+
+```{r g1-band}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+grid <- tibble(hours = seq(0, 50, by = 0.5))
+bands <- predict(model1, grid, interval = "prediction")
+
+plot(group1$hours, group1$score, pch = 19, col = blue,
+     xlim = c(0, 50), ylim = c(30, 170),
+     xlab = "Hours studied", ylab = "Exam score")
+abline(model1, col = red, lwd = 2)
+lines(grid$hours, bands[, "lwr"], lty = 2, col = red)
+lines(grid$hours, bands[, "upr"], lty = 2, col = red)
+abline(h = 100, col = "grey40", lwd = 2)       # maximum score
+abline(v = max(group1$hours), lty = 3)         # edge of the data
+text(40, 105, "maximum possible score", cex = 0.8)
+```
+
+::: {.callout-tip icon="true"}
+## What the picture shows
+The prediction range is about **±15 points** wide everywhere: the line describes the *average* student, not each individual. Beyond 25 hours there is no data, and the line soon passes the maximum score.
+:::
+
+## Group 1: Residuals and Validation
+
+```{r g1-resid}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+res1 <- residuals(model1)
+plot(group1$hours, res1, pch = 19, col = purple,
+     xlab = "Hours studied",
+     ylab = "Residual (observed - predicted)")
+abline(h = 0, lty = 2)
+
+# Same hours, different scores
+group1 %>% filter(hours %in% c(5, 8, 10, 12))
+```
+
+::: {.callout-note icon="true"}
+## Validation
+The residuals scatter randomly around zero with no curve, so a straight line is a reasonable shape. The largest residual is the student who studied 3 hours and scored 37 (`r num(min(res1), 1)` points below the line).
+:::
+
+## Group 1: Testing the Prediction
+
+```{r g1-summary}
+summary(model1)
+```
+
+::: {.callout-important icon="true"}
+## Interpretation
+Slope p-value `r pval(model1)`: if hours had *no* linear relationship with score, a slope this steep would be extremely unlikely. $R^2 = `r num(r2(model1), 3)`$: hours explain about `r round(100 * r2(model1))`% of the variation in scores, and the other `r 100 - round(100 * r2(model1))`% comes from everything else.
+:::
+
+## Group 1: Discussion Answers
+
+::: {.callout-blue icon="false"}
+1. **Does more study always guarantee a higher score?** No. The trend is upward, but the student who studied 8 hours scored 54, lower than the student who studied 4 hours (60). The line describes the *tendency*, not a guarantee.
+2. **Why do equal hours give different scores?** Prior knowledge, quality of studying, sleep, test anxiety and ability. None of these are in the model; their combined effect is what the residuals contain (`r 100 - round(100 * r2(model1))`% of the variation).
+3. **Predict for 15 hours.** $`r num(icept(model1))` + `r num(slope(model1))` \times 15 \approx `r num(pred(model1, tibble(hours = 15))[1], 1)`$ points. For one student the honest answer is a range: about `r round(pred(model1, tibble(hours = 15))[2])` to `r round(pred(model1, tibble(hours = 15))[3])`.
+4. **5 hours or 50 hours?** 5 hours lies inside the data (interpolation) and can be trusted. 50 hours is twice the largest value observed and predicts more than 100%: real scores level off, but a straight line cannot.
+:::
+
+::: {.callout-tip icon="true"}
+## 💡 Discovery
+**Regression predicts general outcomes, not necessarily individual outcomes with certainty.**
+:::
+
+<!-- ============================ GROUP 2 ============================ -->
+
+# Group 2: Advertising and Sales 💰
+
+## Group 2: Question and Data
+
+::: {.callout-tip icon="true"}
+## Research question
+Is a company's monthly advertising expenditure associated with its monthly sales revenue, and can advertising expenditure be used to *forecast* sales?
+:::
+
+```{r g2-data}
+group2 <- read_csv("files/regression_in_class/data/group2_advertising_sales.csv")   # both in $ thousands
+```
+
+::: {style="font-size: 0.75em;"}
+```{r g2-table}
+#| echo: false
+side_by_side(group2, blocks = 2)
+```
+:::
+
+## Group 2: Pattern and Line
+
+```{r g2-fit}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+plot(group2$advertising, group2$sales,
+     pch = 19, col = blue,
+     xlab = "Advertising ($ thousands)",
+     ylab = "Sales ($ thousands)",
+     main = "Advertising vs sales")
+
+model2 <- lm(sales ~ advertising, data = group2)
+abline(model2, col = red, lwd = 2)
+
+coef(model2)
+```
+
+::: {.callout-note icon="true"}
+## The line
+$\widehat{\text{sales}} = `r num(icept(model2))` + `r num(slope(model2))` \times \text{advertising}$. A strong, upward, roughly straight pattern.
+:::
+
+## Group 2: Predictions
+
+```{r g2-predict}
+budgets <- tibble(advertising = c(33, 34, 100))
+predict(model2, newdata = budgets, interval = "prediction")
+range(group2$advertising)
+```
+
+::: {.callout-important icon="true"}
+## Interpreting the predictions
+- **\$1,000 more** (from 33 to 34): sales rise by the slope, about **\$`r num(1000 * slope(model2), 0)`**
+- **\$33,000**: never tried, but *inside* the range \$8,000 to \$45,000, so it is a safe interpolation
+- **\$100,000**: more than double the largest budget tried. The line assumes every extra dollar keeps working equally well, but advertising usually reaches saturation
+:::
+
+## Group 2: Validation by Forecasting
+
+```{r g2-validate}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+# Fit on months 1-12, then forecast months 13-16
+train <- filter(group2, month <= 12)
+test  <- filter(group2, month > 12)
+model2_train <- lm(sales ~ advertising, data = train)
+
+test$forecast <- predict(model2_train, test)
+
+plot(test$forecast, test$sales, pch = 19, col = purple,
+     xlab = "Forecast sales", ylab = "Actual sales",
+     main = "Months 13-16: forecast vs actual")
+abline(0, 1, lty = 2)   # perfect forecasts lie on this line
+
+test
+```
+
+::: {.callout-note icon="true"}
+## Validation
+A model built *without* the last four months forecast them within about `r round(max(abs(test$sales - test$forecast)))` thousand dollars. This is honest validation: the model never saw those months.
+:::
+
+## Group 2: Testing the Prediction
+
+```{r g2-summary}
+summary(model2)
+```
+
+::: {.callout-important icon="true"}
+## Interpretation
+Slope p-value `r pval(model2)` and $R^2 = `r num(r2(model2), 3)`$. Higher advertising is strongly *associated* with higher sales. The test says nothing about **why**.
+:::
+
+## Group 2: Discussion Answers
+
+::: {.callout-blue icon="false"}
+1. **Higher advertising, higher sales?** Yes. Positive slope (`r num(slope(model2))`), p-value `r pval(model2)`, and the line explains `r round(100 * r2(model2))`% of the variation in monthly sales.
+2. **Effect of \$1,000 more advertising?** Both variables are in thousands, so +1 in `advertising` → about +`r num(slope(model2))` in `sales`: roughly **\$`r num(1000 * slope(model2), 0)` more revenue**, on average.
+3. **Predict for a budget never tried?** Yes, *if it lies inside* \$8,000 to \$45,000 (e.g. \$33,000 → about \$`r num(1000 * pred(model2, tibble(advertising = 33))[1], 0)`). A budget of \$100,000 is extrapolation and should not be trusted.
+4. **Does the line prove causation?** No. These are observational records. Sales may rise in busy seasons when the company *also* advertises more, or the company may set its budget as a share of last month's revenue (reverse causation). A **randomised experiment** (e.g. vary advertising across comparable regions) would be needed.
+:::
+
+::: {.callout-tip icon="true"}
+## 💡 Discovery
+**Regression supports forecasting, but association does not establish causation.**
+:::
+
+<!-- ============================ GROUP 3 ============================ -->
+
+# Group 3: House Size and Selling Price 🏠
+
+## Group 3: Question and Data
+
+::: {.callout-tip icon="true"}
+## Research question
+How is the size of a house related to its selling price, and can we *estimate* the price of a house from its size alone?
+:::
+
+```{r g3-data}
+group3 <- read_csv("files/regression_in_class/data/group3_house_prices.csv")
+```
+
+::: {style="font-size: 0.65em;"}
+```{r g3-table}
+#| echo: false
+side_by_side(group3, blocks = 2)
+```
+:::
+
+## Group 3: Pattern and Line
+
+```{r g3-fit}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+plot(group3$size, group3$price / 1000,
+     pch = 19, col = blue,
+     xlab = "Size (square feet)",
+     ylab = "Price ($ thousands)",
+     main = "House size vs selling price")
+
+model3 <- lm(price ~ size, data = group3)
+abline(coef(model3) / 1000, col = red, lwd = 2)  # line drawn in $ thousands
+
+coef(model3)
+```
+
+::: {.callout-note icon="true"}
+## The line
+$\widehat{\text{price}} = `r num(icept(model3), 0)` + `r num(slope(model3))` \times \text{size}$. The intercept is negative: a house of 0 square feet does not exist, so $b_0$ only anchors the line.
+:::
+
+## Group 3: Predictions
+
+```{r g3-predict}
+house <- tibble(size = 2500)
+predict(model3, newdata = house, interval = "confidence")   # average 2,500 sq ft house
+predict(model3, newdata = house, interval = "prediction")   # one particular house
+```
+
+::: {.callout-important icon="true"}
+## Interpreting the prediction
+- Best estimate for a 2,500 sq ft house: **\$`r num(pred(model3, house)[1], 0)`**
+- The *average* 2,500 sq ft house: \$`r num(pred(model3, house, "confidence")[2], 0)` to \$`r num(pred(model3, house, "confidence")[3], 0)`
+- *One particular* 2,500 sq ft house: \$`r num(pred(model3, house)[2], 0)` to \$`r num(pred(model3, house)[3], 0)`, a much wider range
+:::
+
+## Group 3: What Else Matters?
+
+```{r g3-age}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+# Colour each house by its age
+old <- group3$age > 30
+plot(group3$size, group3$price / 1000, pch = 19,
+     col = ifelse(old, orange, green),
+     xlab = "Size (square feet)",
+     ylab = "Price ($ thousands)")
+abline(coef(model3) / 1000, col = red, lwd = 2)
+legend("topleft", c("Over 30 years old", "30 years or newer"),
+       col = c(orange, green), pch = 19)
+
+# Add age as a second predictor
+model3b <- lm(price ~ size + age, data = group3)
+round(coef(model3b), 1)
+```
+
+::: {.callout-note icon="true"}
+## Older houses sit below the line
+With age in the model, each extra year of age lowers the predicted price by about **\$`r num(-coef(model3b)["age"], 0)`**, and $R^2$ rises from `r num(r2(model3), 3)` to `r num(r2(model3b), 3)`.
+:::
+
+## Group 3: Residuals and the Test
+
+```{r g3-resid}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 3.8
+plot(group3$size, residuals(model3) / 1000,
+     pch = 19, col = purple,
+     xlab = "Size (square feet)",
+     ylab = "Residual ($ thousands)")
+abline(h = 0, lty = 2)
+
+summary(model3)$coefficients
+summary(model3)$r.squared
+```
+
+::: {.callout-important icon="true"}
+## Interpretation
+Residuals scatter randomly, so the straight line fits. Slope p-value `r pval(model3)`: size is clearly related to price. $R^2 = `r num(r2(model3), 3)`$ is high, but individual residuals still reach tens of thousands of dollars.
+:::
+
+## Group 3: Discussion Answers
+
+::: {.callout-blue icon="false"}
+1. **What does the line suggest?** A strong positive, roughly linear relationship: larger houses sell for more.
+2. **Estimate for 2,500 sq ft?** About **\$`r num(pred(model3, tibble(size = 2500))[1], 0)`**. Since 2,500 is inside 1,150 to 3,300 sq ft, this is a reasonable interpolation, but give the range (\$`r num(pred(model3, tibble(size = 2500))[2], 0)` to \$`r num(pred(model3, tibble(size = 2500))[3], 0)`).
+3. **What does the slope tell us?** Each extra square foot adds about **\$`r num(slope(model3), 0)`** to the predicted price, or roughly \$`r num(100 * slope(model3), 0)` per 100 sq ft.
+4. **Same size, same price?** No. The 2,350 sq ft house (48 years old) sold for \$285,000, but the smaller 2,200 sq ft house (3 years old) sold for \$343,000. Age, location, condition, lot size, renovations and market timing all matter.
+:::
+
+::: {.callout-tip icon="true"}
+## 💡 Discovery
+**A regression model can estimate an outcome using a predictor, even though other factors also influence that outcome.**
+:::
+
+<!-- ============================ GROUP 4 ============================ -->
+
+# Group 4: Temperature and Electricity Use ⚡
+
+## Group 4: Question and Data
+
+::: {.callout-tip icon="true"}
+## Research question
+How does the average daily outdoor temperature relate to household electricity consumption, and can temperature be used to *predict* how much electricity a household will use?
+:::
+
+```{r g4-data}
+group4 <- read_csv("files/regression_in_class/data/group4_temperature_electricity.csv")
+```
+
+::: {style="font-size: 0.75em;"}
+```{r g4-table}
+#| echo: false
+side_by_side(group4, blocks = 3)
+```
+:::
+
+## Group 4: Pattern and Line
+
+```{r g4-fit}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+plot(group4$temperature, group4$electricity,
+     pch = 19, col = blue,
+     xlab = "Average temperature (°C)",
+     ylab = "Electricity used (kWh/day)",
+     main = "Temperature vs electricity")
+
+model4 <- lm(electricity ~ temperature, data = group4)
+abline(model4, col = red, lwd = 2)
+
+coef(model4)
+cor(group4$temperature, group4$electricity)
+```
+
+::: {.callout-note icon="true"}
+## The line
+$\widehat{\text{electricity}} = `r num(icept(model4))` `r num(slope(model4))` \times \text{temperature}$. The slope is **negative** and the correlation is $r = `r num(cor(group4$temperature, group4$electricity), 3)`$.
+:::
+
+## Group 4: Predictions
+
+```{r g4-predict}
+days <- tibble(temperature = c(5, 20, 35))
+predict(model4, newdata = days, interval = "prediction")
+range(group4$temperature)
+```
+
+::: {.callout-important icon="true"}
+## Interpreting the predictions
+- **5°C**: inside the data, a safe interpolation
+- **20°C**: just above the warmest day observed (18°C). This is a mild extrapolation that is probably still reasonable
+- **35°C**: the line predicts only `r num(pred(model4, tibble(temperature = 35))[1], 1)` kWh, but on a 35°C day the air conditioning would be running
+:::
+
+## Group 4: Beyond the Data
+
+```{r g4-hot}
+#| echo: false
+#| fig-width: 11
+#| fig-height: 4.2
+temps <- seq(-10, 40, by = 0.5)
+# Illustration only: heating below about 18°C, cooling above about 22°C
+plausible <- pmax(predict(model4, tibble(temperature = temps)),
+                  predict(model4, tibble(temperature = 20)) + 1.5 * pmax(temps - 20, 0))
+plot(group4$temperature, group4$electricity, pch = 19, col = blue,
+     xlim = c(-10, 40), ylim = c(0, 65),
+     xlab = "Average temperature (°C)", ylab = "Electricity used (kWh/day)",
+     main = "The fitted line vs a plausible full-year pattern (illustration, not data)")
+rect(min(group4$temperature), -5, max(group4$temperature), 70, col = "#2E86C115", border = NA)
+abline(model4, col = red, lwd = 2)
+lines(temps, plausible, lty = 2, lwd = 2, col = "grey30")
+legend("top", c("Fitted line", "Heating + air conditioning (hypothetical)", "Range of our data"),
+       col = c(red, "grey30", "#2E86C140"), lty = c(1, 2, NA), pch = c(NA, NA, 15), pt.cex = 2,
+       lwd = 2, bty = "n")
+```
+
+::: {.callout-tip icon="true"}
+## The line only knows the heating season
+In summer, cooling adds demand as temperature *rises*. The full-year relationship is closer to a **U shape**, which our data never saw.
+:::
+
+## Group 4: Residuals and the Test
+
+```{r g4-resid}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 3.8
+plot(group4$temperature, residuals(model4),
+     pch = 19, col = purple,
+     xlab = "Average temperature (°C)",
+     ylab = "Residual (kWh)")
+abline(h = 0, lty = 2)
+
+summary(model4)$coefficients
+summary(model4)$r.squared
+```
+
+::: {.callout-important icon="true"}
+## Interpretation
+Random residuals: the line fits well within the observed range. Slope p-value `r pval(model4)`: a **negative** slope is just as statistically detectable as a positive one. $R^2 = `r num(r2(model4), 3)`$.
+:::
+
+## Group 4: Discussion Answers
+
+::: {.callout-blue icon="false"}
+1. **Why does the line slope downward?** This household heats with electricity. Colder days mean more heating, so **lower** temperatures go with **higher** consumption.
+2. **How does warming relate to consumption?** Each 1°C increase is associated with about **`r num(-slope(model4))` kWh less** per day; 10°C warmer → about `r num(-10 * slope(model4), 1)` kWh less.
+3. **Predict at 20°C?** About **`r num(pred(model4, tibble(temperature = 20))[1], 1)` kWh** (range `r num(pred(model4, tibble(temperature = 20))[2], 1)` to `r num(pred(model4, tibble(temperature = 20))[3], 1)`). Note that 20°C is slightly beyond our warmest day (18°C).
+4. **Same relationship in extreme heat?** No. Heating switches off and air conditioning switches on, so consumption *rises* with temperature. A line fitted to winter and spring cannot describe summer.
+:::
+
+::: {.callout-tip icon="true"}
+## 💡 Discovery
+**The slope can be positive or negative, but both types of regression lines can be used for prediction.**
+:::
+
+<!-- ============================ GROUP 5 ============================ -->
+
+# Group 5: Experience and Salary 💼
+
+## Group 5: Question and Data
+
+::: {.callout-tip icon="true"}
+## Research question
+How is an employee's years of experience related to their salary, and how much does the prediction model depend on a single unusual employee?
+:::
+
+```{r g5-data}
+group5 <- read_csv("files/regression_in_class/data/group5_experience_salary.csv")   # salary in $ thousands
+```
+
+::: {style="font-size: 0.75em;"}
+```{r g5-table}
+#| echo: false
+side_by_side(group5, blocks = 2)
+```
+:::
+
+## Group 5: Two Models
+
+```{r g5-fit}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+model5_all  <- lm(salary ~ experience, data = group5)
+model5_drop <- lm(salary ~ experience,
+                  data = filter(group5, employee != 16))
+
+plot(group5$experience, group5$salary, pch = 19,
+     col = ifelse(group5$employee == 16, orange, blue),
+     cex = ifelse(group5$employee == 16, 2, 1),
+     xlab = "Experience (years)",
+     ylab = "Salary ($ thousands)")
+abline(model5_all,  col = red,  lwd = 2)
+abline(model5_drop, col = blue, lwd = 2, lty = 2)
+legend("topleft", c("All 16 employees", "Without employee 16"),
+       col = c(red, blue), lty = 1:2, lwd = 2)
+```
+
+::: {.callout-note icon="true"}
+## One employee changes everything
+Employee 16 has far more experience than anyone else (22 years) **and** a far higher salary (\$165,000). Being far out in x gives this point *leverage*: it pulls the end of the line towards itself.
+:::
+
+## Group 5: Comparing the Models
+
+```{r g5-compare}
+tibble(model     = c("All 16", "Without 16"),
+       intercept = c(icept(model5_all), icept(model5_drop)),
+       slope     = c(slope(model5_all), slope(model5_drop)),
+       r_squared = c(r2(model5_all), r2(model5_drop)),
+       pred_10yr = c(predict(model5_all,  tibble(experience = 10)),
+                     predict(model5_drop, tibble(experience = 10)))) %>%
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+
+cooks.distance(model5_all)[16]   # influence of employee 16 (values above 1 are a warning sign)
+```
+
+::: {.callout-important icon="true"}
+## What changed
+The slope goes from **`r num(slope(model5_drop))`** to **`r num(slope(model5_all))`** thousand dollars per year: `r num(slope(model5_all) / slope(model5_drop), 1)` times steeper because of *one* person out of 16. Cook's distance for employee 16 is `r num(cooks.distance(model5_all)[16], 1)`, far above the warning level of 1.
+:::
+
+## Group 5: Who Does Each Line Fit?
+
+```{r g5-resid}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+plot(group5$experience, residuals(model5_all),
+     pch = 19, col = ifelse(group5$employee == 16, orange, purple),
+     xlab = "Experience (years)",
+     ylab = "Residual ($ thousands)",
+     main = "Residuals, model with all 16")
+abline(h = 0, lty = 2)
+```
+
+::: {.callout-note icon="true"}
+## A pattern in the residuals
+With employee 16 included, the line **underpredicts** junior employees (positive residuals on the left) and **overpredicts** employees with about 10 years of experience (negative residuals). It fits *no* group of employees well.
+:::
+
+## Group 5: Testing Both Models
+
+```{r g5-summary}
+summary(model5_all)$coefficients
+summary(model5_drop)$coefficients
+c(all = r2(model5_all), without_16 = r2(model5_drop))
+```
+
+::: {.callout-important icon="true"}
+## Interpretation
+Both models have very small slope p-values (`r pval(model5_all)` and `r pval(model5_drop)`), so **the p-value alone cannot tell you which model is better**. The residual plot, the influence of employee 16 and the meaning of the data have to guide the choice.
+:::
+
+## Group 5: Discussion Answers
+
+::: {.callout-blue icon="false"}
+1. **Does the line represent all employees equally?** No. With all 16 employees, the line misses the juniors (too low) and the mid-career employees (too high), and still leaves employee 16 far above it.
+2. **Effect of including the unusual salary?** Employee 16 is extreme in *both* x and y, so it tilts the line: slope `r num(slope(model5_all))` instead of `r num(slope(model5_drop))`, and $R^2$ falls from `r num(r2(model5_drop), 3)` to `r num(r2(model5_all), 3)`.
+3. **Effect of removing it on predictions?** For a 10-year employee: \$`r num(1000 * predict(model5_all, tibble(experience = 10)), 0)` (all) vs \$`r num(1000 * predict(model5_drop, tibble(experience = 10)), 0)` (without 16). The real 9 to 11 year employees earn \$61,000 to \$65,000.
+4. **Which model and why?** For predicting salaries of employees with 1 to 13 years of experience, use the model **without employee 16**, and *say so*. Employee 16 is probably in a different role (e.g. an executive) and is the only person beyond 13 years, so neither model should predict salaries at 20+ years without more data.
+:::
+
+::: {.callout-tip icon="true"}
+## 💡 Discovery
+**The position of observations can influence the fitted regression line and therefore the predictions.**
+:::
+
+<!-- ============================ GROUP 6 ============================ -->
+
+# Group 6: Speed and Fuel Efficiency 🚗
+
+## Group 6: Question and Data
+
+::: {.callout-tip icon="true"}
+## Research question
+How does vehicle speed relate to fuel efficiency, and over what range of speeds can a straight-line model be trusted to *predict* fuel efficiency?
+:::
+
+```{r g6-data}
+group6 <- read_csv("files/regression_in_class/data/group6_speed_fuel.csv")   # efficiency in km per litre
+```
+
+::: {style="font-size: 0.75em;"}
+```{r g6-table}
+#| echo: false
+side_by_side(group6, blocks = 2)
+```
+:::
+
+## Group 6: Pattern and Line
+
+```{r g6-fit}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+plot(group6$speed, group6$efficiency,
+     pch = 19, col = blue,
+     xlab = "Speed (km/h)",
+     ylab = "Fuel efficiency (km/L)",
+     main = "Speed vs fuel efficiency")
+
+model6 <- lm(efficiency ~ speed, data = group6)
+abline(model6, col = red, lwd = 2)
+
+coef(model6)
+```
+
+::: {.callout-note icon="true"}
+## The line
+$\widehat{\text{efficiency}} = `r num(icept(model6))` `r num(slope(model6), 4)` \times \text{speed}$: each extra 10 km/h costs about **`r num(-10 * slope(model6))` km/L**.
+:::
+
+## Group 6: Interpolation vs Extrapolation
+
+```{r g6-extrap}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+plot(group6$speed, group6$efficiency, pch = 19,
+     col = blue, xlim = c(40, 280), ylim = c(-2, 22),
+     xlab = "Speed (km/h)", ylab = "Efficiency (km/L)")
+rect(60, -5, 130, 25, col = "#2E86C115", border = NA)
+abline(model6, col = red, lwd = 2)
+abline(h = 0, lty = 3)
+points(c(95, 250), predict(model6, tibble(speed = c(95, 250))),
+       pch = 17, cex = 1.8, col = c(green, orange))
+text(250, 4, "250 km/h?", col = orange)
+
+predict(model6, tibble(speed = c(95, 250)),
+        interval = "prediction")
+```
+
+::: {.callout-important icon="true"}
+## Two very different predictions
+**95 km/h** (green) lies between tested speeds of 90 and 100: interpolation, `r num(pred(model6, tibble(speed = 95))[1], 1)` km/L. **250 km/h** (orange) is far beyond 130: the line predicts `r num(pred(model6, tibble(speed = 250))[1], 1)` km/L, and it reaches **zero** at `r round(-icept(model6) / slope(model6))` km/h. A car cannot run on no fuel.
+:::
+
+## Group 6: Look Closer at the Residuals
+
+```{r g6-resid}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+plot(group6$speed, residuals(model6), pch = 19,
+     col = purple, xlab = "Speed (km/h)",
+     ylab = "Residual (km/L)")
+abline(h = 0, lty = 2)
+# a smooth trend through the residuals
+lines(lowess(group6$speed, residuals(model6)),
+      col = orange, lwd = 2)
+
+summary(model6)$r.squared
+```
+
+::: {.callout-note icon="true"}
+## A hint of an arch
+With $R^2 = `r num(r2(model6), 3)`$ the line fits well, but the smoothed residuals bend downward at high speed, where the last four points are all below the line. Efficiency drops **faster** at higher speeds (air resistance grows roughly with the square of speed), so the true relationship curves slightly. With only 14 points, the noise partly hides it.
+:::
+
+## Group 6: Testing the Prediction
+
+```{r g6-summary}
+summary(model6)
+```
+
+::: {.callout-important icon="true"}
+## Interpretation
+Slope p-value `r pval(model6)`: speed and efficiency are clearly related *within 60 to 130 km/h*. The test says nothing about speeds we never measured.
+:::
+
+## Group 6: Discussion Answers
+
+::: {.callout-blue icon="false"}
+1. **What does the downward slope mean?** Driving faster is associated with burning more fuel per kilometre: about `r num(-10 * slope(model6))` km/L less for every extra 10 km/h.
+2. **Estimate at 95 km/h?** $`r num(icept(model6))` `r num(slope(model6), 4)` \times 95 \approx$ **`r num(pred(model6, tibble(speed = 95))[1], 1)` km/L**. This is interpolation between measured speeds, so we can trust it.
+3. **Same change for every increase in speed?** The *line* assumes so, since that is what "linear" means. The data show a curve: from 60 to 90 km/h efficiency fell by about 2 km/L, but from 100 to 130 km/h it fell by about 3.2 km/L.
+4. **Use it at 250 km/h?** No. That is almost twice the highest tested speed; the prediction (`r num(pred(model6, tibble(speed = 250))[1], 1)` km/L) has a prediction range that includes *negative* values, and the physics (and the gearbox) change at such speeds.
+:::
+
+::: {.callout-tip icon="true"}
+## 💡 Discovery
+**A regression model can be used for interpolation and extrapolation, but extrapolation can be unreliable.**
+:::
+
+<!-- ============================ GROUP 7 ============================ -->
+
+# Group 7: Campaign Spend and Customer Inquiries 📣
+
+## Group 7: Question and Data
+
+::: {.callout-tip icon="true"}
+## Research question
+Is spending more on an advertising campaign associated with more customer inquiries, and how does one unusual campaign affect the prediction model?
+:::
+
+```{r g7-data}
+group7 <- read_csv("files/regression_in_class/data/group7_campaign_inquiries.csv")   # spend in $ hundreds
+```
+
+::: {style="font-size: 0.75em;"}
+```{r g7-table}
+#| echo: false
+side_by_side(group7, blocks = 2)
+```
+:::
+
+## Group 7: Two Models
+
+```{r g7-fit}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+model7_all  <- lm(inquiries ~ spend, data = group7)
+model7_drop <- lm(inquiries ~ spend,
+                  data = filter(group7, campaign != 12))
+
+plot(group7$spend, group7$inquiries, pch = 19,
+     col = ifelse(group7$campaign == 12, orange, blue),
+     cex = ifelse(group7$campaign == 12, 2, 1),
+     xlab = "Campaign spend ($ hundreds)",
+     ylab = "Customer inquiries")
+abline(model7_all,  col = red,  lwd = 2)
+abline(model7_drop, col = blue, lwd = 2, lty = 2)
+legend("topleft", c("All campaigns", "Without campaign 12"),
+       col = c(red, blue), lty = 1:2, lwd = 2)
+```
+
+::: {.callout-note icon="true"}
+## The pattern
+Fourteen campaigns follow a tight, straight, upward pattern. Campaign 12 received `r group7$inquiries[12]` inquiries, more than twice what its spend would suggest.
+:::
+
+## Group 7: Comparing the Models
+
+```{r g7-compare}
+tibble(model      = c("All 15", "Without 12"),
+       slope      = c(slope(model7_all), slope(model7_drop)),
+       r_squared  = c(r2(model7_all), r2(model7_drop)),
+       resid_se   = c(sigma(model7_all), sigma(model7_drop)),
+       p_value    = c(summary(model7_all)$coefficients[2, 4],
+                      summary(model7_drop)$coefficients[2, 4])) %>%
+  mutate(across(where(is.numeric), \(x) signif(x, 3)))
+
+predict(model7_all,  tibble(spend = 20), interval = "prediction")
+predict(model7_drop, tibble(spend = 20), interval = "prediction")
+```
+
+::: {.callout-important icon="true"}
+## One campaign, a much worse model
+With Campaign 12, the typical prediction error (residual SE) grows from `r num(sigma(model7_drop), 1)` to `r num(sigma(model7_all), 1)` inquiries, $R^2$ falls from `r num(r2(model7_drop), 3)` to `r num(r2(model7_all), 3)`, and the prediction range for a \$2,000 campaign runs from `r round(pred(model7_all, tibble(spend = 20))[2])` to `r round(pred(model7_all, tibble(spend = 20))[3])`, which is useless for planning.
+:::
+
+## Group 7: Residuals
+
+```{r g7-resid}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+par(mfrow = c(2, 1), mar = c(4, 4, 2, 1))
+plot(group7$spend, residuals(model7_all), pch = 19,
+     col = ifelse(group7$campaign == 12, orange, purple),
+     main = "All 15 campaigns", xlab = "", ylab = "Residual")
+abline(h = 0, lty = 2)
+plot(filter(group7, campaign != 12)$spend,
+     residuals(model7_drop), pch = 19, col = purple,
+     main = "Without campaign 12",
+     xlab = "Spend ($ hundreds)", ylab = "Residual")
+abline(h = 0, lty = 2)
+```
+
+::: {.callout-note icon="true"}
+## Validation
+With Campaign 12, one huge residual dominates and pushes the line upwards. Without it, the residuals are small and random, so a straight line describes the typical campaign very well.
+:::
+
+## Group 7: Discussion Answers
+
+::: {.callout-blue icon="false"}
+1. **What pattern?** A strong, straight, positive relationship: about `r num(slope(model7_drop), 1)` more inquiries per extra \$100, *except* Campaign 12, which sits far above everything else.
+2. **Effect of the unusual campaign?** It pulls the line upward and steepens it (slope `r num(slope(model7_all), 2)` vs `r num(slope(model7_drop), 2)`), inflates the residual standard error, and lowers $R^2$ to `r num(r2(model7_all), 2)`. The p-value is still small, but the model is much less useful.
+3. **Which model predicts more reasonably?** For **typical** campaigns, the model without Campaign 12: its prediction ranges are about ±`r round((pred(model7_drop, tibble(spend = 20))[3] - pred(model7_drop, tibble(spend = 20))[2]) / 2)` inquiries instead of ±`r round((pred(model7_all, tibble(spend = 20))[3] - pred(model7_all, tibble(spend = 20))[2]) / 2)`.
+4. **Remove it just because it doesn't fit?** **No.** Investigate first. A data-entry error should be corrected or removed. A real event that will not repeat (e.g. the campaign went viral) can be excluded from a model of *typical* campaigns, **reported openly**, with both models shown. Deleting inconvenient points to get a nicer line is data manipulation.
+:::
+
+::: {.callout-tip icon="true"}
+## 💡 Discovery
+**A prediction model depends on the quality and characteristics of the data used to develop it.**
+:::
+
+<!-- ============================ GROUP 8 ============================ -->
+
+# Group 8: Temperature and Ice Cream Sales 🍦
+
+## Group 8: Question and Data
+
+::: {.callout-tip icon="true"}
+## Research question
+How does the daily high temperature relate to ice cream sales, and is a straight line the right model for *predicting* sales?
+:::
+
+```{r g8-data}
+group8 <- read_csv("files/regression_in_class/data/group8_temperature_icecream.csv")
+```
+
+::: {style="font-size: 0.75em;"}
+```{r g8-table}
+#| echo: false
+side_by_side(group8, blocks = 3)
+```
+:::
+
+## Group 8: Pattern and Line
+
+```{r g8-fit}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+plot(group8$temperature, group8$sales,
+     pch = 19, col = blue,
+     xlab = "Daily high temperature (°C)",
+     ylab = "Ice creams sold",
+     main = "Temperature vs ice cream sales")
+
+model8 <- lm(sales ~ temperature, data = group8)
+abline(model8, col = red, lwd = 2)
+
+coef(model8)
+summary(model8)$r.squared
+```
+
+::: {.callout-note icon="true"}
+## The line looks good... at first
+$\widehat{\text{sales}} = `r num(icept(model8))` + `r num(slope(model8))` \times \text{temperature}$, with $R^2 = `r num(r2(model8), 3)`$ and p-value `r pval(model8)`. But look at where the points sit relative to the line at each end.
+:::
+
+## Group 8: The Residuals Tell the Story
+
+```{r g8-resid}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+plot(group8$temperature, residuals(model8),
+     pch = 19, col = purple,
+     xlab = "Daily high temperature (°C)",
+     ylab = "Residual (ice creams)",
+     main = "Residuals from the straight line")
+abline(h = 0, lty = 2)
+lines(lowess(group8$temperature, residuals(model8)),
+      col = orange, lwd = 2)
+```
+
+::: {.callout-important icon="true"}
+## A clear U shape
+Residuals are **positive** on cool days, **negative** in the middle and **positive** again on hot days. A systematic pattern in the residuals means the model has the **wrong shape**, even though $R^2$ is high and the p-value is tiny.
+:::
+
+## Group 8: A Curved Model
+
+```{r g8-curve}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 4.2
+model8_curve <- lm(sales ~ temperature + I(temperature^2),
+                   data = group8)
+
+plot(group8$temperature, group8$sales, pch = 19, col = blue,
+     xlab = "Daily high temperature (°C)",
+     ylab = "Ice creams sold")
+abline(model8, col = red, lwd = 2)
+grid <- tibble(temperature = seq(10, 35, length.out = 100))
+lines(grid$temperature, predict(model8_curve, grid),
+      col = green, lwd = 3)
+legend("topleft", c("Straight line", "Curve (quadratic)"),
+       col = c(red, green), lwd = c(2, 3))
+
+c(line = r2(model8), curve = r2(model8_curve))
+```
+
+::: {.callout-tip icon="true"}
+## Still `lm()`!
+`I(temperature^2)` adds a squared term. The model is still *linear in its coefficients*, so `lm()` can fit it, but it draws a curve.
+:::
+
+## Group 8: Comparing Predictions and Residuals
+
+```{r g8-compare}
+#| output-location: column
+#| fig-width: 5.5
+#| fig-height: 3.8
+plot(group8$temperature, residuals(model8_curve),
+     pch = 19, col = purple,
+     xlab = "Temperature (°C)",
+     ylab = "Residual",
+     main = "Residuals from the curve")
+abline(h = 0, lty = 2)
+
+days <- tibble(temperature = c(10, 22, 35))
+tibble(days,
+       observed = c(64, 113, 341),
+       line  = round(predict(model8, days)),
+       curve = round(predict(model8_curve, days)))
+```
+
+::: {.callout-note icon="true"}
+## Validation
+The curve's residuals are random. The straight line predicts only `r round(predict(model8, tibble(temperature = 10)))` ice creams on a 10°C day when `r group8$sales[1]` were actually sold; the curve predicts `r round(predict(model8_curve, tibble(temperature = 10)))`.
+:::
+
+## Group 8: Discussion Answers
+
+::: {.callout-blue icon="false"}
+1. **Constant rate of increase?** No. From 10 to 20°C sales rose by roughly 35 ice creams, but from 25 to 35°C they rose by nearly 190. Each degree matters **more** on hot days.
+2. **Does a straight line capture the whole pattern?** No. It captures the general upward trend (hence $R^2 = `r num(r2(model8), 2)`$) but misses the bend.
+3. **Differences between observations and the line?** The line is too **low** at both ends and too **high** in the middle: a systematic U-shaped residual pattern, not random scatter.
+4. **Would a curve be better?** Yes. The quadratic model raises $R^2$ to `r num(r2(model8_curve), 3)` and leaves random residuals. Be careful, though: this parabola bottoms out at about `r round(-coef(model8_curve)[2] / (2 * coef(model8_curve)[3]))`°C, so below that it predicts sales *rising* as it gets colder, which makes no sense for ice cream. A better curve fixes one problem; extrapolation is still risky.
+:::
+
+::: {.callout-tip icon="true"}
+## 💡 Discovery
+**Not all relationships are linear, and choosing an appropriate model is an important part of data science.**
+:::
+
+# General Discussion: Answers 💬
+
+## The Line and the Prediction
+
+::: {.callout-blue icon="false"}
+1. **Slope as a sentence**: "*For each additional [unit of x], [y] is predicted to change by [b₁] [units of y], on average.*" The words **predicted** and **on average** matter.
+2. **Intercept**: the predicted y when x = 0. It is meaningful only when x = 0 is realistic and inside the data (it is not meaningful for a 0 sq ft house or a car at 0 km/h).
+3. **Residual**: observed − predicted. It contains everything the model leaves out. Large residuals point to unusual cases worth investigating (Groups 5 and 7).
+4. **Interpolation vs extrapolation**: interpolation stays within the observed range of x and is generally trustworthy. Extrapolation assumes the pattern continues where we have no evidence (Groups 1, 4 and 6).
+5. **Prediction intervals** are wide because individuals scatter around the line. The line predicts the *average* well, and *one individual* only roughly (Group 1).
+:::
+
+## The Model and the p-value
+
+::: {.callout-blue icon="false"}
+6. The slope p-value tests $H_0$: **slope = 0**. A small p-value means data like ours would be very unlikely if x and y had no linear relationship.
+7. A tiny p-value does **not** mean: the straight line is the right shape (Group 8), x causes y (Group 2), the data are free of problems (Groups 5 and 7), or predictions will be accurate far from the data (Group 6).
+8. **R²** is the proportion of the variation in y explained by the line. Every group had a significant slope, yet Group 7's full model ($R^2$ ≈ `r num(r2(model7_all), 2)`) gave prediction ranges too wide to be useful.
+9. **Stop trusting the model** when residuals show a pattern, one point controls the line, you predict outside the data, or important variables are missing.
+10. Every step can fail: bad **data** (Group 7), a misread **pattern** (Group 8), a **line** dragged by one point (Group 5), a **prediction** too far out (Group 6), or a **model** over-interpreted as causal (Group 2).
+:::
+
+## Eight Groups, Eight Discoveries
+
+| Group | Topic | Discovery |
+|:---:|---|---|
+| 1 | Study hours → exam score | Regression predicts general outcomes, not individual outcomes with certainty |
+| 2 | Advertising → sales | Regression supports forecasting, but association does not establish causation |
+| 3 | House size → price | A model can estimate an outcome even though other factors also influence it |
+| 4 | Temperature → electricity | Slopes can be positive or negative; both can be used for prediction |
+| 5 | Experience → salary | The position of observations can influence the line and the predictions |
+| 6 | Speed → fuel efficiency | Interpolation is reliable; extrapolation can be unreliable |
+| 7 | Campaign spend → inquiries | A model depends on the quality and characteristics of its data |
+| 8 | Temperature → ice cream | Not all relationships are linear; choosing the model matters |
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**Data → Pattern → Line → Prediction → Model**
+:::

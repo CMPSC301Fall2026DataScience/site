@@ -120,17 +120,14 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
   
   - <a href="https://forms.gle/mThZReAjgttwqmcE6" target="_blank">Speaker Form</a>
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/lab04/accept" target="_blank">Lab04</a> 
-  
-  
+    
 ## W9. Into Statistical Tests: Non-parametric Tests
 
 - **t-tests & the Truth About p-values**
   - <a href="week09_parametric_tests_i.html" target="_blank">Slides</a>
 
-
 - **Activity 6**: Using Quarto to Create Reports and Presentations
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/activity06/accept" target="_blank">Activity06</a>
-
 
 ## W10. Anova
 
@@ -144,6 +141,11 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 
 - **Lab 5**: t-test, ANOVA and MANOVA
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/lab05/accept" target="_blank">Lab05</a>
+
+## W11. Linear Regression
+
+- **Discovering Linear Regression**
+  - <a href="week11_linReg_discovery.html" target="_blank">Slides</a>
 
 ---
 
