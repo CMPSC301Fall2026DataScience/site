@@ -147,6 +147,8 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **Discovering Linear Regression**
   - <a href="week11_linReg_discovery.html" target="_blank">Slides</a>
 
+- <a href="https://forms.gle/mThZReAjgttwqmcE6" target="_blank">Speaker Form</a>
+
 ---
 
 <!-- 
