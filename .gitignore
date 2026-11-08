@@ -18,3 +18,8 @@ __pycache__/
 
 # if using GitHub actions, build projects to docs/ folder at GitHub Pages
 docs/
+
+# R
+.Rhistory
+.RData
+.Rproj.user

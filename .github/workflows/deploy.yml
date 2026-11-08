@@ -59,6 +59,7 @@ jobs:
             any::patchwork
             any::HSAUR2
             any::reshape2
+            any::rpart.plot
 
 
 

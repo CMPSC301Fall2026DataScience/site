@@ -62,11 +62,15 @@ Pyodide and import without any install step.
 R:
 
 ```r
-install.packages("ggplot2")
+install.packages("rpart.plot")
+library(rpart.plot)
 ```
 
 Only packages compiled to WebAssembly are available — see
 [repo.r-wasm.org](https://repo.r-wasm.org/) for the R list.
+The R package dependency for Quarto rendering is also listed in
+`.github/workflows/deploy.yml`; that build-time installation does not make
+packages available inside webR, so the notebook installs `rpart.plot` at runtime.
 
 ## Version constraints
 
