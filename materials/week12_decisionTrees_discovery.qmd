@@ -1,0 +1,2213 @@
+---
+title: "Discovering Decision Trees"
+subtitle: "Asking One Good Question at a Time (and Saving the World While You Are At It)"
+#author: "CS301 - Data Science with R"
+#date: "Fall 2026"
+format:
+  revealjs:
+    theme: white
+    highlight-style: github
+    code-block-background: true
+    code-block-border-left: "#31BAE9"
+    slide-number: true
+    chalkboard: true
+    scrollable: true
+    transition: none
+    css: custom_ds.css
+    width: 1200
+    height: 800
+    margin: 0.05
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+<style>
+.reveal .data-code pre { max-height: 330px; }
+</style>
+
+```{r setup}
+#| echo: false
+library(tidyverse)
+library(rpart)
+library(rpart.plot)
+options(knitr.kable.NA = "")
+
+# Show a whole data set in a box that scrolls, so that it fits on one slide
+scroll_table <- function(df) {
+  knitr::kable(df, align = "c")
+}
+```
+
+# What's On For Today? 🌳
+
+::: {.callout-tip icon="true"}
+
+**Group Work** - discover how decision trees work, and use them to save the world (several times)
+
+- **The Idea** - What is a decision tree, and how does it choose its questions?
+- **An Example** - Will the cat knock the mug off the table?
+- **R Code** - How do we grow, draw, test and prune a tree?
+- **The Projects** - Eight scenarios. Eight groups. Dangerously little toothpaste.
+- **Communication** - Present your findings to the class with slides
+
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**A decision tree is a flowchart that learned its questions from data.**
+:::
+
+# What Is a Decision Tree?
+
+::: {.columns}
+
+::: {.column}
+
+**You already know how to read one.** Think of the game *Twenty Questions*.
+
+- A tree predicts an outcome by asking **one simple question at a time**
+- Each answer sends you down a **branch** to the next question
+- When the questions run out, you land on a **leaf**, and the leaf is your prediction
+- The tree *learns* which questions to ask, and in which order, from labeled data
+
+:::{.callout-blue}
+**Remember:** Decision trees are **supervised** models: the correct answers are known in the data that we use for training.
+:::
+
+:::
+
+::: {.column}
+
+```{r anatomy}
+#| echo: false
+#| fig-width: 6.4
+#| fig-height: 5.6
+#| fig-align: center
+op <- par(mar = c(0, 0, 0, 0))
+plot(NA, xlim = c(0, 10), ylim = c(0, 10), axes = FALSE, xlab = "", ylab = "")
+box_at <- function(x, y, label, fill, w = 1.75, h = .68) {
+  rect(x - w, y - h, x + w, y + h, col = fill, border = "#34495E", lwd = 1.5)
+  text(x, y, label, cex = 1.05)
+}
+segments(c(5, 5, 3, 3), c(8.2, 8.2, 5.1, 5.1), c(3, 7.8, 1.9, 5.3), c(5.8, 2.6, 2.6, 2.6), lwd = 2, col = "#34495E")
+box_at(5, 8.6, "Is the mug less than\n13 cm from the edge?", "#D6EAF8", w = 2.35)
+box_at(3, 5.5, "Has the cat been\nhungry 2.7+ hours?", "#D6EAF8", w = 2.25)
+box_at(1.9, 2, "Knocked!", "#FAD7A0", w = 1.35)
+box_at(5.3, 2, "Safe", "#D5F5E3", w = 1.0)
+box_at(7.8, 2, "Safe", "#D5F5E3", w = 1.0)
+text(c(3.45, 6.75), c(7.2, 5.7), c("yes", "no"), cex = 1, font = 3)
+text(c(1.95, 4.55), c(3.9, 3.9), c("yes", "no"), cex = 1, font = 3)
+text(5, 9.65, "Root node", col = "#2E86C1", font = 2, cex = 1.1)
+text(1.55, 6.55, "Internal node", col = "#2E86C1", font = 2, cex = 1.1)
+text(5, .75, "Leaves: the predictions", col = "#8E44AD", font = 2, cex = 1.1)
+par(op)
+```
+
+:::
+
+:::
+
+## Two Kinds of Trees
+
+::: {.callout-note icon="true"}
+## Classification tree: the outcome is a *category*
+- **Example:** Is this person a human or a zombie? (`method = "class"`)
+- **A leaf predicts** the most common category among the training rows that land in it
+- **A leaf also gives** a probability: the proportion of each category in that leaf
+:::
+
+::: {.callout-tip icon="true"}
+## Regression tree: the outcome is a *number*
+- **Example:** How many chomps will a shark robot make on this beach today? (`method = "anova"`)
+- **A leaf predicts** the *average* outcome of the training rows that land in it
+- **So:** every row in the same leaf gets exactly the same prediction
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**"CART": Classification And Regression Trees. The `rpart` package implements this approach in R.**
+:::
+
+## How Does a Tree Pick Its Question?
+
+::: {.callout-important icon="true"}
+## The greedy recipe
+1. Try **every possible split** of every variable (e.g., `edge_cm < 5`? `edge_cm < 6`? `watching = yes`?)
+2. Score each split: do the resulting groups become more **pure** (mostly one category)?
+3. Keep the best split (no looking ahead, no going back), then repeat **inside each new group**
+4. Stop when groups are too small, or when new splits no longer help enough
+:::
+
+::: {.callout-note icon="true"}
+## Measuring impurity: the Gini index
+$$\text{Gini} = 1 - \sum_{k} p_k^{\,2}$$
+where $p_k$ is the proportion of the group in category $k$. A pure group has Gini = 0. A 50/50 split of two categories has Gini = 0.5 (the worst case for two categories). (A regression tree instead reduces the squared error.)
+:::
+
+::: {.callout-green icon="true"}
+
+Exanded, the Gini index is the sum of the squares of the proportions of each category in the group:
+
+$$\text{Gini} = 1 - \left(\sum_{k} p_k^{\,2}\right) 
+= 1 - \left(p_{[1]}^2 + p_{[2]}^2 + \cdots + p_{[n]}^2\right)$$
+:::
+
+## Trees Can Be Understood as Cutting Data Into Boxes
+
+::: {.callout-green}
+Each split draws a straight cut, parallel to an axis. Every leaf of the tree is one box in the plot below (we will build this tree in a moment!).
+:::
+
+::: {.columns}
+
+::: {.column}
+
+```{r partition-tree}
+#| echo: false
+#| fig-width: 5.8
+#| fig-height: 4.6
+#| fig-align: center
+cat_mugs <- tibble(
+  edge_cm  = c(8, 4, 1, 4, 12, 20, 30, 2, 4, 22, 13, 7, 9, 24, 27, 1,
+               23, 9, 3, 25, 12, 23, 29, 25, 14, 22, 30, 22, 23, 29,
+               11, 6, 15, 25, 28, 4, 22, 20, 24, 27, 16, 14, 13, 1,
+               1, 23, 29, 27, 5, 7, 2, 11, 13, 28, 30, 4, 2, 5, 22,
+               23),
+  hungry_h = c(7.1, 5.8, 7.3, 3, 7.2, 4.3, 5.8, 7.3, 4.5, 2.7, 2.2,
+               1.5, 7.6, 3.1, 2.3, 7.7, 4.9, 3.7, 1.7, 4.8, 5.8, 1.3,
+               1.2, 2.7, 0.6, 5.5, 6.1, 2.3, 1.6, 2, 7.6, 0.1, 3,
+               5.2, 3.3, 2.3, 2, 1.9, 5.7, 3.3, 5, 1.6, 0.3, 7.1, 5,
+               7.8, 2.1, 7.9, 7.2, 1.5, 1.6, 2.4, 2.2, 0.4, 7.5, 7.9,
+               6.6, 2.3, 6, 6.7),
+  watching = c("no", "no", "yes", "yes", "no", "no", "no", "yes",
+               "yes", "yes", "no", "yes", "no", "yes", "yes", "no",
+               "yes", "no", "yes", "no", "no", "yes", "no", "no",
+               "no", "no", "no", "no", "no", "yes", "yes", "no",
+               "yes", "yes", "yes", "no", "no", "yes", "yes", "no",
+               "no", "no", "yes", "yes", "yes", "no", "yes", "yes",
+               "yes", "no", "no", "yes", "yes", "yes", "no", "no",
+               "no", "yes", "yes", "yes"),
+  mug_full = c(50, 100, 30, 20, 70, 10, 30, 90, 20, 30, 40, 20, 70,
+               40, 20, 60, 90, 100, 40, 40, 50, 10, 100, 60, 40, 40,
+               70, 80, 70, 10, 100, 20, 90, 20, 40, 70, 100, 70, 60,
+               10, 100, 100, 10, 90, 90, 20, 40, 30, 20, 20, 40, 20,
+               10, 40, 10, 100, 90, 80, 70, 50),
+  knocked  = c("yes", "yes", "yes", "yes", "yes", "no", "no", "yes",
+               "yes", "no", "no", "no", "yes", "no", "no", "yes",
+               "no", "yes", "no", "no", "no", "no", "no", "no", "no",
+               "yes", "no", "no", "no", "no", "yes", "yes", "no",
+               "no", "no", "yes", "no", "no", "no", "no", "no", "no",
+               "no", "yes", "yes", "no", "no", "no", "yes", "no",
+               "yes", "no", "no", "no", "no", "yes", "yes", "no",
+               "no", "no")
+)
+rpart.plot(rpart(knocked ~ ., data = cat_mugs, method = "class"), cex = 1)
+```
+
+:::
+
+::: {.column}
+
+```{r partition-plot}
+#| echo: false
+#| fig-width: 5.8
+#| fig-height: 4.6
+#| fig-align: center
+op <- par(mar = c(4.2, 4.2, 2.6, 1))
+is_yes <- cat_mugs$knocked == "yes"
+plot(cat_mugs$edge_cm, cat_mugs$hungry_h, type = "n", xlim = c(0, 31), ylim = c(-.8, 9.2),
+     xaxs = "i", yaxs = "i", las = 1, xlab = "Distance from the table edge (cm)",
+     ylab = "Hours since the cat was fed")
+rect(0, 2.65, 12.5, 9.2, col = "#FDEBD0", border = NA)
+abline(v = 12.5, lwd = 2, col = "#34495E")
+segments(0, 2.65, 12.5, 2.65, lwd = 2, col = "#34495E")
+points(cat_mugs$edge_cm, cat_mugs$hungry_h, pch = ifelse(is_yes, 17, 16), cex = 1.5,
+       col = ifelse(is_yes, "#E67E22", "#2E86C1"))
+text(6.2, 8.75, "predict: knocked", font = 2)
+text(6.2, -.4, "predict: safe", font = 2)
+text(22, 8.75, "predict: safe", font = 2)
+legend("top", c("Knocked", "Safe"), pch = c(17, 16), col = c("#E67E22", "#2E86C1"), horiz = TRUE,
+       bty = "n", xpd = TRUE, inset = c(0, -.14), cex = .95)
+box()
+par(op)
+```
+
+:::
+
+:::
+
+:::{.callout-red}
+The hungry cat problem who might knock over a cup of coffee is a classic example of a decision tree. The first question is whether the mug is near the edge of the table. If it is, then the next question is whether the cat has been hungry for more than 2.7 hours. If both answers are yes, then the prediction is that the mug will be knocked over. Otherwise, the prediction is that it will be safe.
+:::
+
+
+
+## Trees: The Good and the Not So Good
+
+::: {.columns}
+
+::: {.column}
+
+:::{.callout-green}
+**The Good**
+
+- **Easy to explain**: you can read the model aloud to anyone
+- **Finds interactions** without being told to look for them
+- **Handles curves and thresholds** that a straight line would miss
+- **Mixes** numeric and categorical predictors
+- **No normality assumption**, and no need to rescale your variables
+- **Selects variables**: useless columns are often ignored
+:::
+
+:::
+
+::: {.column}
+
+:::{.callout-red}
+**The Not So Good**
+
+- **Overfits**: a big tree can memorize the noise
+- **Unstable**: a small change in the data can grow a different tree
+- **Cannot extrapolate**: predictions stay inside the range of training outcomes
+- **Blocky**: every smooth relationship becomes a staircase
+- **Greedy**: the best first question may not lead to the best tree
+- **Does not prove causation** (the same warning as with regression!)
+:::
+
+:::
+
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**You will meet many of these in the projects. Keep your eyes open.**
+:::
+
+# A Simple Example: The Cat and the Mug 🐈 ☕
+
+## Research Question
+
+::: {.callout-tip icon="true"}
+## Research question
+Can we predict when a cat will knock a mug off the table? Which conditions matter the most?
+:::
+
+<center>
+![](graphics/catmug.png){width="35%"}
+</center>
+
+## Data for the Research
+
+```{r cat-data}
+cat_mugs <- tibble(
+  edge_cm  = c(8, 4, 1, 4, 12, 20, 30, 2, 4, 22, 13, 7, 9, 24, 27, 1,
+               23, 9, 3, 25, 12, 23, 29, 25, 14, 22, 30, 22, 23, 29,
+               11, 6, 15, 25, 28, 4, 22, 20, 24, 27, 16, 14, 13, 1,
+               1, 23, 29, 27, 5, 7, 2, 11, 13, 28, 30, 4, 2, 5, 22,
+               23),
+  hungry_h = c(7.1, 5.8, 7.3, 3, 7.2, 4.3, 5.8, 7.3, 4.5, 2.7, 2.2,
+               1.5, 7.6, 3.1, 2.3, 7.7, 4.9, 3.7, 1.7, 4.8, 5.8, 1.3,
+               1.2, 2.7, 0.6, 5.5, 6.1, 2.3, 1.6, 2, 7.6, 0.1, 3,
+               5.2, 3.3, 2.3, 2, 1.9, 5.7, 3.3, 5, 1.6, 0.3, 7.1, 5,
+               7.8, 2.1, 7.9, 7.2, 1.5, 1.6, 2.4, 2.2, 0.4, 7.5, 7.9,
+               6.6, 2.3, 6, 6.7),
+  watching = c("no", "no", "yes", "yes", "no", "no", "no", "yes",
+               "yes", "yes", "no", "yes", "no", "yes", "yes", "no",
+               "yes", "no", "yes", "no", "no", "yes", "no", "no",
+               "no", "no", "no", "no", "no", "yes", "yes", "no",
+               "yes", "yes", "yes", "no", "no", "yes", "yes", "no",
+               "no", "no", "yes", "yes", "yes", "no", "yes", "yes",
+               "yes", "no", "no", "yes", "yes", "yes", "no", "no",
+               "no", "yes", "yes", "yes"),
+  mug_full = c(50, 100, 30, 20, 70, 10, 30, 90, 20, 30, 40, 20, 70,
+               40, 20, 60, 90, 100, 40, 40, 50, 10, 100, 60, 40, 40,
+               70, 80, 70, 10, 100, 20, 90, 20, 40, 70, 100, 70, 60,
+               10, 100, 100, 10, 90, 90, 20, 40, 30, 20, 20, 40, 20,
+               10, 40, 10, 100, 90, 80, 70, 50),
+  knocked  = c("yes", "yes", "yes", "yes", "yes", "no", "no", "yes",
+               "yes", "no", "no", "no", "yes", "no", "no", "yes",
+               "no", "yes", "no", "no", "no", "no", "no", "no", "no",
+               "yes", "no", "no", "no", "no", "yes", "yes", "no",
+               "no", "no", "yes", "no", "no", "no", "no", "no", "no",
+               "no", "yes", "yes", "no", "no", "no", "yes", "no",
+               "yes", "no", "no", "no", "no", "yes", "yes", "no",
+               "no", "no")
+)
+```
+
+
+::: {.callout-note icon="true"}
+## About the data
+Sixty carefully observed (and entirely synthetic) mugs: how far the mug is from the table edge (`edge_cm`), hours since the cat was fed (`hungry_h`), whether a human is `watching`, how full the mug is (`mug_full`, percent) and the outcome: was the mug `knocked` off the table? File: `data/example_cat_mugs.csv`, see <a href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>.
+:::
+
+## Step 1: Look Before You Model
+
+```{r cat-look}
+head(cat_mugs)               # what do the first rows look like?
+table(cat_mugs$knocked)      # how many of each outcome?
+```
+
+::: {.callout-important icon="true"}
+## What do we learn?
+If we *always* guessed "no" for knocking mugs off the table, then we would be right for 40 of the 60 mugs (about 67%). This is our **baseline**: any useful tree has to beat it!
+:::
+
+## Step 2: Which Split Is the Best?
+
+Let's compute the Gini index ourselves, for a few possible first questions.
+
+```{r cat-gini}
+gini <- function(labels) {
+  p <- table(labels) / length(labels)   # the proportions
+  1 - sum(p^2)
+}
+
+# The Gini after a split is the weighted average of the two groups
+gini_after <- function(data, goes_left) {
+  n_left  <- sum(goes_left)
+  n_right <- sum(!goes_left)
+  (n_left  * gini(data$knocked[goes_left]) +
+   n_right * gini(data$knocked[!goes_left])) / nrow(data)
+}
+
+round(c(
+  no_split  = gini(cat_mugs$knocked),
+  watching  = gini_after(cat_mugs, cat_mugs$watching == "yes"),
+  half_full = gini_after(cat_mugs, cat_mugs$mug_full >= 50),
+  near_edge = gini_after(cat_mugs, cat_mugs$edge_cm < 13)
+), 3)
+```
+
+## Step 2: Which Split Is the Best? (Gini Value Conclusions)
+
+
+:::{.callout-important icon="true"}
+**Note 1:** We are looking for the smallest Gini index, which means the purest groups. The Gini index is 0 for a pure group (all yes or all no), and 0.5 for a 50/50 split of two categories (e.g., yes/no).
+
+**Note 2:** The `rpart()` function (up next!) calculates the Gini index for *every possible split* of every variable, and chooses the best one. We just did a few by hand to see how it works.
+:::
+
+<center>
+![](graphics/balance_i.jpg){width="20%"}
+</center>
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**The near-the-edge question has the lowest impurity. Let's see whether `rpart()` agrees with us.**
+:::
+
+
+
+## Step 3: Grow and Draw the Tree 
+
+
+```{r cat-fit}
+#| fig-show: hide
+library(rpart)        # grows the tree
+library(rpart.plot)   # draws the tree
+
+cat_tree <- rpart(knocked ~ .,
+                  data = cat_mugs,
+                  method = "class")
+
+rpart.plot(cat_tree)
+```
+
+
+```{r cat-draw}
+#| echo: false
+#| fig-width: 5.8
+#| fig-height: 4.6
+#| fig-align: center
+rpart.plot(cat_tree, cex = 1)
+```
+
+
+
+:::{.callout-blue}
+**The tilda character (`~`) implies that something is "is modelled by"**, and the `.` means "all of the other columns". So, `knocked ~ .` means "model `knocked` using everything else".
+:::
+
+
+
+## Step 3: Grow and Draw the Tree (A better View)
+
+
+```{r cat-draw2}
+#| echo: false
+#| fig-width: 5.8
+#| fig-height: 4.6
+#| fig-align: center
+rpart.plot(cat_tree, cex = 1)
+```
+
+## Reading the Tree's Nodes
+
+::: {.callout-important icon="true"}
+## Every box contains three lines
+1. **The prediction** for this group (`no` or `yes`)
+2. **The proportion of "yes"** (the second category, alphabetically) in this group
+3. **The percent** of all rows that reach this box
+
+**Going left means "yes"**: if the question in the node is true, then go down the left branch.
+:::
+
+:::{.callout-tip}
+The tree describes the rules of the outcomes of a cat possibly knocking a mug off a table.
+:::
+
+## How Important are the Variables of the Tree?
+
+:::{.callout-important icon="true"}
+The importance of each variable in the tree is shown in the output of `cat_tree$variable.importance`.
+:::
+
+```{r cat-rules}
+rpart.rules(cat_tree, cover = TRUE)
+cat_tree$variable.importance
+```
+
+:::{.callout-red}
+**Careful!** A variable may have an importance score even if it never appears in the tree. It counts as helpful if it *could* have stood in for a split.
+:::
+
+## How Important are the Variables of the Tree? (A Better View)
+
+```{r cat-importance}
+#| echo: false
+#| fig-width: 5.8
+#| fig-height: 4.6
+#| fig-align: center
+barplot(cat_tree$variable.importance, main = "Variable Importance", horiz = TRUE, col = "skyblue")
+```
+
+## Step 4: Make Predictions
+
+```{r cat-predict}
+new_mugs <- tibble(edge_cm  = c(5, 5, 25),
+                   hungry_h = c(6, 1, 7),
+                   watching = c("no", "no", "yes"),
+                   mug_full = c(80, 80, 20))
+
+# The predicted category, and the probability of each category
+predict(cat_tree, newdata = new_mugs, type = "class")
+round(predict(cat_tree, newdata = new_mugs, type = "prob"), 2)
+```
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**Follow each of the new mugs down the tree with your finger. Do you get the same answers?**
+:::
+
+## Step 5: The Honest Test
+
+::: {.callout-important icon="true"}
+## A tree has already seen its training data. Testing with that same data is like marking your own exam!
+Keep some rows hidden, grow the tree without them, and then test the tree on those rows.
+:::
+
+```{r cat-test}
+set.seed(301)                              # same split for all
+train_rows <- sample(nrow(cat_mugs), 45)   # 45 of the 60 rows
+train <- cat_mugs[train_rows, ]
+test  <- cat_mugs[-train_rows, ]
+
+test_tree <- rpart(knocked ~ ., data = train, method = "class")
+predicted <- predict(test_tree, newdata = test, type = "class")
+
+table(actual = test$knocked, predicted)   # the "confusion matrix"
+mean(predicted == test$knocked)           # the accuracy
+```
+
+## On Confusion Matrices
+
+:::{.callout-blue}
+
+- A confusion matrix is a structured table used to evaluate the performance of a classification model, like a decision tree, by comparing its predicted classes against the actual ground-truth classes.
+- Used to assess model performance (e.g.,  accuracy, precision, true negatives, true positives).
+:::
+
+<center>
+![](graphics/confusion.avif){width="60%"}
+
+</center>
+
+:::{.callout-yellow}
+**The confusion matrix:** the diagonal shows correct predictions. The off-diagonal shows the mistakes, and *which kind* they are. (In your project, is one kind of mistake worse than the other?)
+:::
+
+<!-- - The diagonal elements represent correct predictions, while the off-diagonal elements indicate misclassifications. -->
+
+
+## Step 6: Keeping the Tree Small
+
+:::{.callout-green}
+**`rpart()` stops growing by default**, thanks to three settings in `rpart.control()`:
+
+- `minsplit = 20`: do not try to split a group that has fewer than 20 rows
+- `minbucket = 7`: do not create a leaf with fewer than 7 rows
+- `cp = 0.01`: do not keep a split unless it improves the overall fit by at least this much
+:::
+
+```{r cat-prune}
+#| fig-show: hide
+# No brakes!
+huge_tree <- rpart(knocked ~ ., data = train, method = "class",
+                   control = rpart.control(cp = 0, minsplit = 2,
+                                           minbucket = 1))
+
+# xerror: the error estimated by cross-validation
+printcp(huge_tree)
+
+# Cut off the weaker branches
+small_tree <- prune(huge_tree, cp = 0.1)
+```
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**A big tree remembers. A small tree generalizes. Your goal is the tree that is *just* big enough.**
+:::
+
+# Group Activity
+[**Presentations to be given in class on Friday for an activity check mark grade.**]{.green-text}
+
+<center>
+(Oh yeah! This is where the fun begins!)
+</center>
+
+## Activity: Saving the World with Decision Trees
+
+::: {style="text-align: center; font-size: 1.4em; margin-top: 30px; margin-bottom: 30px;"}
+[**Data**]{.blue-text} → [**Questions**]{.purple-text} → [**Tree**]{.green-text} → [**Prediction**]{.orange-text} → [**Trust**]{.red-text}
+:::
+
+::: {.callout-note icon="true"}
+
+## Today you will *discover* each step of this chain for yourselves
+
+- [**Data**]{.blue-text} - What was measured? What is the outcome? Which columns could be fair to use?
+- [**Questions**]{.purple-text} - Which splits does the tree choose, and in which order?
+- [**Tree**]{.green-text} - Can you read your tree aloud as a set of plain rules?
+- [**Prediction**]{.orange-text} - What does your tree say about new cases?
+- [**Trust**]{.red-text} - How well does it work on unseen data? Where does it fail?
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**The world depends on your group. Also, there are slides.**
+:::
+
+## How Today Works
+
+::: {.callout-tip icon="true"}
+## Groups of four or five - each group gets its own scenario, data and research questions
+
+1. **Read** your scenario and research questions, and inspect your data (what are the variables? what is the outcome?)
+2. **Guess** - before you fit anything, write down which variables you *expect* to matter
+3. **Grow** a tree with `rpart()` and draw it with `rpart.plot()`
+4. **Read** the tree aloud. What are its rules? Were your guesses correct?
+5. **Test** and **predict** - see how the tree handles new cases
+6. **Discuss** your group's discussion questions, then the general questions
+7. **Prepare** slides that answer your research questions, for your presentation to the class
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**All of the data is synthetic. No gnomes were harmed in the making of this activity.**
+:::
+
+## What Your Group Will Produce
+
+To answer your research questions, your group will need to produce the following:
+
+::: {.callout-tip icon="true"}
+## To Address
+- A **plot of your tree** from `rpart.plot()`
+- Your tree's **rules**, written in plain language that a non-data-scientist could follow
+- Your **prediction about which variables would matter**, written *before* fitting, and what actually happened
+- Your tree's **results**: its accuracy or error, and predictions for any new cases in your project
+- Spoken answers to your **discussion questions** and the **general questions** (please be sure to take notes as you work)
+:::
+
+:::{.callout-blue}
+
+***Prepare a presentation for the class about your findings***
+
+- A five-minute presentation, with slides, in which everyone in the group speaks
+- (That's why you will need the notes!)
+:::
+
+# Your R Toolkit 🧰
+
+## The Six-Step Workflow
+
+::: {.callout-important icon="true"}
+## Run these in order - and stop after each one to ask *"What did I just learn?"*
+:::
+
+:::{.callout-green icon="true"}
+|Step | R command | What you will discover|
+|:---:|---|---|
+| 1 | `table(mydata$outcome)`| The baseline to beat|
+| 2 | `fit <- rpart(outcome ~ ., data = mydata, method = "class")`| Growing the tree (use `method = "anova"` for a number)|
+| 3 | `rpart.plot(fit)` and `rpart.rules(fit)` | Drawing and reading the tree|
+| 4 |`predict(fit, newdata, type = "class")`|Using the tree to make predictions|
+| 5 |`table(actual, predicted)`|Which mistakes does the tree make?|
+| 6 |`printcp(fit)` and `prune(fit, cp = 0.05)`|Keeping the tree small enough to trust|
+
+: {tbl-colwidths="[7,55,38]"}
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**First time only: run `install.packages("rpart.plot")` once on your machine (`rpart` comes with R).**
+:::
+
+## Starter Code: Steps 1 to 3
+
+::: {.callout-green icon="true"}
+This code will get you started but you might need to add to it in some way (e.g., changing variable names to match your data). You may have to look up some of these commands to help you use them. Use `?` before the command to get help (e.g., `?rpart` for help on growing trees, `?rpart.plot` for help on drawing them, or `?predict.rpart` for help on making predictions).
+:::
+
+```{r starter-1}
+#| eval: false
+# Replace mydata and outcome with your own names
+
+# Clean up workspace
+rm(list = ls()) # clear variables from previous work.
+graphics.off() # clear out all old plots
+cat("\014") # clear the console
+
+library(tidyverse)
+library(rpart)
+library(rpart.plot)
+
+# Read the CSV file, or paste the tibble from your group's slide
+mydata <- read_csv("data/groupN_something.csv")
+head(mydata)       # what do the first rows look like?
+summary(mydata)    # what is the range of each variable?
+
+# Step 1: what is the baseline to beat?
+table(mydata$outcome)  # edit outcome to match your variable name
+
+# Step 2: grow the tree
+# (use method = "anova" for a numeric outcome)
+fit <- rpart(outcome ~ ., data = mydata, method = "class")
+
+# Step 3: draw it, and read it aloud
+rpart.plot(fit)
+rpart.rules(fit, cover = TRUE)
+fit$variable.importance
+```
+
+## Starter Code: Steps 4 to 6
+
+```{r starter-2}
+#| eval: false
+# Step 4: predict for new cases (column names must match your data)
+predict(fit, newdata = new_cases, type = "class")  # category
+predict(fit, newdata = new_cases, type = "prob")   # probabilities
+
+# Step 5: an honest test with rows that the tree has never seen
+set.seed(301)
+# 75% of the rows for training
+train_rows <- sample(nrow(mydata), round(0.75 * nrow(mydata)))
+train <- mydata[train_rows, ]
+test  <- mydata[-train_rows, ]
+
+fit <- rpart(outcome ~ ., data = train, method = "class")
+predicted <- predict(fit, newdata = test, type = "class")
+table(actual = test$outcome, predicted)   # the confusion matrix
+mean(predicted == test$outcome)           # the accuracy
+
+# Step 6: is the tree too big?
+printcp(fit)     # compare the size of the tree (nsplit) with xerror
+plotcp(fit)      # a picture of the same table
+pruned <- prune(fit, cp = 0.05)
+rpart.plot(pruned)
+```
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**Note: Edit this code to match your own variables (e.g., `outcome` is not called `outcome` in your data)!**
+:::
+
+## Code Ideas for Special Situations
+
+::: {.columns}
+::: {.column}
+```{r ideas-1}
+#| eval: false
+# Leave a column out of the model
+fit <- rpart(outcome ~ . - some_column,
+             data = mydata, method = "class")
+
+# Use only the columns you name
+fit <- rpart(outcome ~ x1 + x2,
+             data = mydata, method = "class")
+
+# Remove the brakes (grow a huge tree)
+fit <- rpart(outcome ~ ., data = mydata,
+             method = "class",
+             control = rpart.control(cp = 0,
+                                     minsplit = 2,
+                                     minbucket = 1))
+
+# Limit the depth of a tree
+fit <- rpart(outcome ~ ., data = mydata,
+             method = "class",
+             control = rpart.control(maxdepth = 2))
+```
+:::
+::: {.column}
+```{r ideas-2}
+#| eval: false
+# Which columns did the tree really use?
+unique(fit$frame$var)
+
+# Compare groups with a count table
+mydata %>%
+  count(x1, outcome)
+
+# Compare groups with a plot
+ggplot(mydata, aes(x = x1, fill = outcome)) +
+  geom_bar(position = "fill")
+
+# Numeric predictor by outcome
+ggplot(mydata, aes(x = outcome, y = x2)) +
+  geom_boxplot()
+
+# Bigger text for your slides
+rpart.plot(fit, cex = 1.1)
+```
+:::
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+This code could come in useful if your group wants to explore more than the starter code shows.
+:::
+
+# General Discussion Questions 💬
+
+## For Every Group: The Tree and Its Rules
+
+::: {.callout-important icon="true"}
+## Answer these using *your* data and *your* tree
+1. What is the **first question** that your tree asks? Why would the tree put that question first?
+2. Read one path from the root to a leaf as a plain **sentence**. How many rows from your data land in that leaf?
+3. Which variables did your tree **ignore**? Does that mean that those variables have no connection with the outcome?
+4. Did the tree agree with your group's **guess** about which variables would matter? What surprised you?
+5. Which leaf would you **trust the most**, and which the least? Why?
+:::
+
+## For Every Group: The Model and the Trust
+
+::: {.callout-important icon="true"}
+## Answer these using *your* data and *your* tree
+6. What is the **baseline** for your data (e.g., always guessing the most common category)? Does your tree beat it by much?
+7. What is the difference between a tree's accuracy on its **training** data and on **unseen** data? Which number would you report to the mayor, the museum or the planet?
+8. Which kind of **mistake** does your tree make? Is one kind worse than the other in your scenario?
+9. Does your tree show that a variable **causes** the outcome? What would it take to show this?
+10. Trace your project through **Data → Questions → Tree → Prediction → Trust**. At which step could things go wrong for your scenario?
+:::
+
+## Presenting Your Findings 🎤
+
+::: {.callout-tip icon="true"}
+## Your Group has about 5 minutes. Cover:
+1. **The scenario** - the threat to the world, in one or two dramatic sentences
+2. **The data** - what was measured, how many observations, what is the outcome
+3. **The tree** - show your plot, and read its most important rules in plain language
+4. **The answers** - answer each of your **research questions**, with evidence from your tree
+5. **The trust** - how well does the tree work, and how much would you bet on it?
+6. **The discovery** - the one big lesson your project taught you about decision trees
+7. **Slides** - Use Google slides to show your plots and results. (*Who doesn't like slides!?*)
+:::
+
+::: {style="text-align: center; font-size: 1.4em; margin-top: 30px; margin-bottom: 30px;"}
+[**Data**]{.blue-text} → [**Questions**]{.purple-text} → [**Tree**]{.green-text} → [**Prediction**]{.orange-text} → [**Trust**]{.red-text}
+:::
+
+## Come prepared to present your findings to the class.
+
+:::{.callout-tip icon="true"}
+
+We will present in the order of the groups, so please be ready to present your findings when your group is called on. Bring slides, code, and notes to class. You will have about 5 minutes to present your findings. Everyone in the group should address one of the questions.
+:::
+
+# The Projects 🗂️
+
+## Which Group Are You?
+
+::: {.callout-green icon="true"}
+| Group | Scenario | Outcome to predict | Data frame | n |
+|:---:|---|---|---|:---:|
+| 1 | The Case of the Golden Bagel 🥯 | Is this suspect `guilty`? | `case_files` | 72 |
+| 2 | The Zombie Checkpoint 🧟 | `status`: human or zombie? | `checkpoint` | 90 |
+| 3 | Killer Shark Robots from Outer Space 🦈 | Number of `chomps` | `beaches` | 72 |
+| 4 | Dr. Evil-Pants and the Toothpaste Heist 🪥 | Was the warehouse `raided`? | `warehouses` | 80 |
+| 5 | Captain Bootstrap's Treasure Maps 🏴‍☠️ | Is there `treasure`? | `maps` | 120 |
+| 6 | Too-Good-To-Be-True Haunted Houses 👻 | Is the house `haunted`? | `houses` | 78 |
+| 7 | The Department of Cryptid Affairs 🛸 | Which `creature` was it? | `sightings` | 100 |
+| 8 | The Rise of the Garden Gnomes 🍄 | Is this gnome `plotting`? | `gnomes` | 70 |
+
+: {tbl-colwidths="[8,44,28,13,7]"}
+
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+In addition to added code in the slides, data sets also are available as CSV files <a href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>
+:::
+
+<!-- ============================ GROUP 1 ============================ -->
+
+# Group 1: The Case of the Golden Bagel 🥯
+
+## Group 1: The Scenario and Research Questions
+
+::: {.callout-note icon="true"}
+## The crime
+Disaster at the Museum of Breakfast! The priceless **Golden Bagel** has vanished from its case, and there are five suspects. The police chief hands you 72 solved case files from similar heists and says: *"Build me a tree, Detective. Tell me who did it."*
+:::
+
+::: {.callout-tip icon="true"}
+## Research questions
+1. Which clues best separate the guilty from the innocent in past cases?
+2. Which of the five current suspects does your tree point to?
+3. Is the evidence from your tree strong enough to justify an arrest?
+:::
+
+## Group 1: The Data
+
+::: {.callout-note icon="true"}
+## About the data
+`alibi_score` (1 = terrible, 10 = airtight), `motive_score` (0 to 10), `crumbs_found` on the suspect's clothes (yes/no), `distance_km` from the crime when last seen, `shoe_size`, `favourite_jam`, and the outcome: `guilty` (yes/no). File: `data/group1_golden_bagel.csv`, see <a href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>.
+:::
+
+::: {.data-code}
+```{r g1-data}
+case_files <- tibble(
+  alibi_score   = c(6, 1, 2, 3, 10, 8, 1, 9, 3, 5, 6, 1, 5, 3, 9, 10,
+                    5, 3, 10, 2, 6, 2, 10, 1, 6, 2, 8, 6, 6, 5, 2, 1,
+                    7, 4, 6, 1, 4, 6, 7, 1, 5, 1, 8, 6, 9, 5, 5, 7,
+                    4, 3, 1, 1, 5, 5, 7, 5, 9, 2, 1, 4, 4, 7, 9, 2,
+                    4, 5, 10, 9, 5, 3, 3, 7),
+  motive_score  = c(0, 8, 9, 10, 9, 6, 1, 7, 2, 8, 3, 3, 6, 2, 2, 5,
+                    9, 8, 7, 8, 6, 4, 6, 3, 0, 5, 6, 4, 0, 3, 7, 4,
+                    5, 4, 2, 10, 3, 9, 7, 3, 8, 6, 7, 5, 2, 10, 10,
+                    5, 4, 7, 5, 7, 7, 7, 0, 9, 3, 10, 4, 1, 3, 5, 9,
+                    5, 1, 6, 5, 7, 1, 0, 5, 7),
+  crumbs_found  = c("yes", "no", "no", "no", "no", "no", "yes",
+                    "yes", "yes", "yes", "yes", "yes", "no", "yes",
+                    "yes", "no", "no", "yes", "yes", "no", "no",
+                    "yes", "yes", "yes", "no", "no", "no", "yes",
+                    "yes", "no", "no", "no", "yes", "yes", "yes",
+                    "no", "no", "no", "no", "no", "yes", "no", "no",
+                    "no", "no", "yes", "yes", "no", "no", "no", "no",
+                    "yes", "yes", "no", "yes", "yes", "yes", "no",
+                    "yes", "no", "no", "yes", "no", "yes", "yes",
+                    "no", "no", "yes", "no", "yes", "yes", "no"),
+  distance_km   = c(13.8, 6.9, 1.2, 1.3, 0.9, 6.5, 2.7, 2, 0.9, 2,
+                    6.8, 11.8, 11.8, 4.4, 3.5, 11.1, 7.2, 0.4, 4, 8,
+                    5, 10.4, 3.1, 0.5, 7.9, 2.2, 46.5, 8.6, 1.4, 0.2,
+                    6.6, 2.7, 9.5, 4.3, 2, 18.6, 5.5, 3.8, 1.2, 1.6,
+                    9.3, 1.9, 10.7, 7.3, 1.2, 14.9, 9.6, 3.6, 9.9,
+                    13.8, 5.9, 1, 11, 22.6, 7.1, 3.3, 4.8, 10.6,
+                    13.7, 2.9, 0.2, 5.7, 2.8, 9.7, 2.4, 11.4, 2.4,
+                    11.2, 6.8, 10.3, 13.6, 1),
+  shoe_size     = c(43, 44, 43, 46, 46, 41, 45, 44, 37, 39, 44, 45,
+                    37, 38, 43, 45, 42, 40, 39, 36, 41, 40, 37, 43,
+                    46, 46, 37, 43, 36, 36, 39, 45, 44, 38, 42, 44,
+                    40, 41, 42, 37, 40, 43, 36, 40, 40, 39, 38, 42,
+                    39, 40, 47, 45, 47, 36, 39, 45, 37, 41, 47, 37,
+                    39, 46, 43, 44, 38, 36, 46, 44, 45, 42, 38, 37),
+  favourite_jam = c("apricot", "apricot", "apricot", "grape",
+                    "strawberry", "apricot", "apricot", "grape",
+                    "strawberry", "apricot", "grape", "grape",
+                    "apricot", "grape", "grape", "grape",
+                    "strawberry", "strawberry", "apricot", "apricot",
+                    "grape", "apricot", "strawberry", "apricot",
+                    "apricot", "strawberry", "apricot", "grape",
+                    "strawberry", "strawberry", "apricot", "apricot",
+                    "grape", "grape", "grape", "grape", "strawberry",
+                    "strawberry", "apricot", "apricot", "strawberry",
+                    "grape", "strawberry", "strawberry", "grape",
+                    "apricot", "strawberry", "strawberry",
+                    "strawberry", "strawberry", "strawberry",
+                    "apricot", "strawberry", "grape", "apricot",
+                    "strawberry", "apricot", "apricot", "strawberry",
+                    "strawberry", "apricot", "apricot", "strawberry",
+                    "strawberry", "strawberry", "strawberry",
+                    "apricot", "grape", "grape", "apricot",
+                    "apricot", "grape"),
+  guilty        = c("no", "yes", "no", "yes", "no", "no", "no", "no",
+                    "yes", "no", "no", "yes", "no", "yes", "no",
+                    "no", "no", "yes", "no", "yes", "no", "yes",
+                    "no", "no", "no", "no", "no", "no", "no", "no",
+                    "yes", "no", "no", "no", "no", "yes", "yes",
+                    "no", "no", "no", "no", "yes", "no", "no", "no",
+                    "no", "no", "no", "no", "yes", "no", "yes", "no",
+                    "no", "no", "no", "no", "yes", "yes", "no", "no",
+                    "no", "no", "no", "yes", "no", "no", "no", "no",
+                    "yes", "no", "no")
+)
+```
+:::
+
+## Group 1: The Case Files
+
+*Scroll down inside the table to see all 72 rows.*
+
+::: {style="font-size: 0.55em; max-height: 580px; overflow-y: auto;"}
+```{r g1-table}
+#| echo: false
+scroll_table(case_files)
+```
+:::
+
+## Group 1: The Five Suspects
+
+```{r g1-new}
+suspects <- tibble(
+  name          = c("Baroness von Crumb", "Sir Reginald Toast",
+                    "Dr. Marmalade", "Count Pretzel",
+                    "Little Miss Waffles"),
+  alibi_score   = c(2, 8, 3, 9, 4),
+  motive_score  = c(9, 9, 3, 2, 7),
+  crumbs_found  = c("yes", "yes", "yes", "no", "no"),
+  distance_km   = c(1.2, 3.5, 12, 25.4, 0.8),
+  shoe_size     = c(38, 44, 41, 46, 36),
+  favourite_jam = c("apricot", "grape", "strawberry", "grape",
+                    "apricot")
+)
+```
+
+::: {style="font-size: 0.5em;"}
+```{r g1-new-table}
+#| echo: false
+scroll_table(suspects)
+```
+:::
+
+## Group 1: Discussion Questions
+
+::: {.callout-important icon="true"}
+## Talk these over as a group
+1. Before you fit a tree: which columns do you expect to be useless? Did the tree agree with you?
+2. Take one suspect and walk them down the tree by hand. Which questions were asked, and which were never asked?
+3. Your tree may give someone a probability of 0.00. Does this mean they *could not* have done it?
+4. What should a detective do when two suspects land in the same leaf?
+5. The case files only record cases that were *solved*. How might this affect a model of who is "guilty"?
+:::
+
+::: {.callout-tip icon="true"}
+## Hints
+- `predict(fit, newdata = suspects, type = "prob")` gives a probability of guilt for each suspect.
+- `cbind(suspects["name"], round(predict(fit, suspects), 2))` makes a table that is ready for your slides.
+:::
+
+## Group 1: What to Present
+
+::: {.callout-important icon="true"}
+## Answer your research questions on your slides
+1. **The clues:** Show your tree. What are the rules for spotting a guilty suspect, in plain language? Which clues turned out to be useless?
+2. **The suspects:** Show a table of the probability of guilt for all five suspects. Who is your prime suspect? Can the tree separate your top suspects from each other?
+3. **The arrest:** Would you arrest anyone, based only on this tree? What is the cost of being wrong? What evidence would you gather next?
+:::
+
+<!-- ============================ GROUP 2 ============================ -->
+
+# Group 2: The Zombie Checkpoint 🧟
+
+## Group 2: The Scenario and Research Questions
+
+::: {.callout-note icon="true"}
+## The threat
+The zombie outbreak has reached the last safe town, and everyone at the gate *says* that they feel fine. You have medical records for 90 people who came through the checkpoint, and it later became very clear who was a zombie. Your tree will decide who gets in, and who goes to quarantine.
+:::
+
+::: {.callout-tip icon="true"}
+## Research questions
+1. Which signs best separate zombies from humans?
+2. How many zombies would your tree let through the gate, and how many humans would it wrongly lock up?
+3. How does the tree change when letting a zombie in is treated as **ten times worse** than quarantining a human?
+:::
+
+## Group 2: The Data
+
+::: {.callout-note icon="true"}
+## About the data
+`body_temp` (°C), `reaction_ms` (reaction time in milliseconds), `groan_db` (groan volume in decibels), `bite_marks` (number visible), `has_umbrella` (yes/no), and the outcome: `status` (human/zombie). File: `data/group2_zombie_checkpoint.csv`, see <a href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>.
+:::
+
+::: {.data-code}
+```{r g2-data}
+checkpoint <- tibble(
+  body_temp    = c(36.9, 36.6, 35.7, 36.7, 36.5, 36.7, 36.7, 37.4,
+                   36.6, 37.1, 36.7, 37.8, 36.6, 37.2, 37.1, 37.3,
+                   36.7, 37, 36.6, 33.3, 34.1, 32.7, 37.3, 36.8,
+                   36.8, 33.4, 33.6, 32.9, 36.7, 36.8, 37.2, 31.3,
+                   36.6, 36.4, 37, 36.7, 37.5, 35, 37.1, 36.7, 37.2,
+                   35.8, 36.6, 36.4, 35.7, 37.3, 32.6, 37, 37.5,
+                   37.4, 36.7, 35.8, 34.2, 36.3, 37.1, 36.5, 33.1,
+                   36.1, 36.8, 37.5, 36.7, 36.5, 37.5, 36.2, 36.7,
+                   36.4, 37, 36.6, 36.5, 37.4, 36.8, 36.7, 37.4,
+                   37.3, 36.4, 37.1, 34, 35.9, 36.5, 35.9, 36.3,
+                   37.1, 36.9, 36.7, 36.7, 36.6, 36.9, 36.5, 36.7,
+                   36.6),
+  reaction_ms  = c(269, 346, 324, 241, 261, 304, 374, 306, 266, 354,
+                   185, 236, 380, 280, 265, 303, 340, 303, 317, 648,
+                   561, 573, 300, 289, 307, 652, 652, 505, 332, 380,
+                   312, 671, 295, 193, 482, 264, 237, 519, 222, 260,
+                   300, 377, 317, 354, 269, 298, 603, 266, 328, 340,
+                   319, 359, 511, 352, 275, 313, 703, 378, 402, 212,
+                   265, 386, 377, 300, 284, 408, 278, 312, 273, 232,
+                   302, 257, 414, 322, 319, 259, 709, 300, 263, 321,
+                   366, 180, 326, 297, 335, 360, 269, 331, 257, 211),
+  groan_db     = c(35, 34, 46, 56, 30, 47, 31, 27, 31, 25, 47, 36,
+                   14, 30, 41, 34, 30, 15, 23, 81, 73, 59, 43, 51,
+                   31, 62, 93, 75, 48, 35, 43, 78, 41, 30, 43, 57,
+                   50, 63, 38, 30, 26, 39, 49, 33, 32, 23, 68, 27,
+                   26, 25, 10, 33, 54, 20, 26, 28, 68, 29, 33, 26,
+                   22, 25, 37, 48, 29, 33, 37, 35, 33, 27, 52, 36,
+                   46, 35, 18, 41, 59, 40, 53, 35, 43, 41, 24, 42,
+                   18, 35, 36, 26, 44, 30),
+  bite_marks   = c(1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+                   1, 0, 2, 2, 3, 0, 0, 0, 2, 1, 3, 0, 1, 0, 2, 0, 0,
+                   0, 0, 0, 3, 0, 0, 0, 2, 0, 1, 2, 0, 2, 0, 0, 0, 1,
+                   2, 2, 0, 0, 0, 2, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0,
+                   0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 1, 0, 0, 0, 0, 1, 0,
+                   0, 0, 0, 0, 0),
+  has_umbrella = c("yes", "yes", "no", "no", "no", "yes", "no",
+                   "yes", "no", "no", "yes", "no", "no", "no", "yes",
+                   "no", "yes", "yes", "yes", "yes", "yes", "no",
+                   "no", "no", "no", "no", "yes", "no", "no", "yes",
+                   "yes", "yes", "no", "no", "yes", "no", "no", "no",
+                   "yes", "yes", "yes", "no", "no", "yes", "yes",
+                   "no", "no", "no", "yes", "yes", "no", "no", "no",
+                   "yes", "no", "no", "yes", "no", "yes", "yes",
+                   "no", "no", "no", "yes", "yes", "yes", "yes",
+                   "yes", "yes", "no", "no", "yes", "no", "no",
+                   "yes", "yes", "yes", "no", "no", "no", "yes",
+                   "no", "yes", "no", "no", "no", "no", "yes", "no",
+                   "no"),
+  status       = c("human", "human", "zombie", "human", "human",
+                   "zombie", "human", "human", "human", "human",
+                   "human", "human", "human", "human", "human",
+                   "human", "human", "human", "human", "zombie",
+                   "zombie", "zombie", "human", "human", "human",
+                   "zombie", "zombie", "zombie", "human", "human",
+                   "human", "zombie", "human", "human", "human",
+                   "human", "human", "zombie", "human", "human",
+                   "human", "zombie", "human", "human", "zombie",
+                   "human", "zombie", "human", "human", "human",
+                   "human", "zombie", "zombie", "human", "human",
+                   "human", "zombie", "human", "human", "human",
+                   "human", "human", "human", "zombie", "human",
+                   "human", "human", "human", "human", "human",
+                   "human", "human", "human", "human", "human",
+                   "human", "zombie", "zombie", "human", "human",
+                   "zombie", "human", "human", "zombie", "human",
+                   "human", "human", "human", "human", "human")
+)
+```
+:::
+
+## Group 2: The Checkpoint Records
+
+*Scroll down inside the table to see all 90 rows.*
+
+::: {style="font-size: 0.55em; max-height: 580px; overflow-y: auto;"}
+```{r g2-table}
+#| echo: false
+scroll_table(checkpoint)
+```
+:::
+
+## Group 2: Discussion Questions
+
+::: {.callout-important icon="true"}
+## Talk these over as a group
+1. There are far more humans than zombies in the data. How accurate would a "useless" model be if it simply let everyone in?
+2. Why is accuracy alone a dangerous number to report for this checkpoint?
+3. Which mistake is worse: a **missed zombie** or a **quarantined human**? Would everyone agree? Would the quarantined human agree?
+4. Which zombies are hardest to catch? Why might that be?
+5. Can you think of real-world problems (in medicine? in fraud detection?) where the two kinds of mistake have different costs?
+:::
+
+## Group 2: Your Code
+
+::: {.callout-tip icon="true"}
+## Hints
+- A loss matrix sets the cost of each mistake. For the rows (the truth) and the columns (the prediction), the order is human, then zombie:
+:::
+
+```{r g2-code}
+#| eval: false
+fit_costly <- rpart(status ~ ., data = checkpoint, method = "class",
+                    parms = list(loss = matrix(c(0, 10, 1, 0),
+                                               nrow = 2)))
+
+# Which mistakes does this tree make?
+table(actual = checkpoint$status,
+      predicted = predict(fit_costly, type = "class"))
+```
+
+## Group 2: What to Present
+
+::: {.callout-important icon="true"}
+## Answer your research questions on your slides
+1. **The signs:** Show your tree. What are the rules for your gate guards, in plain language?
+2. **The mistakes:** Show the confusion matrix. Report the number of missed zombies and of quarantined humans, and not just the accuracy.
+3. **The cost:** Show the tree grown with the loss matrix next to your first tree. What changed in the tree, and in the confusion matrix? Which tree would you put in charge of the gate, and why?
+:::
+
+<!-- ============================ GROUP 3 ============================ -->
+
+# Group 3: Killer Shark Robots from Outer Space 🦈
+
+## Group 3: The Scenario and Research Questions
+
+::: {.callout-note icon="true"}
+## The threat
+They came from the sky. They went straight to the sea. Mechanical sharks, controlled by a signal from an alien mothership, are now terrorizing the beaches of Earth. The Coast Guard has records from 72 beach-days and needs to know: *how bad will it be today?* This outcome is a **number**, so you will need a **regression tree**.
+:::
+
+::: {.callout-tip icon="true"}
+## Research questions
+1. Which conditions lead to the highest number of shark robot chomps?
+2. Does a regression tree predict chomps more accurately than the linear regression we met last time?
+3. What does the tree predict for the four beaches on tomorrow's watch list, and how much should we trust each prediction?
+:::
+
+## Group 3: The Data
+
+::: {.callout-note icon="true"}
+## About the data
+`signal_strength` from the mothership (0 to 100), `water_temp` (°C), `surfers` in the water, `moon` phase (new/half/full), `shiny_pct` (percent of swimmers wearing shiny swimwear), and the outcome: `chomps` (recorded that day). File: `data/group3_shark_robots.csv`, see <a href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>.
+:::
+
+::: {.data-code}
+```{r g3-data}
+beaches <- tibble(
+  signal_strength = c(63, 87, 97, 78, 71, 88, 88, 79, 81, 79, 26, 89,
+                      23, 5, 31, 36, 33, 23, 49, 39, 32, 13, 72, 62,
+                      49, 40, 79, 68, 23, 0, 99, 84, 92, 39, 76, 6,
+                      74, 2, 37, 43, 16, 4, 84, 78, 44, 0, 60, 24,
+                      94, 57, 91, 27, 62, 3, 41, 65, 95, 92, 88, 28,
+                      86, 2, 33, 56, 96, 61, 24, 83, 37, 74, 88, 96),
+  water_temp      = c(23.8, 22.5, 28.4, 11.4, 13.7, 21.2, 13.2, 28.4,
+                      20.9, 17.2, 23.6, 12.9, 22.7, 18.7, 23.8, 18,
+                      8.5, 16.3, 11.7, 10.8, 25.5, 21.5, 21.8, 27.7,
+                      13.9, 28.2, 16.6, 23.6, 26, 14.7, 9.1, 11.7,
+                      25.4, 21.7, 26, 27.9, 29.1, 29.8, 25.8, 29.2,
+                      15.3, 8.7, 20.1, 13.7, 26.5, 27.4, 13.6, 21,
+                      18.6, 25, 28.3, 11, 24.3, 17.3, 8, 16.6, 8.4,
+                      21.1, 10.6, 28, 20.7, 25.9, 8.3, 26.1, 11.4,
+                      29.8, 25.6, 8.4, 25.7, 24.5, 28.5, 13.9),
+  surfers         = c(19, 81, 1, 115, 11, 35, 86, 39, 54, 60, 95, 79,
+                      88, 9, 104, 48, 102, 118, 111, 17, 109, 93, 97,
+                      34, 61, 21, 35, 66, 83, 29, 54, 23, 95, 39, 20,
+                      94, 5, 94, 57, 38, 112, 119, 56, 108, 77, 105,
+                      20, 74, 8, 95, 68, 113, 116, 49, 1, 23, 34, 70,
+                      2, 22, 18, 28, 115, 24, 35, 67, 114, 97, 6, 33,
+                      104, 112),
+  moon            = c("half", "half", "new", "half", "new", "new",
+                      "half", "half", "new", "full", "half", "half",
+                      "full", "full", "half", "half", "half", "new",
+                      "full", "full", "full", "half", "new", "half",
+                      "half", "full", "new", "half", "half", "full",
+                      "half", "half", "new", "half", "new", "new",
+                      "full", "new", "new", "full", "full", "half",
+                      "full", "full", "half", "new", "half", "half",
+                      "half", "full", "new", "half", "new", "full",
+                      "new", "new", "full", "new", "full", "half",
+                      "half", "half", "full", "new", "half", "half",
+                      "half", "new", "new", "full", "new", "new"),
+  shiny_pct       = c(47, 17, 14, 57, 56, 46, 48, 42, 27, 10, 36, 49,
+                      22, 34, 35, 28, 29, 8, 8, 6, 40, 16, 43, 32, 4,
+                      51, 30, 33, 14, 31, 27, 36, 23, 14, 19, 22, 33,
+                      18, 8, 34, 41, 15, 35, 8, 53, 4, 21, 35, 33,
+                      30, 39, 37, 60, 8, 40, 2, 49, 23, 0, 45, 19,
+                      50, 59, 30, 2, 45, 10, 47, 2, 4, 58, 52),
+  chomps          = c(66, 66, 68, 24, 32, 52, 25, 55, 61, 33, 14, 37,
+                      25, 4, 15, 11, 14, 2, 5, 8, 7, 12, 72, 66, 0,
+                      10, 30, 62, 19, 0, 27, 26, 52, 3, 71, 12, 61,
+                      14, 8, 0, 2, 4, 65, 29, 22, 18, 29, 14, 66, 16,
+                      64, 2, 63, 5, 2, 14, 20, 54, 20, 0, 67, 4, 14,
+                      5, 31, 71, 19, 29, 7, 56, 64, 33)
+)
+```
+:::
+
+## Group 3: The Beach Records
+
+*Scroll down inside the table to see all 72 rows.*
+
+::: {style="font-size: 0.55em; max-height: 580px; overflow-y: auto;"}
+```{r g3-table}
+#| echo: false
+scroll_table(beaches)
+```
+:::
+
+## Group 3: Tomorrow's Watch List
+
+```{r g3-new}
+watch_list <- tibble(
+  beach           = c("Sunny Cove", "Boiling Bay", "Frosty Point",
+                      "Quiet Sands"),
+  signal_strength = c(85, 85, 85, 30),
+  water_temp      = c(25, 35, 12, 25),
+  surfers         = c(40, 40, 40, 100),
+  moon            = c("full", "full", "new", "half"),
+  shiny_pct       = c(20, 20, 20, 10)
+)
+```
+
+::: {style="font-size: 0.5em;"}
+```{r g3-new-table}
+#| echo: false
+scroll_table(watch_list)
+```
+:::
+
+## Group 3: Discussion Questions
+
+::: {.callout-important icon="true"}
+## Talk these over as a group
+1. What does the number in a leaf of a regression tree mean? How is that different from the leaf of a classification tree?
+2. Plot `chomps` against `signal_strength`. Would a straight line capture this pattern?
+3. Sunny Cove and Boiling Bay differ only in water temperature. How does each model respond to that difference? Why?
+4. What is the warmest water in your data? Is Boiling Bay inside that range? Which model is more believable at that temperature?
+5. How would you explain the tree to a lifeguard? How would you explain the linear model?
+:::
+
+## Group 3: Your Code
+
+```{r g3-code}
+#| eval: false
+set.seed(301)
+train_rows <- sample(nrow(beaches), 54)
+train <- beaches[train_rows, ]
+test  <- beaches[-train_rows, ]
+
+tree_model <- rpart(chomps ~ ., data = train, method = "anova")
+line_model <- lm(chomps ~ ., data = train)
+
+# RMSE: the typical size of an error (in chomps). Smaller is better.
+rmse <- function(actual, predicted) {
+  sqrt(mean((actual - predicted)^2))
+}
+rmse(test$chomps, predict(tree_model, test))
+rmse(test$chomps, predict(line_model, test))
+```
+
+## Group 3: What to Present
+
+::: {.callout-important icon="true"}
+## Answer your research questions on your slides
+1. **The danger zone:** Show your tree. Under which conditions are chomps the highest? Which leaf has the safest beaches?
+2. **Tree versus line:** Report the test RMSE of both models. Which one wins, and what is it about this data that explains the result?
+3. **The watch list:** Show the predictions from both models for all four beaches. Which beach should be closed first? Which prediction do you trust the least, and why?
+:::
+
+<!-- ============================ GROUP 4 ============================ -->
+
+# Group 4: Dr. Evil-Pants and the Toothpaste Heist 🪥
+
+## Group 4: The Scenario and Research Questions
+
+::: {.callout-note icon="true"}
+## The threat
+The notorious **Dr. Evil-Pants** is stealing the world's supply of toothpaste. Soon, the planet's breath will be unbearable and humanity will be forced to surrender. You have intelligence on 80 toothpaste warehouses, and on which of them were raided. Can you work out the villain's plan, and how to stop it?
+:::
+
+::: {.callout-tip icon="true"}
+## Research questions
+1. What rules does Dr. Evil-Pants seem to follow when choosing a warehouse to raid?
+2. Does the effect of the number of guards depend upon the flavour of the toothpaste?
+3. Which of the four warehouses on the watch list needs protection the most? Would adding guards help?
+:::
+
+## Group 4: The Data
+
+::: {.callout-note icon="true"}
+## About the data
+`flavour` (mint/bubblegum/charcoal), `guards` on duty, `tonnes` of toothpaste in stock, `distance_lair_km` (from the villain's lair), `cameras`, `guard_dog` (yes/no), and the outcome: `raided` (yes/no). File: `data/group4_toothpaste_heist.csv`, see <a href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>.
+:::
+
+::: {.data-code}
+```{r g4-data}
+warehouses <- tibble(
+  flavour          = c("charcoal", "mint", "mint", "mint",
+                       "bubblegum", "mint", "bubblegum", "mint",
+                       "mint", "bubblegum", "bubblegum", "bubblegum",
+                       "bubblegum", "bubblegum", "bubblegum", "mint",
+                       "mint", "charcoal", "bubblegum", "charcoal",
+                       "bubblegum", "mint", "mint", "mint",
+                       "bubblegum", "bubblegum", "mint", "bubblegum",
+                       "charcoal", "mint", "mint", "mint",
+                       "charcoal", "charcoal", "charcoal",
+                       "bubblegum", "mint", "bubblegum", "charcoal",
+                       "mint", "bubblegum", "mint", "mint", "mint",
+                       "bubblegum", "mint", "charcoal", "bubblegum",
+                       "bubblegum", "mint", "mint", "mint",
+                       "bubblegum", "charcoal", "bubblegum", "mint",
+                       "mint", "bubblegum", "bubblegum", "mint",
+                       "charcoal", "bubblegum", "charcoal", "mint",
+                       "bubblegum", "charcoal", "charcoal", "mint",
+                       "charcoal", "bubblegum", "mint", "mint",
+                       "charcoal", "mint", "charcoal", "mint",
+                       "mint", "charcoal", "charcoal", "charcoal"),
+  guards           = c(7, 10, 5, 4, 10, 8, 6, 1, 9, 9, 2, 4, 7, 9, 7,
+                       4, 5, 2, 10, 6, 7, 1, 7, 3, 6, 10, 1, 10, 1,
+                       10, 8, 4, 6, 7, 1, 4, 6, 8, 4, 2, 5, 1, 8, 7,
+                       9, 8, 2, 6, 5, 6, 6, 9, 7, 8, 2, 8, 1, 3, 10,
+                       2, 7, 4, 3, 6, 5, 2, 2, 2, 10, 9, 6, 2, 6, 5,
+                       7, 9, 9, 6, 3, 4),
+  tonnes           = c(72, 71, 57, 39, 56, 69, 83, 45, 58, 67, 34,
+                       91, 74, 40, 24, 42, 18, 26, 85, 8, 21, 10, 7,
+                       79, 76, 53, 32, 99, 21, 53, 42, 13, 24, 6, 97,
+                       79, 7, 13, 90, 66, 30, 54, 88, 38, 61, 94, 14,
+                       86, 70, 32, 95, 38, 77, 34, 15, 15, 26, 29,
+                       72, 41, 28, 64, 40, 96, 97, 79, 19, 9, 52, 6,
+                       29, 67, 31, 10, 53, 49, 37, 71, 29, 49),
+  distance_lair_km = c(247, 314, 261, 658, 127, 325, 579, 105, 90,
+                       62, 32, 805, 422, 153, 83, 39, 58, 22, 268,
+                       327, 437, 528, 82, 166, 217, 97, 189, 127,
+                       404, 290, 535, 859, 29, 122, 894, 183, 255,
+                       74, 686, 557, 184, 875, 55, 808, 632, 414,
+                       296, 565, 857, 815, 355, 380, 674, 447, 570,
+                       154, 605, 509, 817, 459, 683, 414, 172, 701,
+                       72, 199, 217, 607, 96, 878, 702, 246, 414,
+                       121, 64, 74, 595, 542, 554, 810),
+  cameras          = c(11, 6, 2, 3, 7, 11, 4, 4, 2, 10, 2, 1, 2, 4,
+                       7, 12, 10, 2, 8, 8, 10, 3, 7, 8, 1, 6, 7, 3,
+                       11, 9, 0, 5, 12, 1, 5, 4, 6, 10, 4, 4, 2, 4,
+                       1, 7, 3, 5, 4, 0, 2, 6, 2, 9, 10, 12, 4, 11,
+                       12, 11, 1, 8, 1, 7, 4, 8, 6, 5, 9, 8, 3, 10,
+                       9, 0, 4, 6, 0, 12, 11, 12, 7, 0),
+  guard_dog        = c("no", "no", "yes", "yes", "yes", "no", "yes",
+                       "yes", "yes", "no", "yes", "no", "yes", "no",
+                       "yes", "no", "yes", "yes", "yes", "yes", "no",
+                       "no", "no", "yes", "yes", "yes", "no", "no",
+                       "yes", "no", "yes", "yes", "no", "yes", "no",
+                       "yes", "no", "yes", "no", "no", "no", "no",
+                       "no", "yes", "yes", "yes", "no", "no", "no",
+                       "yes", "yes", "no", "yes", "yes", "no", "yes",
+                       "yes", "no", "yes", "no", "yes", "no", "yes",
+                       "yes", "yes", "yes", "yes", "yes", "no",
+                       "yes", "yes", "yes", "no", "yes", "yes", "no",
+                       "yes", "yes", "yes", "yes"),
+  raided           = c("yes", "no", "yes", "yes", "no", "yes", "yes",
+                       "yes", "no", "yes", "no", "yes", "yes", "no",
+                       "no", "yes", "yes", "no", "yes", "no", "no",
+                       "no", "no", "yes", "yes", "no", "yes", "yes",
+                       "no", "no", "no", "yes", "no", "no", "yes",
+                       "no", "no", "no", "yes", "yes", "no", "yes",
+                       "no", "no", "no", "no", "no", "yes", "yes",
+                       "no", "no", "no", "yes", "yes", "no", "no",
+                       "yes", "no", "yes", "yes", "no", "no", "no",
+                       "no", "yes", "yes", "no", "yes", "yes", "no",
+                       "no", "no", "no", "yes", "no", "no", "no",
+                       "yes", "no", "no")
+)
+```
+:::
+
+## Group 4: The Warehouse Intelligence
+
+*Scroll down inside the table to see all 80 rows.*
+
+::: {style="font-size: 0.55em; max-height: 580px; overflow-y: auto;"}
+```{r g4-table}
+#| echo: false
+scroll_table(warehouses)
+```
+:::
+
+## Group 4: The Watch List
+
+```{r g4-new}
+watch_list <- tibble(
+  warehouse        = c("Minty Peaks", "Fort Fluoride", "Bubble Depot",
+                       "The Black Tube"),
+  flavour          = c("mint", "mint", "bubblegum", "charcoal"),
+  guards           = c(3, 8, 2, 9),
+  tonnes           = c(40, 90, 30, 85),
+  distance_lair_km = c(100, 300, 150, 700),
+  cameras          = c(4, 8, 2, 10),
+  guard_dog        = c("no", "yes", "no", "yes")
+)
+```
+
+::: {style="font-size: 0.5em;"}
+```{r g4-new-table}
+#| echo: false
+scroll_table(watch_list)
+```
+:::
+
+## Group 4: Discussion Questions
+
+::: {.callout-important icon="true"}
+## Talk these over as a group
+1. Compare the raid rate for warehouses with few guards against those with many guards, for the whole data set. What might you conclude? Now repeat this comparison *within each flavour*. What changes?
+2. What is an **interaction**? How does a tree show one, without being told to look for it?
+3. How would you have to change `lm()` or `glm()` to capture the same pattern?
+4. Look at Bubble Depot: it has only two guards. What does your tree predict, and does this make sense to you?
+5. If we moved more guards to a warehouse, would Dr. Evil-Pants simply carry on as before? What does the tree *not* know?
+:::
+
+## Group 4: Your Code
+
+```{r g4-code}
+#| eval: false
+# Raid rates: first overall, and then for each flavour
+warehouses %>%
+  group_by(few_guards = guards <= 5) %>%
+  summarise(raid_rate = mean(raided == "yes"), n = n(),
+            .groups = "drop")
+
+warehouses %>%
+  group_by(flavour, few_guards = guards <= 5) %>%
+  summarise(raid_rate = mean(raided == "yes"), n = n(),
+            .groups = "drop")
+
+# A "what if?" experiment: Minty Peaks, but with seven guards
+what_if <- filter(watch_list, warehouse == "Minty Peaks") %>%
+  mutate(guards = 7)
+predict(fit, newdata = what_if, type = "prob")
+```
+
+## Group 4: What to Present
+
+::: {.callout-important icon="true"}
+## Answer your research questions on your slides
+1. **The villain's plan:** Show your tree. Read Dr. Evil-Pants's plan aloud as a set of rules. (A dramatic voice is encouraged.)
+2. **The interaction:** Show the raid rates by guards *and* flavour. Explain why a look at one variable at a time could have led you astray.
+3. **The defence:** Show the predictions for all four warehouses. Where do you send your guards? Is your "what if?" prediction proof that more guards would stop a raid?
+:::
+
+<!-- ============================ GROUP 5 ============================ -->
+
+# Group 5: Captain Bootstrap's Treasure Maps 🏴‍☠️
+
+## Group 5: The Scenario and Research Questions
+
+::: {.callout-note icon="true"}
+## The quest
+Arr! The late Captain Bootstrap left behind a chest with 120 old treasure maps. Crews have dug at every X, so we know which maps led to `treasure`. Now a fresh pile of maps has arrived, and every wasted dig costs a barrel of rum. The ship's data scientist (that's you) has been warned: *a tree can memorize the sea, yet still run aground*.
+:::
+
+::: {.callout-tip icon="true"}
+## Research questions
+1. Which features of a map are signs of real treasure?
+2. How does the accuracy of a tree change as it grows deeper, on the training data and on unseen data?
+3. What is the size of the tree that you would actually take to sea?
+:::
+
+## Group 5: The Data
+
+::: {.callout-note icon="true"}
+## About the data
+`map_age_years`, `rum_stains` (number on the map), `parrot_rating` (a parrot's opinion, 1 to 5), `ink` (black/blood_red/squid), `ocean`, `num_xs` (number of X marks), `map_cm` (the width of the map), and the outcome: `treasure` (yes/no). File: `data/group5_treasure_maps.csv`, see <a href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>.
+:::
+
+::: {.data-code}
+```{r g5-data}
+maps <- tibble(
+  map_age_years = c(39, 318, 194, 6, 35, 18, 13, 14, 99, 139, 161,
+                    95, 270, 191, 68, 33, 283, 301, 95, 80, 213, 70,
+                    266, 203, 45, 165, 123, 252, 226, 289, 20, 304,
+                    84, 198, 61, 316, 242, 19, 174, 141, 246, 264,
+                    43, 140, 243, 293, 172, 103, 230, 7, 296, 256,
+                    220, 107, 39, 178, 179, 139, 97, 277, 312, 23,
+                    254, 230, 290, 319, 293, 218, 223, 239, 149, 90,
+                    88, 76, 320, 31, 178, 74, 307, 124, 169, 205,
+                    154, 278, 224, 45, 149, 120, 79, 319, 141, 125,
+                    51, 162, 239, 315, 170, 224, 196, 115, 172, 237,
+                    11, 97, 292, 307, 192, 251, 129, 144, 79, 127,
+                    133, 126, 159, 105, 316, 271, 65, 234),
+  rum_stains    = c(1, 6, 5, 0, 3, 3, 4, 1, 1, 3, 6, 1, 6, 6, 1, 2,
+                    4, 4, 3, 2, 3, 3, 0, 1, 0, 6, 2, 6, 2, 6, 0, 0,
+                    4, 0, 4, 0, 5, 6, 6, 6, 3, 0, 6, 2, 5, 0, 2, 0,
+                    2, 3, 0, 5, 4, 2, 2, 1, 2, 2, 1, 2, 0, 0, 5, 4,
+                    5, 1, 3, 3, 6, 2, 4, 2, 3, 1, 0, 5, 5, 5, 3, 2,
+                    6, 2, 6, 6, 5, 2, 6, 1, 5, 0, 0, 3, 3, 4, 0, 0,
+                    6, 2, 5, 1, 3, 4, 4, 3, 6, 1, 1, 4, 5, 4, 3, 3,
+                    0, 5, 1, 5, 3, 4, 6, 0),
+  parrot_rating = c(1, 2, 4, 2, 1, 4, 4, 3, 3, 5, 4, 4, 3, 2, 4, 1,
+                    5, 4, 5, 1, 2, 2, 5, 5, 2, 4, 3, 3, 5, 1, 3, 3,
+                    1, 1, 5, 5, 4, 1, 2, 2, 4, 4, 3, 5, 3, 2, 1, 1,
+                    5, 3, 2, 4, 1, 3, 2, 1, 4, 5, 3, 4, 5, 4, 3, 5,
+                    1, 1, 5, 2, 2, 3, 5, 2, 4, 5, 4, 4, 4, 1, 4, 1,
+                    2, 3, 4, 3, 4, 1, 5, 4, 5, 1, 5, 5, 1, 4, 4, 3,
+                    2, 3, 2, 2, 1, 4, 5, 3, 3, 3, 5, 4, 2, 1, 5, 4,
+                    2, 5, 5, 2, 3, 5, 4, 5),
+  ink           = c("blood_red", "squid", "squid", "squid", "squid",
+                    "squid", "black", "black", "squid", "black",
+                    "blood_red", "squid", "black", "black",
+                    "blood_red", "blood_red", "blood_red",
+                    "blood_red", "black", "blood_red", "black",
+                    "black", "blood_red", "squid", "blood_red",
+                    "black", "blood_red", "blood_red", "black",
+                    "squid", "blood_red", "black", "squid",
+                    "blood_red", "squid", "black", "black",
+                    "blood_red", "black", "black", "blood_red",
+                    "blood_red", "squid", "blood_red", "squid",
+                    "squid", "black", "blood_red", "blood_red",
+                    "black", "squid", "black", "black", "squid",
+                    "blood_red", "blood_red", "blood_red", "black",
+                    "squid", "blood_red", "black", "squid", "squid",
+                    "squid", "squid", "black", "blood_red", "black",
+                    "squid", "black", "blood_red", "black",
+                    "blood_red", "black", "black", "blood_red",
+                    "squid", "squid", "blood_red", "blood_red",
+                    "squid", "black", "black", "blood_red",
+                    "blood_red", "black", "black", "blood_red",
+                    "squid", "squid", "black", "blood_red",
+                    "blood_red", "blood_red", "squid", "blood_red",
+                    "black", "black", "squid", "squid", "black",
+                    "blood_red", "blood_red", "blood_red", "black",
+                    "black", "black", "squid", "black", "black",
+                    "black", "squid", "black", "squid", "black",
+                    "squid", "squid", "blood_red", "black",
+                    "blood_red"),
+  ocean         = c("Atlantic", "Caribbean", "Indian", "Atlantic",
+                    "Indian", "Caribbean", "Pacific", "Caribbean",
+                    "Atlantic", "Caribbean", "Atlantic", "Pacific",
+                    "Indian", "Atlantic", "Indian", "Atlantic",
+                    "Caribbean", "Pacific", "Pacific", "Indian",
+                    "Pacific", "Caribbean", "Indian", "Caribbean",
+                    "Caribbean", "Pacific", "Indian", "Indian",
+                    "Indian", "Atlantic", "Caribbean", "Indian",
+                    "Indian", "Indian", "Indian", "Caribbean",
+                    "Indian", "Indian", "Pacific", "Atlantic",
+                    "Indian", "Atlantic", "Indian", "Pacific",
+                    "Caribbean", "Pacific", "Indian", "Atlantic",
+                    "Pacific", "Indian", "Pacific", "Pacific",
+                    "Pacific", "Atlantic", "Atlantic", "Atlantic",
+                    "Caribbean", "Caribbean", "Atlantic", "Atlantic",
+                    "Atlantic", "Atlantic", "Atlantic", "Caribbean",
+                    "Indian", "Caribbean", "Indian", "Indian",
+                    "Caribbean", "Pacific", "Indian", "Atlantic",
+                    "Indian", "Caribbean", "Caribbean", "Atlantic",
+                    "Pacific", "Pacific", "Pacific", "Caribbean",
+                    "Indian", "Indian", "Pacific", "Caribbean",
+                    "Indian", "Pacific", "Atlantic", "Caribbean",
+                    "Caribbean", "Atlantic", "Atlantic", "Atlantic",
+                    "Atlantic", "Indian", "Indian", "Pacific",
+                    "Indian", "Pacific", "Indian", "Caribbean",
+                    "Pacific", "Pacific", "Caribbean", "Indian",
+                    "Atlantic", "Caribbean", "Indian", "Indian",
+                    "Caribbean", "Atlantic", "Indian", "Atlantic",
+                    "Atlantic", "Caribbean", "Pacific", "Indian",
+                    "Caribbean", "Pacific", "Caribbean", "Caribbean"),
+  num_xs        = c(2, 3, 4, 1, 1, 4, 5, 1, 1, 2, 2, 2, 2, 3, 1, 1,
+                    1, 1, 1, 4, 2, 4, 4, 4, 5, 4, 2, 3, 3, 5, 2, 1,
+                    3, 2, 4, 1, 2, 1, 2, 5, 3, 4, 5, 3, 1, 5, 4, 1,
+                    5, 1, 1, 1, 3, 4, 4, 3, 4, 3, 2, 5, 1, 1, 5, 1,
+                    2, 5, 5, 2, 4, 1, 2, 3, 2, 3, 4, 3, 3, 3, 2, 1,
+                    4, 1, 2, 3, 2, 3, 3, 4, 1, 4, 3, 2, 2, 3, 1, 3,
+                    5, 2, 5, 1, 1, 5, 3, 1, 1, 2, 4, 4, 5, 3, 2, 4,
+                    1, 5, 1, 5, 1, 4, 2, 3),
+  map_cm        = c(72, 71, 62, 90, 84, 61, 46, 66, 25, 22, 72, 47,
+                    82, 75, 21, 73, 90, 64, 53, 82, 74, 50, 82, 16,
+                    82, 36, 63, 38, 43, 60, 25, 74, 69, 74, 81, 65,
+                    72, 62, 52, 24, 24, 52, 50, 47, 75, 51, 86, 70,
+                    41, 46, 30, 17, 88, 28, 59, 69, 84, 22, 23, 54,
+                    18, 19, 57, 89, 41, 50, 71, 16, 27, 72, 60, 40,
+                    65, 87, 68, 18, 64, 42, 90, 60, 77, 28, 30, 39,
+                    61, 51, 39, 27, 59, 36, 37, 21, 19, 78, 26, 52,
+                    45, 29, 80, 79, 64, 37, 72, 36, 33, 64, 60, 84,
+                    72, 35, 55, 67, 34, 48, 70, 66, 25, 73, 48, 85),
+  treasure      = c("no", "no", "no", "no", "no", "no", "no", "yes",
+                    "no", "yes", "no", "no", "yes", "no", "no",
+                    "yes", "yes", "no", "no", "no", "no", "no",
+                    "yes", "yes", "no", "yes", "no", "no", "no",
+                    "no", "no", "yes", "no", "yes", "no", "yes",
+                    "yes", "no", "no", "yes", "no", "yes", "no",
+                    "no", "no", "yes", "no", "no", "yes", "no",
+                    "yes", "no", "yes", "no", "no", "yes", "no",
+                    "no", "no", "yes", "yes", "no", "yes", "no",
+                    "no", "no", "yes", "yes", "yes", "yes", "yes",
+                    "yes", "no", "no", "yes", "no", "no", "no",
+                    "yes", "no", "no", "yes", "yes", "no", "no",
+                    "no", "no", "no", "no", "no", "yes", "no", "yes",
+                    "yes", "yes", "yes", "no", "yes", "no", "no",
+                    "no", "yes", "no", "yes", "no", "yes", "yes",
+                    "no", "no", "no", "no", "no", "no", "yes", "yes",
+                    "no", "no", "no", "no", "no")
+)
+```
+:::
+
+## Group 5: The Maps
+
+*Scroll down inside the table to see all 120 rows.*
+
+::: {style="font-size: 0.55em; max-height: 580px; overflow-y: auto;"}
+```{r g5-table}
+#| echo: false
+scroll_table(maps)
+```
+:::
+
+## Group 5: Discussion Questions
+
+::: {.callout-important icon="true"}
+## Talk these over as a group
+1. What is the accuracy of a huge tree on its own training data? Why does this happen? Why is this *not* good news?
+2. What is the baseline accuracy on the test maps if you always guess "no treasure"? Does the huge tree beat it?
+3. What does **overfitting** look like on your plot of accuracy and depth? At what depth do the two lines begin to tell different stories?
+4. Change the seed in `set.seed(301)` a few times. Do the numbers change? What does this tell you about trusting a single test with 40 maps?
+5. A huge tree might split on the parrot's opinion. Why should we be suspicious of a rule that only applies to two or three maps?
+:::
+
+## Group 5: Your Code
+
+```{r g5-code}
+#| eval: false
+set.seed(301)
+train_rows <- sample(nrow(maps), 80)
+train <- maps[train_rows, ]
+test  <- maps[-train_rows, ]
+
+# Grow trees of depth 1 to 8, and score each one
+accuracy <- function(fit, data) {
+  mean(predict(fit, data, type = "class") == data$treasure)
+}
+
+results <- map_dfr(1:8, \(depth) {
+  fit <- rpart(treasure ~ ., data = train, method = "class",
+               control = rpart.control(cp = 0, minsplit = 2,
+                                       minbucket = 1,
+                                       maxdepth = depth))
+  tibble(depth = depth, train = accuracy(fit, train),
+         test = accuracy(fit, test))
+})
+results
+
+results %>%
+  pivot_longer(c(train, test), names_to = "data",
+               values_to = "accuracy") %>%
+  ggplot(aes(depth, accuracy, colour = data)) +
+  geom_line() + geom_point()
+
+# The baseline accuracy on the test maps
+mean(test$treasure == "no")
+```
+
+::: {.callout-tip icon="true"}
+## Hints
+- Remove the brakes completely with `rpart.control(cp = 0, minsplit = 2, minbucket = 1)` to grow the huge tree, and draw it. (Yes, it will be ugly.)
+- To grow your chosen tree, use `maxdepth`. Then use `rpart.plot()` and `rpart.rules()` to see what it says.
+:::
+
+## Group 5: What to Present
+
+::: {.callout-important icon="true"}
+## Answer your research questions on your slides
+1. **The signs:** Show your chosen tree, and give the rules for a promising map. Which features would a pirate be wise to ignore?
+2. **The overfitting:** Show your plot of accuracy and depth, and walk us through it. What happens to a huge tree on maps that it has never seen?
+3. **The tree for the voyage:** Which depth did you choose, and why? How much better is it than always guessing "no"? How certain are you, given what you saw when you changed the seed?
+:::
+
+<!-- ============================ GROUP 6 ============================ -->
+
+# Group 6: Too-Good-To-Be-True Haunted Houses 👻
+
+## Group 6: The Scenario and Research Questions
+
+::: {.callout-note icon="true"}
+## The problem
+*Spooky Acres Realty* is tired of selling homes that come with screaming walls and angry former residents. They have records on 78 houses, and they hired your group to build a model that would flag haunted houses **before the company buys them**. Your first tree is going to look amazing. Maybe a little *too* amazing...
+:::
+
+::: {.callout-tip icon="true"}
+## Research questions
+1. How accurate is a tree that uses all of the columns, and why might this be misleading?
+2. Which information is really available at the moment of buying a house, and what can a tree do with only that?
+3. Which of the four new listings should Spooky Acres Realty avoid?
+:::
+
+## Group 6: The Data
+
+::: {.callout-note icon="true"}
+## About the data
+`age_years`, `cold_spots` (number found), `creaks_per_night`, `flickering_lights` (yes/no), `previous_owners`, `asking_price_k` (thousands of dollars), `exorcist_bill` (dollars paid to an exorcist during the company's ownership), and the outcome: `haunted` (yes/no). File: `data/group6_haunted_houses.csv`, see <a href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>.
+:::
+
+::: {.data-code}
+```{r g6-data}
+houses <- tibble(
+  age_years         = c(27, 68, 145, 214, 72, 166, 95, 161, 128, 76,
+                        164, 224, 192, 231, 66, 39, 77, 14, 11, 212,
+                        27, 215, 135, 109, 143, 106, 18, 62, 181,
+                        236, 220, 178, 117, 196, 185, 9, 33, 107,
+                        171, 86, 54, 27, 166, 116, 216, 155, 62, 77,
+                        110, 49, 24, 68, 221, 17, 70, 172, 141, 140,
+                        207, 166, 136, 50, 123, 233, 86, 121, 223,
+                        111, 41, 99, 28, 94, 149, 218, 84, 129, 171,
+                        213),
+  cold_spots        = c(1, 6, 1, 3, 2, 1, 5, 1, 4, 4, 0, 3, 1, 2, 6,
+                        4, 0, 4, 0, 1, 2, 4, 6, 0, 2, 1, 2, 5, 3, 2,
+                        1, 4, 5, 2, 2, 5, 4, 2, 4, 0, 4, 1, 0, 5, 2,
+                        4, 6, 6, 2, 3, 6, 1, 3, 3, 5, 4, 2, 3, 5, 6,
+                        1, 5, 1, 3, 4, 1, 3, 1, 1, 1, 1, 3, 1, 6, 5,
+                        0, 5, 4),
+  creaks_per_night  = c(12, 3, 5, 1, 1, 2, 5, 6, 2, 38, 0, 5, 1, 25,
+                        4, 14, 42, 4, 1, 23, 5, 7, 8, 1, 1, 4, 3, 1,
+                        7, 5, 23, 19, 7, 11, 2, 3, 4, 12, 13, 8, 1,
+                        2, 7, 12, 11, 8, 17, 22, 1, 8, 5, 12, 3, 13,
+                        3, 2, 2, 13, 2, 15, 4, 1, 4, 24, 5, 4, 0, 4,
+                        10, 5, 0, 5, 8, 15, 4, 2, 20, 4),
+  flickering_lights = c("no", "no", "no", "yes", "yes", "no", "no",
+                        "no", "no", "yes", "no", "yes", "no", "no",
+                        "no", "yes", "no", "no", "no", "yes", "no",
+                        "no", "yes", "yes", "yes", "no", "no", "yes",
+                        "yes", "no", "yes", "no", "no", "yes", "no",
+                        "no", "no", "no", "no", "yes", "no", "no",
+                        "no", "no", "yes", "no", "no", "no", "no",
+                        "no", "no", "no", "no", "yes", "yes", "no",
+                        "no", "no", "yes", "no", "no", "no", "no",
+                        "no", "yes", "yes", "no", "no", "no", "yes",
+                        "no", "no", "no", "no", "no", "yes", "yes",
+                        "no"),
+  previous_owners   = c(8, 1, 7, 10, 9, 11, 6, 4, 8, 1, 6, 11, 10,
+                        10, 12, 2, 7, 3, 3, 6, 4, 5, 2, 12, 5, 11, 7,
+                        4, 10, 1, 1, 11, 7, 12, 6, 6, 2, 6, 10, 5,
+                        11, 3, 6, 4, 9, 9, 11, 2, 1, 10, 3, 12, 9,
+                        12, 6, 10, 7, 3, 4, 2, 11, 3, 7, 12, 7, 6, 5,
+                        4, 5, 11, 6, 4, 8, 5, 9, 10, 11, 1),
+  asking_price_k    = c(611, 547, 430, 820, 546, 493, 110, 809, 445,
+                        406, 239, 621, 309, 267, 163, 357, 402, 569,
+                        191, 189, 637, 413, 200, 132, 423, 217, 344,
+                        660, 847, 728, 124, 461, 640, 222, 401, 753,
+                        459, 570, 802, 808, 765, 661, 175, 514, 426,
+                        532, 784, 336, 417, 731, 635, 515, 293, 333,
+                        398, 346, 664, 466, 298, 500, 157, 748, 550,
+                        762, 144, 428, 389, 323, 490, 667, 385, 661,
+                        623, 608, 527, 397, 133, 837),
+  exorcist_bill     = c(0, 0, 0, 0, 0, 0, 5550, 0, 5970, 1820, 0,
+                        1980, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3250, 0, 0,
+                        0, 0, 0, 4960, 2260, 0, 3980, 5770, 4160, 0,
+                        0, 0, 0, 0, 1620, 0, 0, 0, 0, 1110, 0, 4230,
+                        3100, 2540, 0, 0, 0, 4240, 5270, 0, 0, 5480,
+                        0, 0, 0, 0, 0, 0, 0, 3280, 4470, 4560, 2540,
+                        0, 0, 0, 0, 3790, 0, 0, 2980, 2570, 2450,
+                        1320),
+  haunted           = c("no", "no", "no", "no", "no", "no", "yes",
+                        "no", "yes", "yes", "no", "yes", "no", "no",
+                        "no", "no", "no", "no", "no", "no", "no",
+                        "yes", "no", "no", "no", "no", "no", "yes",
+                        "yes", "no", "yes", "yes", "yes", "no", "no",
+                        "no", "no", "no", "yes", "no", "no", "no",
+                        "no", "yes", "no", "yes", "yes", "yes", "no",
+                        "no", "no", "yes", "yes", "no", "no", "yes",
+                        "no", "no", "no", "no", "no", "no", "no",
+                        "yes", "yes", "yes", "yes", "no", "no", "no",
+                        "no", "yes", "no", "no", "yes", "yes", "yes",
+                        "yes")
+)
+```
+:::
+
+## Group 6: The House Records
+
+*Scroll down inside the table to see all 78 rows.*
+
+::: {style="font-size: 0.55em; max-height: 580px; overflow-y: auto;"}
+```{r g6-table}
+#| echo: false
+scroll_table(houses)
+```
+:::
+
+## Group 6: The New Listings
+
+Nobody has hired an exorcist for these houses... yet.
+
+```{r g6-new}
+listings <- tibble(
+  address           = c("13 Crypt Lane", "2 Sunny Road",
+                        "666 Moan Street", "45 Draught Avenue"),
+  age_years         = c(190, 15, 130, 45),
+  cold_spots        = c(5, 0, 4, 4),
+  creaks_per_night  = c(25, 2, 12, 7),
+  flickering_lights = c("yes", "no", "no", "yes"),
+  previous_owners   = c(11, 2, 7, 4),
+  asking_price_k    = c(120, 450, 210, 300),
+  exorcist_bill     = c(0, 0, 0, 0)
+)
+```
+
+::: {style="font-size: 0.5em;"}
+```{r g6-new-table}
+#| echo: false
+scroll_table(listings)
+```
+:::
+
+## Group 6: Discussion Questions
+
+::: {.callout-important icon="true"}
+## Talk these over as a group
+1. Grow your first tree. What do you notice about its accuracy and its size? Would you celebrate?
+2. For each column, ask: *would we know this before the company buys the house, or only after?*
+3. What does your first tree predict for the new listings? Why does that happen?
+4. **Data leakage** occurs when a model is trained with information that would not be available at prediction time. Why is it so easy to miss?
+5. Can you think of a real-world leak? (For instance, in predicting who will get sick from hospital records, or in predicting who will drop a course?)
+:::
+
+::: {.callout-tip icon="true"}
+## Hints
+- Use `rpart(haunted ~ . - some_column, data = houses, method = "class")` to leave a column out of a model.
+- `predict(fit, newdata = listings, type = "prob")` works for each one of your trees. Compare them.
+:::
+
+## Group 6: What to Present
+
+::: {.callout-important icon="true"}
+## Answer your research questions on your slides
+1. **The miracle:** Show your first tree and its accuracy. Explain what went wrong, as if the company's CEO were sitting in the room.
+2. **The honest tree:** Show the tree you would really use. What are its rules, and what is its accuracy? Why is a lower accuracy actually *better news* here?
+3. **The listings:** Show the predictions from both trees for all four listings. Which houses do you recommend avoiding? What would have happened if the company had used your first tree?
+:::
+
+<!-- ============================ GROUP 7 ============================ -->
+
+# Group 7: The Department of Cryptid Affairs 🛸
+
+## Group 7: The Scenario and Research Questions
+
+::: {.callout-note icon="true"}
+## The problem
+Welcome to the Department of Cryptid Affairs! Reports of monsters are piling up. Each report goes to one of four over-worked field teams: the Bigfoot team, the Chupacabra team, the Lake Monster team or the Mothman team. Sending the wrong team is embarrassing, and often quite dangerous. You have 100 verified sightings, and you need a tree that sends each new report to the correct team. There are **four** categories this time!
+:::
+
+::: {.callout-tip icon="true"}
+## Research questions
+1. Which questions, and in which order, best sort a sighting into one of the four creatures?
+2. Which creatures does your tree mix up, and which ones does it never confuse?
+3. Which teams should be sent to the four new sightings, and how certain is the tree about them?
+:::
+
+## Group 7: The Data
+
+::: {.callout-note icon="true"}
+## About the data
+`height_m`, `water_dist_m` (distance to the nearest water), `night_hour` (the hour of the sighting, 0 to 23), `wings_seen` (yes/no), `footprint_cm` (length, 0 if none), `goats_missing` (nearby), `witness_snacks` (snacks eaten by the witness that day), and the outcome: `creature`. File: `data/group7_cryptid_sightings.csv`, see <a href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>.
+:::
+
+::: {.data-code}
+```{r g7-data}
+sightings <- tibble(
+  height_m       = c(2, 1.9, 2.4, 4.2, 5.9, 2.2, 1.8, 2.6, 6.7, 2.6,
+                     1.7, 1.4, 2.2, 1.1, 2.6, 0.8, 6, 1.8, 1.8, 2.5,
+                     1.5, 2, 2.7, 2, 0.7, 2.4, 1.3, 2, 2.6, 1.2, 5.9,
+                     9.2, 4, 1.9, 3.2, 2.1, 2.1, 2, 5, 2.1, 1.4, 7.4,
+                     5.2, 1.8, 2.7, 1.2, 1.5, 5.4, 2.1, 6.2, 1.8,
+                     2.6, 1.5, 1.2, 2.2, 2, 2.9, 1.3, 2.3, 2.6, 1.8,
+                     0.5, 1.6, 2.6, 2.3, 2.9, 2.7, 1.4, 1.7, 1.9,
+                     2.2, 5.6, 2.6, 1.6, 2.2, 1.6, 2.3, 0.8, 2.6,
+                     4.9, 2.4, 2.4, 2.1, 2.1, 2.1, 2, 4.7, 1.2, 1.9,
+                     9.6, 0.9, 0.8, 1, 1.9, 2.5, 2.1, 1.3, 2.2, 2,
+                     4.9),
+  water_dist_m   = c(7969, 2594, 1272, 30, 23, 3577, 9864, 500, 14,
+                     1259, 2059, 697, 7, 209, 6672, 663, 13, 3460,
+                     1499, 1963, 4363, 3236, 5624, 914, 2000, 1149,
+                     5399, 3652, 2008, 1841, 5, 2, 0, 1929, 3, 1287,
+                     581, 221, 32, 324, 2770, 2, 21, 3749, 10, 9960,
+                     2918, 12, 425, 31, 1423, 2731, 381, 1866, 1353,
+                     4362, 3, 1111, 1179, 308, 3857, 4321, 443, 7139,
+                     4, 26, 930, 376, 810, 1289, 1518, 5, 590, 1199,
+                     2271, 3420, 3509, 155, 587, 40, 2193, 1594,
+                     3518, 3763, 2898, 2370, 11, 11521, 1244, 15,
+                     151, 735, 2657, 1397, 3834, 258, 2216, 1362,
+                     861, 10),
+  night_hour     = c(19, 22, 0, 11, 22, 2, 7, 1, 18, 2, 6, 20, 16, 4,
+                     3, 22, 22, 0, 22, 22, 22, 0, 4, 0, 3, 22, 22, 1,
+                     2, 1, 9, 13, 18, 22, 0, 22, 22, 10, 11, 2, 1,
+                     18, 15, 22, 18, 3, 1, 7, 2, 18, 1, 15, 2, 22,
+                     22, 16, 9, 1, 3, 6, 20, 22, 2, 21, 3, 22, 5, 21,
+                     21, 3, 1, 6, 1, 21, 17, 22, 19, 21, 22, 23, 10,
+                     7, 19, 13, 2, 3, 23, 22, 16, 20, 23, 4, 3, 23,
+                     9, 10, 2, 2, 9, 16),
+  wings_seen     = c("no", "yes", "no", "no", "yes", "yes", "no",
+                     "yes", "no", "yes", "no", "no", "no", "no",
+                     "no", "no", "no", "yes", "yes", "no", "no",
+                     "yes", "no", "yes", "no", "no", "no", "yes",
+                     "yes", "no", "no", "no", "no", "yes", "no",
+                     "no", "yes", "no", "no", "no", "no", "no", "no",
+                     "yes", "no", "no", "no", "no", "no", "no", "no",
+                     "no", "yes", "no", "yes", "yes", "no", "yes",
+                     "no", "no", "no", "no", "no", "no", "no", "no",
+                     "no", "no", "no", "no", "yes", "no", "no", "no",
+                     "no", "no", "no", "no", "yes", "no", "yes",
+                     "no", "no", "no", "no", "no", "no", "no", "no",
+                     "no", "no", "yes", "no", "no", "no", "no", "no",
+                     "no", "no", "no"),
+  footprint_cm   = c(50, 11, 60, 24, 0, 36, 52, 28, 0, 3, 52, 37, 3,
+                     25, 37, 21, 4, 8, 43, 60, 43, 11, 19, 18, 21,
+                     39, 39, 15, 11, 18, 12, 11, 2, 3, 9, 28, 3, 47,
+                     12, 39, 12, 11, 13, 34, 17, 33, 15, 26, 43, 19,
+                     32, 40, 4, 24, 15, 58, 0, 33, 15, 34, 31, 40,
+                     33, 48, 29, 0, 15, 22, 36, 35, 0, 15, 18, 26,
+                     55, 15, 44, 48, 1, 9, 64, 31, 54, 40, 43, 36, 4,
+                     42, 40, 17, 19, 11, 21, 9, 31, 44, 21, 16, 29,
+                     8),
+  goats_missing  = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 2,
+                     1, 0, 2, 0, 6, 0, 0, 1, 2, 0, 2, 0, 0, 5, 0, 0,
+                     0, 0, 0, 3, 1, 0, 0, 1, 1, 0, 1, 6, 0, 3, 4, 0,
+                     0, 0, 1, 0, 0, 4, 0, 0, 0, 5, 4, 0, 0, 3, 4, 0,
+                     2, 0, 0, 2, 0, 0, 0, 0, 0, 3, 1, 1, 0, 5, 0, 0,
+                     0, 0, 1, 0, 0, 0, 0, 4, 0, 0, 4, 2, 4, 0, 0, 1,
+                     2, 0, 2, 0),
+  witness_snacks = c(0, 3, 0, 0, 1, 3, 2, 3, 5, 2, 1, 1, 2, 1, 2, 3,
+                     2, 0, 0, 3, 3, 4, 0, 1, 1, 5, 2, 3, 3, 2, 2, 4,
+                     0, 1, 2, 0, 4, 5, 0, 0, 5, 2, 0, 4, 1, 3, 5, 2,
+                     3, 3, 0, 4, 1, 4, 5, 1, 3, 0, 3, 2, 0, 4, 1, 3,
+                     0, 5, 4, 2, 4, 1, 5, 3, 1, 4, 2, 5, 0, 3, 0, 3,
+                     3, 1, 2, 4, 2, 5, 1, 2, 0, 5, 4, 0, 5, 0, 5, 5,
+                     0, 1, 5, 4),
+  creature       = c("bigfoot", "mothman", "bigfoot", "lake_monster",
+                     "lake_monster", "bigfoot", "bigfoot", "bigfoot",
+                     "lake_monster", "mothman", "bigfoot",
+                     "chupacabra", "lake_monster", "chupacabra",
+                     "bigfoot", "chupacabra", "lake_monster",
+                     "mothman", "chupacabra", "bigfoot",
+                     "chupacabra", "mothman", "bigfoot", "mothman",
+                     "chupacabra", "bigfoot", "chupacabra",
+                     "mothman", "mothman", "chupacabra",
+                     "lake_monster", "lake_monster", "lake_monster",
+                     "mothman", "lake_monster", "chupacabra",
+                     "mothman", "bigfoot", "lake_monster", "bigfoot",
+                     "chupacabra", "lake_monster", "lake_monster",
+                     "chupacabra", "lake_monster", "chupacabra",
+                     "chupacabra", "lake_monster", "bigfoot",
+                     "lake_monster", "chupacabra", "bigfoot",
+                     "mothman", "chupacabra", "mothman", "bigfoot",
+                     "lake_monster", "chupacabra", "chupacabra",
+                     "bigfoot", "chupacabra", "chupacabra",
+                     "chupacabra", "bigfoot", "chupacabra",
+                     "lake_monster", "bigfoot", "chupacabra",
+                     "bigfoot", "bigfoot", "mothman", "lake_monster",
+                     "mothman", "chupacabra", "bigfoot", "mothman",
+                     "bigfoot", "chupacabra", "mothman",
+                     "lake_monster", "bigfoot", "bigfoot", "bigfoot",
+                     "bigfoot", "bigfoot", "bigfoot", "lake_monster",
+                     "chupacabra", "bigfoot", "lake_monster",
+                     "chupacabra", "chupacabra", "chupacabra",
+                     "mothman", "bigfoot", "bigfoot", "chupacabra",
+                     "mothman", "bigfoot", "lake_monster")
+)
+```
+:::
+
+## Group 7: The Sighting Reports
+
+*Scroll down inside the table to see all 100 rows.*
+
+::: {style="font-size: 0.55em; max-height: 580px; overflow-y: auto;"}
+```{r g7-table}
+#| echo: false
+scroll_table(sightings)
+```
+:::
+
+## Group 7: The New Sightings
+
+```{r g7-new}
+new_sightings <- tibble(
+  report         = c("A", "B", "C", "D"),
+  height_m       = c(2.2, 1.2, 6.5, 2.3),
+  water_dist_m   = c(3000, 900, 10, 2000),
+  night_hour     = c(23, 2, 14, 23),
+  wings_seen     = c("yes", "no", "no", "yes"),
+  footprint_cm   = c(9, 30, 5, 30),
+  goats_missing  = c(0, 4, 0, 0),
+  witness_snacks = c(2, 1, 5, 3)
+)
+```
+
+::: {style="font-size: 0.5em;"}
+```{r g7-new-table}
+#| echo: false
+scroll_table(new_sightings)
+```
+:::
+
+## Group 7: Discussion Questions
+
+::: {.callout-important icon="true"}
+## Talk these over as a group
+1. With four creatures, what would the baseline be? What does each leaf show in `rpart.plot()` now?
+2. Could you use a single logistic regression, like one that predicts yes/no, to solve this problem? Why is a tree a natural fit here?
+3. Compare `fit$variable.importance` with the variables that actually appear in the tree. Is the most "important" variable in the tree? How can that be?
+4. Look at Report D (with wings *and* big feet). Which questions does the tree ask, and which clues does it ignore? Would a human expert do the same?
+5. What would happen if a report came in about a brand new creature, one not in the training data?
+:::
+
+::: {.callout-tip icon="true"}
+## Hints
+- `table(actual = sightings$creature, predicted = predict(fit, type = "class"))` shows the creatures that the tree mixes up.
+- `round(predict(fit, newdata = new_sightings, type = "prob"), 2)` shows the probability of each creature, for each report.
+:::
+
+## Group 7: What to Present
+
+::: {.callout-important icon="true"}
+## Answer your research questions on your slides
+1. **The field guide:** Show your tree. Turn it into a short field guide of questions for the person who answers the Department's telephone.
+2. **The mix-ups:** Show the confusion matrix. Which creatures get mixed up, and how would you test the tree more honestly than by using its training data?
+3. **The dispatch:** Show the probabilities for all four reports. Where do you send each team? Do you agree with your tree about Report D?
+:::
+
+<!-- ============================ GROUP 8 ============================ -->
+
+# Group 8: The Rise of the Garden Gnomes 🍄
+
+## Group 8: The Scenario and Research Questions
+
+::: {.callout-note icon="true"}
+## The threat
+They were never just lawn ornaments. A secret agency has inspected 70 garden gnomes and determined which ones are **plotting** to overthrow the suburbs. The agency's first analyst built one tree, read off a single rule, and declared the case closed. You have been asked to check that analyst's work: *how much would the tree's story change, if the agency had happened to inspect slightly different gnomes?*
+:::
+
+::: {.callout-tip icon="true"}
+## Research questions
+1. Which features of a gnome are associated with plotting?
+2. How much does the tree change when it is grown from slightly different samples of gnomes?
+3. Which conclusions about the gnomes are solid, and which ones should we not trust?
+:::
+
+## Group 8: The Data
+
+::: {.callout-note icon="true"}
+## About the data
+`height_cm`, `hat_cm` (hat height), `night_moves` (times the gnome was found in a new position this month), `beard_cm`, `garden_m2` (garden size), `fishing_rod` (yes/no), and the outcome: `plotting` (yes/no). File: `data/group8_garden_gnomes.csv`, see <a href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>.
+:::
+
+::: {.data-code}
+```{r g8-data}
+gnomes <- tibble(
+  height_cm   = c(34.1, 37.5, 29.2, 21.1, 20.8, 34.4, 32.1, 35.5,
+                  30.6, 41.1, 28.3, 23.4, 27, 36.4, 33.1, 30.2, 31.7,
+                  24.1, 27.6, 29.9, 21.1, 33, 37.6, 27.8, 26.5, 29.3,
+                  33.7, 33.3, 36.5, 16, 47.1, 23.5, 26.4, 15.6, 45.6,
+                  31.1, 36.8, 36.3, 34.5, 27.5, 24.4, 28.6, 34.8,
+                  31.1, 30.7, 37.7, 21.3, 30.3, 36.8, 39.3, 25.3,
+                  31.8, 22.5, 40.5, 36.1, 31.3, 19.5, 38.6, 33.7,
+                  35.1, 35.1, 23.9, 31.1, 22.2, 27, 38.2, 45.4, 30.6,
+                  37.6, 41),
+  hat_cm      = c(14.6, 15.6, 11.5, 7.7, 8.9, 13.4, 11.8, 14.9, 11.3,
+                  15.5, 11.9, 7.4, 9.7, 14.9, 14.5, 11.2, 14.8, 9,
+                  11, 9.4, 7.5, 14.2, 15, 11.2, 10.4, 11.8, 13.2,
+                  14.6, 14.1, 5.5, 20.5, 9.4, 10.3, 5.9, 19.7, 11.2,
+                  15.3, 15.2, 14.4, 11.5, 8.4, 11.3, 14.9, 13.1, 13,
+                  16.2, 8.7, 11.1, 14.9, 16.4, 8.6, 15.2, 7.3, 17.5,
+                  16.1, 12.3, 6.4, 16.4, 13.1, 13.6, 11.9, 9.6, 11.9,
+                  7.9, 11.4, 15.7, 20.3, 12.6, 17.7, 17.7),
+  night_moves = c(6, 3, 3, 6, 1, 0, 1, 2, 2, 1, 2, 3, 0, 5, 0, 2, 3,
+                  4, 5, 0, 4, 2, 2, 1, 0, 4, 2, 1, 2, 2, 1, 6, 2, 1,
+                  1, 4, 4, 1, 4, 0, 4, 0, 1, 0, 3, 5, 3, 0, 0, 3, 4,
+                  4, 4, 2, 4, 5, 4, 0, 3, 5, 4, 4, 5, 2, 3, 0, 3, 1,
+                  2, 4),
+  beard_cm    = c(11.1, 14.3, 9.2, 18.3, 5.3, 2.9, 14.2, 23.4, 21.2,
+                  2.9, 24, 4.1, 19.4, 19.5, 11.6, 7.8, 2.6, 8.6,
+                  21.4, 10.2, 12.8, 2.5, 4.4, 9.7, 5.2, 19.6, 5.3,
+                  17.6, 12.1, 7.8, 5, 4.9, 16.3, 6.2, 20.1, 3.3,
+                  16.1, 17.7, 19.1, 2.6, 12.5, 18.5, 17.3, 2, 24.2,
+                  10.1, 6.3, 4.6, 20, 7.3, 22.6, 16.3, 22.1, 13.1,
+                  15.7, 10.9, 9.9, 9.4, 18.8, 7.5, 3.2, 9.3, 6.3,
+                  14.6, 12.1, 5.4, 14.1, 15.6, 8.5, 9.9),
+  garden_m2   = c(29, 107, 358, 266, 189, 275, 390, 173, 284, 395,
+                  138, 27, 19, 121, 182, 115, 127, 102, 313, 74, 144,
+                  225, 220, 89, 42, 53, 363, 5, 85, 332, 210, 396,
+                  372, 322, 36, 228, 171, 274, 113, 232, 327, 39, 35,
+                  213, 337, 285, 117, 289, 107, 319, 197, 111, 288,
+                  201, 258, 272, 388, 79, 377, 124, 231, 301, 193,
+                  273, 340, 200, 245, 179, 233, 352),
+  fishing_rod = c("no", "yes", "yes", "no", "yes", "no", "no", "no",
+                  "no", "no", "yes", "no", "no", "yes", "no", "yes",
+                  "no", "yes", "yes", "no", "no", "yes", "yes",
+                  "yes", "yes", "no", "yes", "yes", "no", "yes",
+                  "yes", "no", "yes", "no", "no", "yes", "no", "no",
+                  "no", "yes", "no", "no", "no", "yes", "yes", "no",
+                  "no", "no", "yes", "no", "no", "no", "yes", "yes",
+                  "yes", "no", "yes", "no", "no", "yes", "no", "yes",
+                  "yes", "yes", "no", "yes", "no", "yes", "yes",
+                  "yes"),
+  plotting    = c("yes", "yes", "no", "no", "yes", "no", "no", "no",
+                  "no", "no", "no", "no", "yes", "yes", "no", "no",
+                  "no", "no", "no", "no", "no", "yes", "no", "no",
+                  "no", "no", "no", "no", "no", "no", "yes", "no",
+                  "no", "no", "yes", "yes", "yes", "yes", "yes",
+                  "no", "no", "no", "no", "yes", "no", "yes", "no",
+                  "no", "no", "no", "yes", "no", "no", "yes", "no",
+                  "no", "no", "no", "no", "yes", "yes", "no", "yes",
+                  "no", "no", "yes", "yes", "no", "no", "yes")
+)
+```
+:::
+
+## Group 8: The Gnome Files
+
+*Scroll down inside the table to see all 70 rows.*
+
+::: {style="font-size: 0.55em; max-height: 580px; overflow-y: auto;"}
+```{r g8-table}
+#| echo: false
+scroll_table(gnomes)
+```
+:::
+
+## Group 8: Discussion Questions
+
+::: {.callout-important icon="true"}
+## Talk these over as a group
+1. Plot `height_cm` against `hat_cm`, and find their correlation with `cor()`. What does this relationship mean for a tree that has to choose between them?
+2. Compare `fit$variable.importance` with your tree's splits. What does the importance score tell you that a single tree does not?
+3. Look at the first split in each one of the 20 trees. If a different question comes first, is it a different "explanation" of the gnomes?
+4. Do some variables appear only in a few of the trees? What should we conclude about those variables?
+5. **Random forests** grow hundreds of trees on different samples, and then let them vote. Why might this help?
+:::
+
+## Group 8: Your Code
+
+```{r g8-code}
+#| eval: false
+# Grow 20 trees, each from a different random 56 of the 70 gnomes
+grow_one_tree <- function(seed) {
+  set.seed(seed)
+  rows <- sample(nrow(gnomes), 56)
+  rpart(plotting ~ ., data = gnomes[rows, ], method = "class",
+        model = TRUE)
+}
+forest_of_trees <- map(1:20, grow_one_tree)
+
+# What is the first question in each tree?
+first_question <- map_chr(forest_of_trees,
+                          \(fit) as.character(fit$frame$var[1]))
+table(first_question)
+
+# How many leaves does each tree have?
+map_int(forest_of_trees, \(fit) sum(fit$frame$var == "<leaf>"))
+
+# Draw two of the trees, side by side
+par(mfrow = c(1, 2))
+rpart.plot(forest_of_trees[[1]])
+rpart.plot(forest_of_trees[[2]])
+par(mfrow = c(1, 1))
+```
+
+::: {.callout-tip icon="true"}
+## Hints
+- Which variables does each tree use? Try `unique(as.character(fit$frame$var))` on some of your trees.
+- Draw several of the trees, and not just the first two. Try to find two trees that tell quite different stories.
+:::
+
+## Group 8: What to Present
+
+::: {.callout-important icon="true"}
+## Answer your research questions on your slides
+1. **The suspects:** Show the tree grown from all 70 gnomes. What are its rules? Which features of a gnome are linked with plotting?
+2. **The instability:** Show two of the trees that disagree, and a table of the first questions from all 20 trees. How much did the story change?
+3. **The verdict:** Which findings held up across your trees, and which ones did not? What would you say to the agency's first analyst, who closed the case after a single tree?
+:::

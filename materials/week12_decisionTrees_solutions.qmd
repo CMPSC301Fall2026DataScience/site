@@ -1,0 +1,1498 @@
+---
+title: "Decision Trees: The Solutions"
+subtitle: "How the World Was Saved (Eight Times), With Code and Explanations"
+#author: "CS301 - Data Science with R"
+#date: "Fall 2026"
+format:
+  revealjs:
+    theme: white
+    highlight-style: github
+    code-block-background: true
+    code-block-border-left: "#31BAE9"
+    slide-number: true
+    chalkboard: true
+    scrollable: true
+    transition: none
+    css: custom_ds.css
+    width: 1200
+    height: 800
+    margin: 0.05
+    auto-stretch: false
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+<style>
+.reveal .wide-output pre { font-size: 0.45em; }
+</style>
+
+```{r setup}
+#| echo: false
+library(tidyverse)
+library(rpart)
+library(rpart.plot)
+options(knitr.kable.NA = "")
+
+# Round the numeric columns of a table for display on a slide
+show_table <- function(df, digits = 2) {
+  knitr::kable(mutate(as.data.frame(df), across(where(is.numeric), \(x) round(x, digits))),
+               align = "c")
+}
+```
+
+# What's On For Today? 🗝️
+
+::: {.callout-tip icon="true"}
+
+**The Solutions** - one possible set of answers for each of the eight scenarios
+
+- **The Answers at a Glance** - a short answer to each research question
+- **The Code** - everything here runs, so please try it yourself
+- **The Explanations** - why the tree did what it did
+- **The Discussion Questions** - what good answers could sound like
+- **Behind the Curtain** - how the data was *really* made, and whether the tree found the truth
+
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**Your group's answer could differ and still be good. What matters is the evidence behind it.**
+:::
+
+## Before We Start: One Helper Function
+
+::: {.callout-important icon="true"}
+## One train/test split can be lucky or unlucky
+With small data sets, one split gives a noisy answer. So, here we repeat the honest test on **200 different random splits** and report the average.
+:::
+
+```{r helper}
+# The average accuracy on unseen rows, over 200 random splits
+holdout_accuracy <- function(data, outcome, n_train) {
+  model <- as.formula(paste(outcome, "~ ."))
+  scores <- map_dbl(1:200, \(seed) {
+    set.seed(seed)
+    rows <- sample(nrow(data), n_train)
+    fit <- rpart(model, data = data[rows, ], method = "class")
+    predicted <- predict(fit, data[-rows, ], type = "class")
+    mean(predicted == data[[outcome]][-rows])
+  })
+  round(mean(scores), 3)
+}
+```
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**Every data set is read from the `files/decision_trees/` folder, and every number on these slides comes from this code.**
+:::
+
+<!-- ============================ GROUP 1 ============================ -->
+
+# Group 1: The Case of the Golden Bagel 🥯
+
+## Group 1: The Answers at a Glance
+
+::: {.callout-tip icon="true"}
+## Research questions and short answers
+1. **Which clues best separate the guilty from the innocent?** The `alibi_score` comes first, then `motive_score`, then `crumbs_found`. Distance, shoe size and jam were not used.
+2. **Which suspects does the tree point to?** Baroness von Crumb and Little Miss Waffles, tied at 0.91. Next is Dr. Marmalade at 0.58.
+3. **Is this strong enough for an arrest?** No. It is a good reason to investigate, and it is not proof. The tree cannot separate the top two suspects, and these two probabilities come from just 11 past cases.
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**A tree can tell the detective where to look. It cannot do the detective's job.**
+:::
+
+## Group 1: Growing the Tree
+
+::: {.columns}
+
+::: {.column}
+
+```{r g1-fit}
+#| fig-show: hide
+case_files <- read_csv(
+  "files/decision_trees/group1_golden_bagel.csv")
+
+table(case_files$guilty)
+
+fit <- rpart(guilty ~ ., data = case_files,
+             method = "class")
+rpart.plot(fit)
+```
+
+:::
+
+::: {.column}
+
+```{r g1-plot}
+#| echo: false
+#| fig-width: 5.8
+#| fig-height: 4.6
+#| fig-align: center
+rpart.plot(fit, cex = 1)
+```
+
+:::
+
+:::
+
+::: {.wide-output}
+```{r g1-rules}
+rpart.rules(fit, cover = TRUE)
+```
+:::
+
+::: {.callout-note icon="true"}
+## In plain language
+A decent alibi (5 or more) clears a suspect: **none of those 41 past suspects were guilty**. With a weak alibi, a strong motive is very suspicious (10 of 11 guilty). With a weak alibi and a weak motive, crumbs make the difference (7 of 12 guilty with crumbs, 1 of 8 without).
+:::
+
+## Group 1: The Five Suspects
+
+```{r g1-suspects}
+suspects <- tibble(
+  name          = c("Baroness von Crumb", "Sir Reginald Toast",
+                    "Dr. Marmalade", "Count Pretzel",
+                    "Little Miss Waffles"),
+  alibi_score   = c(2, 8, 3, 9, 4),
+  motive_score  = c(9, 9, 3, 2, 7),
+  crumbs_found  = c("yes", "yes", "yes", "no", "no"),
+  distance_km   = c(1.2, 3.5, 12, 25.4, 0.8),
+  shoe_size     = c(38, 44, 41, 46, 36),
+  favourite_jam = c("apricot", "grape", "strawberry", "grape",
+                    "apricot")
+)
+
+results <- cbind(suspects["name"],
+                 round(predict(fit, suspects), 2))
+```
+
+::: {style="font-size: 0.7em;"}
+```{r g1-suspects-table}
+#| echo: false
+show_table(results)
+```
+:::
+
+::: {.callout-note icon="true"}
+## Why the tie?
+The Baroness and Little Miss Waffles land in the **same leaf**, and a leaf gives one probability to everyone in it. Crumbs were found only on the Baroness, but the tree never asks about crumbs on that path. Sir Reginald has a strong motive too, but his alibi of 8 ends his path at the very first question.
+:::
+
+## Group 1: How Much Should We Trust It?
+
+```{r g1-trust}
+# On the data that the tree has already seen
+predicted <- predict(fit, type = "class")
+table(actual = case_files$guilty, predicted)
+mean(predicted == case_files$guilty)
+
+# The baseline: always guess "not guilty"
+mean(case_files$guilty == "no")
+
+# On unseen data, averaged over 200 splits
+holdout_accuracy(case_files, "guilty", n_train = 54)
+```
+
+::: {.callout-important icon="true"}
+## Reading these numbers
+The accuracy is 90% on the training data, and 81% on unseen data. This is only modestly better than the 75% baseline. On the training data, 6 of the 23 people that the tree called guilty were innocent. Would you want to be one of those 6? **This is why we would not make an arrest based only on this tree.**
+:::
+
+## Group 1: Discussion Answers
+
+::: {.callout-important icon="true"}
+## What good answers could sound like
+1. **Useless columns:** `favourite_jam` and `shoe_size` are obvious guesses. The tree agrees: it does not use them, or `distance_km`.
+2. **Walking the tree:** The Baroness gets just two questions (alibi, then motive). The tree never asks about crumbs, distance, shoes or jam on her path.
+3. **A probability of 0.00:** No! It means that 0 of the 41 similar past suspects were guilty. A rare event may simply not have occurred in a small sample. (Wait for the next slide!)
+4. **Two suspects in one leaf:** Gather evidence that separates them. The tree has run out of questions, but the detective has not.
+5. **Only solved cases:** The labels record who was *found* guilty. If some kinds of people are more often suspected or convicted, then the tree learns that pattern as well. This is a real concern for models used in policing.
+:::
+
+## Group 1: Behind the Curtain
+
+::: {.callout-green}
+**How the data was really made: the chance of guilt for each kind of suspect**
+
+| Alibi | Other clues | True chance of guilt | The tree's estimate |
+|:---:|---|:---:|:---:|
+| 4 or less | Motive of 6 or more | 0.92 | 0.91 |
+| 4 or less | Weaker motive, crumbs found | 0.70 | 0.58 |
+| 4 or less | Weaker motive, no crumbs | 0.10 | 0.12 |
+| 5 or more | Anything | **0.06** | **0.00** |
+
+: {tbl-colwidths="[15,40,22,23]"}
+:::
+
+::: {.callout-tip icon="true"}
+## What we learn
+The tree found the real rule, including the thresholds, and it ignored the three columns of pure noise. Yet look at the last row: **it said 0.00, and the truth was 0.06**. Sir Reginald and Count Pretzel are unlikely culprits, but they are not impossible.
+:::
+
+<!-- ============================ GROUP 2 ============================ -->
+
+# Group 2: The Zombie Checkpoint 🧟
+
+## Group 2: The Answers at a Glance
+
+::: {.callout-tip icon="true"}
+## Research questions and short answers
+1. **Which signs best separate zombies from humans?** Body temperature. Below 36°C is the single best question, and it is the only one in the default tree. With costs added, bite marks join it.
+2. **How many mistakes?** On the 90 people in the data: **2 zombies get in, and 3 humans get locked up**.
+3. **What changes at ten times the cost?** The tree adds a question about bite marks. Missed zombies fall to **0**, and quarantined humans rise to **15**. Accuracy falls from 94% to 83%, and it is the better tree anyway.
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**The most accurate model is not always the best model. It depends on what your mistakes cost.**
+:::
+
+## Group 2: Growing the Tree
+
+::: {.columns}
+
+::: {.column}
+
+```{r g2-fit}
+#| fig-show: hide
+checkpoint <- read_csv(
+  "files/decision_trees/group2_zombie_checkpoint.csv")
+
+fit <- rpart(status ~ ., data = checkpoint,
+             method = "class")
+rpart.plot(fit)
+```
+
+:::
+
+::: {.column}
+
+```{r g2-plot}
+#| echo: false
+#| fig-width: 5.8
+#| fig-height: 3.4
+#| fig-align: center
+rpart.plot(fit, cex = 1)
+```
+
+:::
+
+:::
+
+```{r g2-table}
+predicted <- predict(fit, type = "class")
+table(actual = checkpoint$status, predicted)
+mean(predicted == checkpoint$status)   # the accuracy
+mean(checkpoint$status == "human")     # baseline: let everyone in
+```
+
+::: {.callout-note icon="true"}
+## In plain language
+Check the temperature. Below 36°C, send them to quarantine. Other signs, like reaction time and groaning, also differ, but they mostly tell the tree what temperature has already told it. So, they are not needed.
+:::
+
+## Group 2: When Zombies Cost Ten Times More
+
+::: {.columns}
+
+::: {.column}
+
+```{r g2-costly}
+#| fig-show: hide
+fit_costly <- rpart(
+  status ~ ., data = checkpoint, method = "class",
+  parms = list(loss = matrix(c(0, 10, 1, 0),
+                             nrow = 2)))
+rpart.plot(fit_costly)
+```
+
+:::
+
+::: {.column}
+
+```{r g2-costly-plot}
+#| echo: false
+#| fig-width: 5.8
+#| fig-height: 3.6
+#| fig-align: center
+rpart.plot(fit_costly, cex = 1)
+```
+
+:::
+
+:::
+
+```{r g2-costly-table}
+predicted <- predict(fit_costly, type = "class")
+table(actual = checkpoint$status, predicted)
+mean(predicted == checkpoint$status)
+```
+
+::: {.callout-note icon="true"}
+## Reading the new tree
+The leaf probabilities did not change much, but **the rule for what to do changed**. A person with bite marks and a normal temperature has only a 0.14 chance of being a zombie. Still, the tree says quarantine, since a 1-in-7 chance of a zombie at ten times the cost is too risky.
+:::
+
+## Group 2: But What About New People?
+
+Those counts come from people that the trees have already seen. Let's check on unseen people.
+
+```{r g2-unseen}
+loss <- list(loss = matrix(c(0, 10, 1, 0), nrow = 2))
+
+scores <- map_dfr(1:200, \(seed) {
+  set.seed(seed)
+  rows <- sample(nrow(checkpoint), 65)
+  train <- checkpoint[rows, ]
+  test  <- checkpoint[-rows, ]
+  plain  <- predict(rpart(status ~ ., train, method = "class"),
+                    test, type = "class")
+  costly <- predict(rpart(status ~ ., train, method = "class",
+                          parms = loss), test, type = "class")
+  zombie <- test$status == "zombie"
+  tibble(missed_plain  = sum(zombie & plain == "human"),
+         missed_costly = sum(zombie & costly == "human"),
+         locked_plain  = sum(!zombie & plain == "zombie"),
+         locked_costly = sum(!zombie & costly == "zombie"))
+})
+round(colMeans(scores), 2)     # the average, for 25 unseen people
+```
+
+::: {.callout-important icon="true"}
+## The honest result
+On new people, the costly tree **does not catch every zombie**. It cuts missed zombies by about half (1.41 to 0.75), but it locks up about seven times as many humans (0.64 to 4.47). This is the trade-off that the town has to decide on. The "0 missed" on the last slide was too good to be true!
+:::
+
+## Group 2: Discussion Answers
+
+::: {.callout-important icon="true"}
+## What good answers could sound like
+1. **The useless model:** Letting everyone in is **76.7% accurate** (69 of 90), and it lets in all 21 zombies.
+2. **Why accuracy is dangerous:** It counts all mistakes as equal, and rewards a model for getting the common category right.
+3. **The worse mistake:** A missed zombie could end the town, and a quarantined human can be retested. The quarantined human may have strong views, and they deserve a real answer: use a second check, and do not lock them up forever.
+4. **The hardest zombies:** Those who were recently bitten. The two that were missed have a body temperature of 36.7°C and a normal reaction time (about 300 ms). Only their bite marks gave them away.
+5. **Other examples:** Cancer screening, airport security and fraud detection all treat a false alarm as cheaper than a miss. In criminal justice, we often want it the other way around.
+:::
+
+## Group 2: Behind the Curtain
+
+::: {.callout-green}
+**How the data was really made**
+
+- About **two thirds** of the zombies are advanced: cold (about 33.5°C), slow (about 620 ms) and loud (about 66 dB)
+- About **one third** are early-stage, and look nearly human (about 36.3°C, 345 ms and 40 dB), with some bite marks
+- `has_umbrella` is a coin flip: 22% of those without an umbrella are zombies, and so are 25% of those with one
+:::
+
+::: {.callout-tip icon="true"}
+## What we learn
+The 36°C cut separates advanced zombies from humans really well, and this is why one question is nearly enough. Early-stage zombies overlap with humans on *every* column, so no tree can catch them all without also catching humans. **Better data, and not a cleverer tree, would be the real solution.** (Perhaps a blood test?)
+:::
+
+<!-- ============================ GROUP 3 ============================ -->
+
+# Group 3: Killer Shark Robots from Outer Space 🦈
+
+## Group 3: The Answers at a Glance
+
+::: {.callout-tip icon="true"}
+## Research questions and short answers
+1. **Which conditions lead to the most chomps?** A strong signal (59 or more) and warm water (18°C or more): an average of **63 chomps**. Moon phase and shiny swimwear were not used.
+2. **Does a tree beat linear regression?** Yes, clearly. The test RMSE is **6.7 chomps for the tree, and 15.5 for `lm()`**. The data has thresholds and an interaction, which a straight line cannot capture.
+3. **What about the watch list?** Close Sunny Cove first (predicted 63 chomps). Boiling Bay has the same prediction, but we trust it the least: its water is hotter than anything in the data.
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**Sharks bite in steps, not in straight lines. Choose the model that matches the shape of your data.**
+:::
+
+## Group 3: Growing the Tree
+
+::: {.columns}
+
+::: {.column}
+
+```{r g3-fit}
+#| fig-show: hide
+beaches <- read_csv(
+  "files/decision_trees/group3_shark_robots.csv")
+
+fit <- rpart(chomps ~ ., data = beaches,
+             method = "anova")
+rpart.plot(fit)
+```
+
+::: {.callout-blue}
+**Note:** Each box now shows the **average number of chomps** and the percent of all rows.
+:::
+
+:::
+
+::: {.column}
+
+```{r g3-plot}
+#| echo: false
+#| fig-width: 5.8
+#| fig-height: 4.4
+#| fig-align: center
+rpart.plot(fit, cex = 1)
+```
+
+:::
+
+:::
+
+::: {.wide-output}
+```{r g3-rules}
+rpart.rules(fit, cover = TRUE)
+```
+:::
+
+::: {.callout-note icon="true"}
+## In plain language
+The mothership's signal matters most, and warm water makes things worse. When the signal is weak, a beach only has trouble with warm water and lots of surfers (about 16 chomps).
+:::
+
+## Group 3: Tree Versus Line
+
+```{r g3-rmse}
+set.seed(301)
+train_rows <- sample(nrow(beaches), 54)
+train <- beaches[train_rows, ]
+test  <- beaches[-train_rows, ]
+
+tree_model <- rpart(chomps ~ ., data = train, method = "anova")
+line_model <- lm(chomps ~ ., data = train)
+
+rmse <- function(actual, predicted) {
+  sqrt(mean((actual - predicted)^2))
+}
+rmse(test$chomps, predict(tree_model, test))
+rmse(test$chomps, predict(line_model, test))
+```
+
+```{r g3-many}
+# Was that split just lucky? Try 200 of them.
+scores <- map_dfr(1:200, \(seed) {
+  set.seed(seed)
+  rows <- sample(nrow(beaches), 54)
+  tree <- rpart(chomps ~ ., beaches[rows, ], method = "anova")
+  line <- lm(chomps ~ ., beaches[rows, ])
+  test <- beaches[-rows, ]
+  tibble(tree = rmse(test$chomps, predict(tree, test)),
+         line = rmse(test$chomps, predict(line, test)))
+})
+round(colMeans(scores), 1)     # the average RMSE
+mean(scores$tree < scores$line)  # how often does the tree win?
+```
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**The result holds: the tree wins on 96% of the splits, with about half of the error.**
+:::
+
+## Group 3: Why Does the Line Lose?
+
+```{r g3-picture}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 3.6
+#| fig-align: center
+beaches %>%
+  mutate(water = if_else(water_temp >= 18, "Warm (18°C or more)",
+                         "Cool")) %>%
+  ggplot(aes(signal_strength, chomps,
+             colour = water, shape = water)) +
+  geom_point(size = 3) +
+  scale_colour_manual(values = c("#2E86C1", "#E67E22")) +
+  labs(x = "Signal strength", y = "Chomps",
+       colour = NULL, shape = NULL) +
+  theme_minimal(base_size = 15) + theme(legend.position = "top")
+```
+
+::: {.callout-note icon="true"}
+## Look at the shape
+Chomps stay low, then **jump** at a signal of about 60. Above this jump, warm water splits the points into two separate bands. That is a threshold *and* an interaction: the effect of warm water is much bigger when the signal is strong. A line has one slope for each variable, and cannot do this.
+:::
+
+```{r g3-picture-code, ref.label="g3-picture", eval=FALSE}
+```
+
+## Group 3: The Watch List
+
+```{r g3-watch}
+watch_list <- tibble(
+  beach           = c("Sunny Cove", "Boiling Bay", "Frosty Point",
+                      "Quiet Sands"),
+  signal_strength = c(85, 85, 85, 30),
+  water_temp      = c(25, 35, 12, 25),
+  surfers         = c(40, 40, 40, 100),
+  moon            = c("full", "full", "new", "half"),
+  shiny_pct       = c(20, 20, 20, 10)
+)
+full_line <- lm(chomps ~ ., data = beaches)
+results <- tibble(beach = watch_list$beach,
+                  tree  = predict(fit, watch_list),
+                  line  = predict(full_line, watch_list))
+range(beaches$water_temp)   # is 35°C inside this range?
+```
+
+::: {style="font-size: 0.7em;"}
+```{r g3-watch-table}
+#| echo: false
+show_table(results, digits = 1)
+```
+:::
+
+::: {.callout-important icon="true"}
+## Do not trust Boiling Bay
+The warmest water in our data is 29.8°C, and Boiling Bay is at 35°C. The tree **cannot extrapolate**, and treats it just like any other warm beach (63). The line keeps climbing (65.2). Neither has evidence about water that hot. Would the robots love it? Would they overheat? We have no idea.
+:::
+
+## Group 3: Discussion Answers
+
+::: {.callout-important icon="true"}
+## What good answers could sound like
+1. **A number in a leaf:** It is the *average* outcome of the training rows in that leaf. A classification leaf instead gives the most common category and its proportion.
+2. **The plot:** A straight line does not capture it. Look for the jump at a signal of about 60, and the separate bands above it.
+3. **Sunny Cove and Boiling Bay:** The tree gives both 63, since both are in the same leaf: it only asks if the water is at least 18°C. The line adds about 1.5 chomps per degree, for 10 extra degrees: 50.4 grows to 65.2.
+4. **The range:** The warmest water is 29.8°C, so Boiling Bay is outside of the range. Neither model should be believed here. The tree's flat answer is at least not *inventing* a trend.
+5. **Explaining it:** To a lifeguard: "strong signal and warm water means get everyone out." The line: "each degree adds about 1.5 chomps, and each signal point adds about 0.6". The tree is easier, and here it is also more accurate.
+:::
+
+## Group 3: Behind the Curtain
+
+::: {.callout-green}
+**How the data was really made: the true average number of chomps (plus some random noise)**
+
+| Signal | Water | Surfers | True average | The tree's estimate |
+|:---:|:---:|:---:|:---:|:---:|
+| 60 or more | 18°C or more | Any | 62 | 63.0 |
+| 60 or more | Under 18°C | Any | 28 | 27.4 |
+| Under 60 | 18°C or more | 60 or more | 14 | 15.9 |
+| Under 60 | Other | Other | 5 | 4.5 and 6.1 |
+:::
+
+::: {.callout-tip icon="true"}
+## What we learn
+The tree practically recovered the true recipe, thresholds and all: it found cuts at 59, 18 or 19, and 68 for true values of 60, 18 and 60. **The data was made of steps, and so a model made of steps wins.** If the true pattern were a smooth line, then `lm()` would win. And: `moon` and `shiny_pct` are pure noise. The moon averages of 20, 29 and 36 chomps look like a pattern, but they are chance.
+:::
+
+<!-- ============================ GROUP 4 ============================ -->
+
+# Group 4: Dr. Evil-Pants and the Toothpaste Heist 🪥
+
+## Group 4: The Answers at a Glance
+
+::: {.callout-tip icon="true"}
+## Research questions and short answers
+1. **What rules does the villain follow?** Dr. Evil-Pants goes for **poorly-guarded mint** (fewer than 6 guards), or for **huge stocks of the other flavours** (65 tonnes or more).
+2. **Do guards depend on flavour?** Yes! Few guards versus many guards gives raid rates of 88% versus 6% for mint. For the other flavours, guards do not protect anything.
+3. **Which warehouse needs protection?** Minty Peaks (0.92), and guards should help there. The Black Tube (0.94) is at high risk too, but guards are not the answer: it needs to move its stock.
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**The effect of one variable can depend on another. Trees are built to notice this.**
+:::
+
+## Group 4: Growing the Tree
+
+::: {.columns}
+
+::: {.column}
+
+```{r g4-fit}
+#| fig-show: hide
+warehouses <- read_csv(
+  "files/decision_trees/group4_toothpaste_heist.csv")
+
+fit <- rpart(raided ~ ., data = warehouses,
+             method = "class")
+rpart.plot(fit)
+```
+
+:::
+
+::: {.column}
+
+```{r g4-plot}
+#| echo: false
+#| fig-width: 5.8
+#| fig-height: 4.6
+#| fig-align: center
+rpart.plot(fit, cex = .9)
+```
+
+:::
+
+:::
+
+::: {.wide-output}
+```{r g4-rules}
+rpart.rules(fit, cover = TRUE)
+```
+:::
+
+::: {.callout-note icon="true"}
+## The interaction is in the shape of the tree
+The tree asks about guards **only on the path for mint**. A different question on each branch is how a tree shows an interaction. Nobody told it to look for one.
+:::
+
+## Group 4: One Variable at a Time Misleads
+
+```{r g4-rates}
+warehouses %>%
+  group_by(few_guards = guards <= 5) %>%
+  summarise(raid_rate = mean(raided == "yes"), n = n(),
+            .groups = "drop")
+
+warehouses %>%
+  group_by(flavour, few_guards = guards <= 5) %>%
+  summarise(raid_rate = mean(raided == "yes"), n = n(),
+            .groups = "drop")
+```
+
+::: {.callout-important icon="true"}
+## What changes?
+Overall, few guards gives 57% versus 31%: guards seem to help a bit. **Within mint it is a huge effect (88% versus 6%).** For bubblegum and charcoal, few guards actually have *fewer* raids. Do not rush to conclude that guards attract raids! There are only 46 warehouses here, and Behind the Curtain will show that this difference is chance.
+:::
+
+## Group 4: The Watch List
+
+```{r g4-watch}
+watch_list <- tibble(
+  warehouse        = c("Minty Peaks", "Fort Fluoride", "Bubble Depot",
+                       "The Black Tube"),
+  flavour          = c("mint", "mint", "bubblegum", "charcoal"),
+  guards           = c(3, 8, 2, 9),
+  tonnes           = c(40, 90, 30, 85),
+  distance_lair_km = c(100, 300, 150, 700),
+  cameras          = c(4, 8, 2, 10),
+  guard_dog        = c("no", "yes", "no", "yes")
+)
+results <- cbind(watch_list["warehouse"],
+                 round(predict(fit, watch_list), 2))
+
+# What if? Minty Peaks with 7 guards, The Black Tube with 20
+what_if <- bind_rows(mutate(watch_list[1, ], guards = 7),
+                     mutate(watch_list[4, ], guards = 20))
+round(predict(fit, what_if), 2)
+```
+
+::: {style="font-size: 0.7em;"}
+```{r g4-watch-table}
+#| echo: false
+show_table(results)
+```
+:::
+
+::: {.callout-note icon="true"}
+## Where do the guards go?
+**Minty Peaks.** Its prediction falls from 0.92 to 0.00 with 7 guards. The Black Tube stays at 0.94 even with 20 guards, since the tree never asks about guards on its path. Is this proof that guards would stop a raid? **No.** It only shows how the tree would respond. Warehouses with many guards may differ in other ways, and the villain can change plans.
+:::
+
+## Group 4: How Much Should We Trust It?
+
+```{r g4-trust}
+# On the data that the tree has already seen
+mean(predict(fit, type = "class") == warehouses$raided)
+
+# The baseline: always guess "not raided"
+mean(warehouses$raided == "no")
+
+# On unseen data, averaged over 200 splits
+holdout_accuracy(warehouses, "raided", n_train = 60)
+```
+
+```{r g4-small}
+# One split: what does a tree see with just 60 of the warehouses?
+set.seed(301)
+rows <- sample(nrow(warehouses), 60)
+```
+
+::: {.wide-output}
+```{r g4-small-rules}
+rpart.rules(rpart(raided ~ ., warehouses[rows, ], method = "class"))
+```
+:::
+
+::: {.callout-important icon="true"}
+## An uncomfortable result
+The accuracy is 91% on the training data, but only **66% on unseen data** (the baseline is 57.5%). With these 60 rows, the tree **does not even ask about guards**. An interaction splits the data into small groups, and small groups make it hard to find. Our villain's plan is a good story, and we should say that it rests on just 80 warehouses.
+:::
+
+## Group 4: Discussion Answers
+
+::: {.callout-important icon="true"}
+## What good answers could sound like
+1. **The comparison:** See the raid rates on the earlier slide. The overall effect of guards hides a huge effect for mint, and no real effect for other flavours.
+2. **Interaction:** The effect of one variable depends on the value of another. In a tree, this appears as a question that is asked on one branch and not on the other.
+3. **Changing the model:** You have to ask for it, with `*` (see below). With a tree, you get interactions without asking. But the model below also gets a p-value, which a tree does not give you.
+4. **Bubble Depot:** Only two guards, and the tree says 0.07. It does make sense: it is not mint, and it has just 30 tonnes. Few guards alone do not make a target.
+5. **What the tree does not know:** Dr. Evil-Pants can see our guards too! A tree learns from past behaviour, and an opponent can change. The data has no record of what the villain would do next.
+:::
+
+```{r g4-glm}
+glm_model <- glm(I(raided == "yes") ~ flavour * guards,
+                 family = binomial, data = warehouses)
+round(coef(summary(glm_model)), 2)
+```
+
+## Group 4: Behind the Curtain
+
+::: {.callout-green}
+**How the data was really made: the chance of a raid**
+
+| Flavour | Condition | True chance of a raid |
+|:---:|---|:---:|
+| Mint | 5 guards or fewer | 0.92 |
+| Mint | 6 guards or more | 0.12 |
+| Other flavours | 65 tonnes or more | 0.85 |
+| Other flavours | Under 65 tonnes | 0.06 |
+
+: {tbl-colwidths="[25,45,30]"}
+:::
+
+::: {.callout-tip icon="true"}
+## What we learn
+- **For other flavours, guards have no effect at all.** The "fewer raids with few guards" pattern was chance. Good thing that we did not take the guards away!
+- **The tree made a mistake on mint.** It puts all mint warehouses of 65 tonnes or more in one leaf (0.33), since those 9 rows are too few to split. A big mint warehouse with 2 guards really has a 0.92 chance, and not 0.33.
+- `distance_lair_km`, `cameras` and `guard_dog` are pure noise, and the tree left them out.
+:::
+
+<!-- ============================ GROUP 5 ============================ -->
+
+# Group 5: Captain Bootstrap's Treasure Maps 🏴‍☠️
+
+## Group 5: The Answers at a Glance
+
+::: {.callout-tip icon="true"}
+## Research questions and short answers
+1. **Which features signal real treasure?** An old map (about 126 years or more) with few rum stains (0 or 1). Ignore the parrot, the ink, the ocean, the X marks and the size.
+2. **How does accuracy change with depth?** On training maps, it climbs steadily with depth. On test maps, it peaks at **depth 2 (72.5%)**, and then falls to 55% at depth 8. A huge tree scores 100% on training, and just 57.5% on test.
+3. **Which tree goes to sea?** Depth 2. It has three leaves, it is easy to explain and it was the best depth on most of the splits that we tried. It is still only modestly better than always guessing "no".
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**A tree can memorize the sea, yet still run aground.**
+:::
+
+## Group 5: Growing Trees of Every Depth
+
+```{r g5-depth}
+maps <- read_csv("files/decision_trees/group5_treasure_maps.csv")
+
+set.seed(301)
+train_rows <- sample(nrow(maps), 80)
+train <- maps[train_rows, ]
+test  <- maps[-train_rows, ]
+
+accuracy <- function(fit, data) {
+  mean(predict(fit, data, type = "class") == data$treasure)
+}
+results <- map_dfr(1:8, \(depth) {
+  fit <- rpart(treasure ~ ., data = train, method = "class",
+               control = rpart.control(cp = 0, minsplit = 2,
+                                       minbucket = 1,
+                                       maxdepth = depth))
+  tibble(depth = depth, train = accuracy(fit, train),
+         test = accuracy(fit, test))
+})
+results
+```
+
+## Group 5: Accuracy Versus Depth
+
+```{r g5-plot}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 3.8
+#| fig-align: center
+results %>%
+  pivot_longer(c(train, test), names_to = "data",
+               values_to = "accuracy") %>%
+  ggplot(aes(depth, accuracy, colour = data, shape = data)) +
+  geom_line(linewidth = 1) + geom_point(size = 3) +
+  geom_hline(yintercept = mean(test$treasure == "no"),
+             linetype = 2) +
+  annotate("text", x = 7.2, y = .66,
+           label = "always guess \"no\"") +
+  scale_colour_manual(values = c("#E67E22", "#2E86C1")) +
+  labs(x = "Depth of tree", y = "Accuracy",
+       colour = NULL, shape = NULL) +
+  theme_minimal(base_size = 15) + theme(legend.position = "top")
+```
+
+::: {.callout-important icon="true"}
+## This is what overfitting looks like
+The two lines start to tell different stories after depth 2. From there, every extra level makes the tree better at the maps it has already seen, and no better (usually worse) at new maps. By depth 7, it is **worse than always guessing "no"**.
+:::
+
+```{r g5-plot-code, ref.label="g5-plot", eval=FALSE}
+```
+
+## Group 5: The Huge Tree
+
+```{r g5-huge}
+huge <- rpart(treasure ~ ., data = train, method = "class",
+              control = rpart.control(cp = 0, minsplit = 2,
+                                      minbucket = 1))
+accuracy(huge, train)                    # on maps it has seen
+accuracy(huge, test)                     # on maps it has not seen
+mean(test$treasure == "no")              # always guess "no"
+
+# How many leaves, and how many hold just one or two maps?
+leaves <- huge$frame[huge$frame$var == "<leaf>", ]
+nrow(leaves)
+sum(leaves$n <= 2)
+
+# Which questions does the huge tree ask, and how often?
+table(as.character(huge$frame$var[huge$frame$var != "<leaf>"]))
+```
+
+::: {.callout-note icon="true"}
+## Why is 100% not good news?
+With no brakes, the tree keeps splitting until each leaf is pure, even if it must use a parrot's opinion to do so. **Of its 22 leaves, 13 hold only one or two maps.** That is not a pattern, that is a list of old maps.
+:::
+
+## Group 5: The Tree for the Voyage
+
+::: {.columns}
+
+::: {.column}
+
+```{r g5-final}
+#| fig-show: hide
+voyage <- rpart(
+  treasure ~ ., data = train, method = "class",
+  control = rpart.control(cp = 0, minsplit = 2,
+                          minbucket = 1,
+                          maxdepth = 2))
+rpart.plot(voyage)
+
+predicted <- predict(voyage, test,
+                     type = "class")
+table(actual = test$treasure, predicted)
+accuracy(voyage, test)
+```
+
+:::
+
+::: {.column}
+
+```{r g5-final-plot}
+#| echo: false
+#| fig-width: 5.8
+#| fig-height: 4.2
+#| fig-align: center
+rpart.plot(voyage, cex = 1)
+```
+
+:::
+
+:::
+
+::: {.callout-note icon="true"}
+## In plain language
+Young maps are nearly worthless (0.08). Old maps with 0 or 1 rum stains are the ones to dig for (0.85). Old and stained maps are a gamble (0.39), so the tree says skip them. This is a cautious tree: on the test maps it missed 9 of the 15 real treasures, but it only wasted 2 digs. Since every wasted dig costs a barrel of rum, a pirate may be happy with this!
+:::
+
+## Group 5: Was That Just a Lucky Seed?
+
+```{r g5-seeds}
+scores <- map_dfr(1:50, \(seed) {
+  set.seed(seed)
+  rows <- sample(nrow(maps), 80)
+  map_dfr(1:8, \(depth) {
+    fit <- rpart(treasure ~ ., maps[rows, ], method = "class",
+                 control = rpart.control(cp = 0, minsplit = 2,
+                                         minbucket = 1,
+                                         maxdepth = depth))
+    tibble(seed = seed, depth = depth,
+           train = accuracy(fit, maps[rows, ]),
+           test = accuracy(fit, maps[-rows, ]))
+  })
+})
+scores %>% group_by(depth) %>%
+  summarise(lowest = min(test), highest = max(test),
+            train = mean(train), test = mean(test)) %>% round(3)
+mean(maps$treasure == "no")   # always guess "no"
+```
+
+::: {.callout-important icon="true"}
+## An honest answer
+Seed 301 was kind to us. Over 50 splits, depth 2 averages about **68%** (and not 72.5%), compared with 61% at depth 8 and a baseline of 63%. A single test on 40 maps can land anywhere from 45% to 80%. Depth 2 was the best depth (or tied for it) in 36 of the 50 splits, so the *choice* holds up, and the exact number does not.
+:::
+
+## Group 5: Discussion Answers
+
+::: {.callout-important icon="true"}
+## What good answers could sound like
+1. **The huge tree:** It gets 100% on its training data, since it can keep splitting until every map has been memorized. This is not good news: it has learned the noise along with the signal.
+2. **The baseline:** Always guessing "no" gets 62.5% on the test maps. The huge tree gets 57.5%. *It loses to a model with no questions at all.*
+3. **On the plot:** The lines begin to diverge after depth 2: training keeps climbing, and test turns downward.
+4. **Changing the seed:** The numbers change a lot! With only 40 test maps, one lucky map moves the score by 2.5 points. Never trust a single small test. Repeat it, or use cross-validation (`printcp()` does this for you).
+5. **The parrot:** The huge tree asks about `parrot_rating` 4 times. A rule that covers only two or three maps has almost no evidence behind it. It could fit by chance, and with so many questions to choose from, some are bound to.
+:::
+
+## Group 5: Behind the Curtain
+
+::: {.callout-green}
+**How the data was really made: the chance of treasure**
+
+| Map age | Rum stains | True chance of treasure |
+|:---:|:---:|:---:|
+| 150 years or more | 2 or fewer | 0.82 |
+| 150 years or more | 3 or more | 0.40 |
+| Under 150 years | Any | 0.18 |
+
+: {tbl-colwidths="[35,30,35]"}
+:::
+
+::: {.callout-tip icon="true"}
+## What we learn
+- The depth-2 tree found the correct two variables. Its cuts (126 years, and fewer than 2 stains) are near the truth, but not the same. Eighty maps can only tell you so much.
+- `parrot_rating`, `ink`, `ocean`, `num_xs` and `map_cm` are **pure noise**. Everything that the huge tree learned from them was imaginary.
+- **Even a perfect model** that knew this recipe could only reach about **75%** accuracy, since treasure is partly chance. If a model claims 100%, then it is memorizing. Some uncertainty cannot be removed.
+:::
+
+<!-- ============================ GROUP 6 ============================ -->
+
+# Group 6: Too-Good-To-Be-True Haunted Houses 👻
+
+## Group 6: The Answers at a Glance
+
+::: {.callout-tip icon="true"}
+## Research questions and short answers
+1. **How accurate is the tree with all of the columns?** **100%**, with one split on `exorcist_bill`. This is misleading: exorcists are paid *after* a house is known to be haunted. The tree is reading the answer.
+2. **What can it do with only the information available at the time of buying?** It gets about **85%** on the training data, and **80%** on unseen data. The baseline is 65%. The useful clues are `cold_spots` and `age_years`.
+3. **Which listings should be avoided?** **13 Crypt Lane and 666 Moan Street** (0.78 each). Be careful with 45 Draught Avenue, too: its 0.14 is lower than it should be.
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**If your model looks too good to be true, then go and find out why.**
+:::
+
+## Group 6: The Miracle Tree
+
+::: {.columns}
+
+::: {.column}
+
+```{r g6-fit}
+#| fig-show: hide
+houses <- read_csv(
+  "files/decision_trees/group6_haunted_houses.csv")
+
+miracle <- rpart(haunted ~ ., data = houses,
+                 method = "class")
+rpart.plot(miracle)
+
+# The accuracy
+mean(predict(miracle, type = "class") ==
+       houses$haunted)
+
+table(paid_exorcist = houses$exorcist_bill > 0,
+      haunted = houses$haunted)
+```
+
+:::
+
+::: {.column}
+
+```{r g6-plot}
+#| echo: false
+#| fig-width: 5.8
+#| fig-height: 3.8
+#| fig-align: center
+rpart.plot(miracle, cex = 1)
+```
+
+:::
+
+:::
+
+::: {.callout-important icon="true"}
+## What went wrong (for the CEO)
+Everyone who hired an exorcist had a haunted house, and nobody else did. So, one question gets a perfect score. But a bill from an exorcist is a *result* of the haunting, and it only exists after the company has bought the house. **The model predicts the past, using information from the future.** This is called **data leakage**.
+:::
+
+## Group 6: The Honest Tree
+
+::: {.columns}
+
+::: {.column}
+
+```{r g6-honest}
+#| fig-show: hide
+honest <- rpart(haunted ~ . - exorcist_bill,
+                data = houses, method = "class")
+rpart.plot(honest)
+
+predicted <- predict(honest, type = "class")
+c(training = mean(predicted == houses$haunted),
+  baseline = mean(houses$haunted == "no"),
+  unseen = holdout_accuracy(
+    select(houses, -exorcist_bill),
+    "haunted", n_train = 58)) %>% round(3)
+```
+
+:::
+
+::: {.column}
+
+```{r g6-honest-plot}
+#| echo: false
+#| fig-width: 5.8
+#| fig-height: 4.2
+#| fig-align: center
+rpart.plot(honest, cex = 1)
+```
+
+:::
+
+:::
+
+::: {.callout-note icon="true"}
+## Why is a lower accuracy better news?
+The rule: **three or more cold spots in a house that is at least 73 years old**. The 85% is on training data and 80% on unseen data, and these are numbers that the company could really expect. The 100% was a number that it could never get on a new house. An honest 80% is worth far more than a fake 100%.
+:::
+
+## Group 6: The New Listings
+
+```{r g6-listings}
+listings <- tibble(
+  address           = c("13 Crypt Lane", "2 Sunny Road",
+                        "666 Moan Street", "45 Draught Avenue"),
+  age_years         = c(190, 15, 130, 45),
+  cold_spots        = c(5, 0, 4, 4),
+  creaks_per_night  = c(25, 2, 12, 7),
+  flickering_lights = c("yes", "no", "no", "yes"),
+  previous_owners   = c(11, 2, 7, 4),
+  asking_price_k    = c(120, 450, 210, 300),
+  exorcist_bill     = c(0, 0, 0, 0)
+)
+results <- tibble(address = listings$address,
+                  miracle = predict(miracle, listings)[, "yes"],
+                  honest  = predict(honest, listings)[, "yes"])
+```
+
+::: {style="font-size: 0.7em;"}
+```{r g6-listings-table}
+#| echo: false
+show_table(results)
+```
+:::
+
+::: {.callout-important icon="true"}
+## What would have happened?
+The miracle tree says that **every** new listing has a 0% chance of being haunted, since nobody has hired an exorcist for them yet. The company would have happily bought 13 Crypt Lane, a 190-year-old house with 5 cold spots.
+:::
+
+## Group 6: Discussion Answers
+
+::: {.callout-important icon="true"}
+## What good answers could sound like
+1. **The first tree:** It has one split and 100% accuracy. Do not celebrate! Real data on a hard problem is almost never this clean, so treat a perfect score as a warning.
+2. **Before or after?** `exorcist_bill` comes after. All of the others could be known by inspecting the house. (Although, could an inspector really count cold spots at a house that they have not bought yet? It is worth asking.)
+3. **The listings:** All 0, since `exorcist_bill` is 0 for all of them, and "bill below 555" leads straight to "not haunted".
+4. **Why leakage is easy to miss:** The column looks like ordinary data, and the model *looks* great: high accuracy is rarely questioned. Even a train/test split will not catch it, as the leak is in both parts. (Over 200 splits, the miracle tree still scores 100%.) You need to think about **when** each column becomes known.
+5. **Real-world leaks:** A hospital record with `antibiotics_given` used to predict infection. A column for `final_exam_score` used to predict who will drop a course. Customer `cancellation_date` used to predict who will leave.
+:::
+
+## Group 6: Behind the Curtain
+
+::: {.callout-green}
+**How the data was really made: the chance of a haunting**
+
+| Cold spots | Other clues | True chance | The honest tree says |
+|:---:|---|:---:|:---:|
+| 3 or more | 80 years or older | 0.85 | 0.78 |
+| 3 or more | Younger, with flickering lights | **0.65** | **0.14** |
+| 3 or more | Younger, no flickering lights | 0.25 | 0.14 |
+| Under 3 | 120 years or older, flickering lights | 0.45 | 0.11 |
+| Under 3 | Anything else | 0.06 | 0.11 |
+
+: {tbl-colwidths="[15,41,18,26]"}
+:::
+
+::: {.callout-tip icon="true"}
+## What we learn
+- The honest tree found the biggest pattern, and it missed the smaller ones. The default brakes (`minsplit = 20`) stopped it from splitting the younger houses (just 14 rows).
+- **So, 45 Draught Avenue** (45 years old, 4 cold spots, flickering lights) really has a 0.65 chance, and not 0.14. A tree that does not ask about a clue cannot use it. Look at the path it took before you trust a low number!
+- `exorcist_bill` was created from `haunted` itself. That is the leak, in one line of code.
+:::
+
+<!-- ============================ GROUP 7 ============================ -->
+
+# Group 7: The Department of Cryptid Affairs 🛸
+
+## Group 7: The Answers at a Glance
+
+::: {.callout-tip icon="true"}
+## Research questions and short answers
+1. **Which questions sort the creatures?** First: is it near water? (Under 96 m means **lake monster**.) Second: are 2 or more goats missing? (Means **chupacabra**.) Third: is the footprint at least 19 cm? (**Bigfoot** if so, and **Mothman** if not.)
+2. **Which ones does it mix up?** Mostly chupacabras called bigfoot (3 times). Lake monsters and bigfoot are never confused, and neither are lake monsters and Mothman.
+3. **Where do the teams go?** Report A: Mothman (0.89). B: Chupacabra (0.96). C: Lake Monster (0.96). D: the tree says Bigfoot (0.91), but we disagree. It never asked about the wings!
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**A tree only knows the questions that it asks. A confident answer can still ignore the obvious clue.**
+:::
+
+## Group 7: Growing the Tree
+
+::: {.columns}
+
+::: {.column}
+
+```{r g7-fit}
+#| fig-show: hide
+sightings <- read_csv(
+  "files/decision_trees/group7_cryptid_sightings.csv")
+
+table(sightings$creature)
+
+fit <- rpart(creature ~ ., data = sightings,
+             method = "class")
+rpart.plot(fit)
+```
+
+::: {.callout-blue}
+**Note:** With four categories, each box shows the predicted creature, the **proportion of each creature** and the percent of all rows.
+:::
+
+:::
+
+::: {.column}
+
+```{r g7-plot}
+#| echo: false
+#| fig-width: 5.8
+#| fig-height: 4.8
+#| fig-align: center
+rpart.plot(fit, cex = .85)
+```
+
+:::
+
+:::
+
+::: {.wide-output}
+```{r g7-rules}
+rpart.rules(fit, cover = TRUE)
+```
+:::
+
+## Group 7: The Mix-Ups
+
+```{r g7-confusion}
+predicted <- predict(fit, type = "class")
+table(actual = sightings$creature, predicted)
+mean(predicted == sightings$creature)     # on the training data
+
+# The baseline: always guess the most common creature
+max(table(sightings$creature)) / nrow(sightings)
+
+# On unseen data, averaged over 200 splits
+holdout_accuracy(sightings, "creature", n_train = 75)
+```
+
+::: {.callout-note icon="true"}
+## Reading these numbers
+Each row shows the true creature, and each column shows the tree's answer. The accuracy is 93% on training data, and about **88% on unseen data**. That is far above the 32% baseline, as this data set has clear differences between the creatures. Chupacabras are sometimes called bigfoot, since both can be far from water and leave footprints. The goats are what give a chupacabra away.
+:::
+
+## Group 7: The Dispatch
+
+```{r g7-dispatch}
+new_sightings <- tibble(
+  report         = c("A", "B", "C", "D"),
+  height_m       = c(2.2, 1.2, 6.5, 2.3),
+  water_dist_m   = c(3000, 900, 10, 2000),
+  night_hour     = c(23, 2, 14, 23),
+  wings_seen     = c("yes", "no", "no", "yes"),
+  footprint_cm   = c(9, 30, 5, 30),
+  goats_missing  = c(0, 4, 0, 0),
+  witness_snacks = c(2, 1, 5, 3)
+)
+results <- cbind(new_sightings["report"],
+                 round(predict(fit, new_sightings), 2))
+
+# Wings in the data: how many of each creature had them?
+table(wings_seen = sightings$wings_seen, sightings$creature)
+```
+
+::: {style="font-size: 0.7em;"}
+```{r g7-dispatch-table}
+#| echo: false
+show_table(results)
+```
+:::
+
+::: {.callout-important icon="true"}
+## Report D: do you agree?
+Far from water, no missing goats, big footprint: the tree says Bigfoot (0.91) and never checks for wings. But in the data, 13 of the 17 Mothman sightings had wings, and only 4 of the 32 Bigfoot sightings did. Wings *and* big feet may be a rare Bigfoot, a strange Mothman or something new. **We would call both teams, and treat 0.91 with suspicion.**
+:::
+
+## Group 7: Discussion Answers
+
+::: {.callout-important icon="true"}
+## What good answers could sound like
+1. **Baseline and leaves:** Always guess bigfoot: 32%. Each leaf now shows the proportion for all four creatures.
+2. **Logistic regression:** Ordinary logistic regression has two outcomes, so you would need an extension (multinomial regression) or several models. A tree needs no changes: it simply splits until each group is mostly one creature.
+3. **Importance versus splits:** `height_m` has the top score (34), and yet **it never appears in the tree**! Importance also gives credit to variables that could have stood in for a split. Height could have done much of the job, but other variables were slightly better each time. "Not in the tree" does not mean "not useful".
+4. **Report D:** The tree asks about water, goats and footprints. It ignores wings and height. A human expert would *surely* notice the wings.
+5. **A new creature:** The tree must answer with one of the four that it knows, and it could do so with confidence. It has no way to say "I have never seen this". The data needs to include an "other" category, or a person must check odd reports.
+:::
+
+## Group 7: Behind the Curtain
+
+::: {.callout-green}
+**How the data was really made: each creature's typical sighting**
+
+| Creature | Height | Near water? | Hours | Wings | Footprint | Goats missing |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Bigfoot | 2.3 m | No | Any | Rarely (3%) | Large (42 cm) | Few |
+| Chupacabra | 1.3 m | No | Night | Rarely (10%) | Medium (28 cm) | **Several** |
+| Lake monster | 5 m | **Yes (about 15 m)** | Any | Rarely (2%) | Small (8 cm) | Few |
+| Mothman | 2.1 m | No | Late night | **Usually (85%)** | Small (8 cm) | Few |
+:::
+
+::: {.callout-tip icon="true"}
+## What we learn
+- The tree found a good set of questions, but it is **not the only one**. Asking about wings would also help to find Mothman. The tree chose footprint since it scored better *on this sample*.
+- Because a footprint separates Bigfoot from Mothman so well, the greedy tree had no reason to ask about wings. That is how Report D fell through the gap.
+- `witness_snacks` is pure noise. (We checked. It is not the snacks.)
+:::
+
+<!-- ============================ GROUP 8 ============================ -->
+
+# Group 8: The Rise of the Garden Gnomes 🍄
+
+## Group 8: The Answers at a Glance
+
+::: {.callout-tip icon="true"}
+## Research questions and short answers
+1. **Which features are linked with plotting?** Size (`height_cm`, or its near-twin `hat_cm`) and `night_moves`. Bigger gnomes that move around at night are the ones to watch.
+2. **How much does the tree change?** Quite a lot! Over 20 samples of 56 gnomes, there were **6 different sets of variables**, and three different first questions. Even `garden_m2`, which is pure noise, was the first question in 3 trees.
+3. **What can we trust?** Size and night moves appear again and again, so we trust those. The exact splits, and the choice between height and hat, should not be trusted. On unseen gnomes, a tree does no better than always guessing "not plotting" (68%). The first analyst should reopen the case.
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**One tree is one story. Before you believe it, ask how many other stories the data could have told.**
+:::
+
+## Group 8: The Tree From All 70 Gnomes
+
+::: {.columns}
+
+::: {.column}
+
+```{r g8-fit}
+#| fig-show: hide
+gnomes <- read_csv(
+  "files/decision_trees/group8_garden_gnomes.csv")
+
+fit <- rpart(plotting ~ ., data = gnomes,
+             method = "class")
+rpart.plot(fit)
+
+predicted <- predict(fit, type = "class")
+c(training = mean(predicted == gnomes$plotting),
+  baseline = mean(gnomes$plotting == "no"),
+  unseen = holdout_accuracy(
+    gnomes, "plotting", n_train = 56)) %>% round(3)
+
+round(cor(gnomes$height_cm, gnomes$hat_cm), 2)
+round(fit$variable.importance, 1)
+```
+
+:::
+
+::: {.column}
+
+```{r g8-plot}
+#| echo: false
+#| fig-width: 5.8
+#| fig-height: 4.6
+#| fig-align: center
+rpart.plot(fit, cex = 1)
+```
+
+:::
+
+:::
+
+::: {.callout-note icon="true"}
+## Near-twins
+Height and hat have a correlation of 0.96, and they have almost the same importance score (8.6 and 8.5). The tree can use only one at a time, so it makes a choice that a few gnomes could easily reverse. The hat split in this tree looks like a discovery, but **it is mostly height again**. And look at the accuracy: 83% on training data, but on unseen data it is **68.1%, which does not beat the 68.6% baseline**. These rules describe the gnomes that we have, but they do not predict new ones.
+:::
+
+## Group 8: Twenty Trees
+
+```{r g8-trees}
+grow_one_tree <- function(seed) {
+  set.seed(seed)
+  rows <- sample(nrow(gnomes), 56)
+  rpart(plotting ~ ., data = gnomes[rows, ], method = "class",
+        model = TRUE)
+}
+forest_of_trees <- map(1:20, grow_one_tree)
+
+# What is the first question in each tree?
+first_question <- map_chr(forest_of_trees,
+                          \(fit) as.character(fit$frame$var[1]))
+table(first_question)
+
+# In how many trees does each variable appear?
+used <- map(forest_of_trees, \(fit) {
+  setdiff(unique(as.character(fit$frame$var)), "<leaf>")
+})
+sort(table(unlist(used)), decreasing = TRUE)
+
+# How many different sets of variables are there?
+table(map_chr(used, \(u) paste(sort(u), collapse = " + ")))
+```
+
+## Group 8: Two Trees That Disagree
+
+```{r g8-two}
+#| echo: false
+#| fig-width: 11
+#| fig-height: 4.2
+#| fig-align: center
+par(mfrow = c(1, 2))
+rpart.plot(forest_of_trees[[1]], main = "Tree 1")
+rpart.plot(forest_of_trees[[2]], main = "Tree 2")
+par(mfrow = c(1, 1))
+```
+
+::: {.callout-important icon="true"}
+## Same gnomes (mostly!), different stories
+Tree 1 starts with **height**. Tree 2 starts with **garden size**, and it has a strange rule about gardens of 186 to 252 square metres. Both trees were grown from 56 of the same 70 gnomes. If the agency's first analyst had grown Tree 2, then they may have been out inspecting gardens.
+:::
+
+```{r g8-two-code, ref.label="g8-two", eval=FALSE}
+```
+
+## Group 8: The Verdict
+
+::: {.callout-tip icon="true"}
+## What holds up across the 20 trees?
+- **Solid:** `night_moves` (in 15 of the trees), and size (`height_cm` is in 15 of the trees, and `hat_cm` in 2)
+- **Shaky:** `garden_m2` (in 7 trees). It appears often enough to be tempting, and the next slides show why this is a trap
+- **Never used:** `beard_cm` and `fishing_rod`
+:::
+
+::: {.callout-note icon="true"}
+## To the agency's first analyst
+With respect: your tree is a fair summary of the 70 gnomes that you inspected. It is not a fact about gnomes. A rule that vanishes when we inspect slightly different gnomes should not close a case. Please report the **pattern across many trees**, and the uncertainty along with it.
+:::
+
+## Group 8: Discussion Answers
+
+::: {.callout-important icon="true"}
+## What good answers could sound like
+1. **Height and hat:** They are correlated at 0.96, so they carry almost the same information. Whichever is slightly better *in this sample* gets chosen, and the other may be left out.
+2. **Importance versus splits:** Importance credits variables that could have stood in for a split. It shows both height and hat as useful (8.6 and 8.5), and the splits alone would hide that.
+3. **Different first questions:** In a sense, yes. The tree is the same *kind* of model, but people would take away a different explanation. This is why we should not read a single tree as the truth about **why** something happens.
+4. **Variables in a few trees:** Be doubtful of them. With many variables to choose from, some will look useful by chance in some samples. Those that appear in most trees deserve more trust.
+5. **Random forests:** Each tree overfits in its own way, and those errors tend to cancel out in a vote. The price: a forest of hundreds of trees is more accurate, but it is much harder to read aloud.
+:::
+
+## Group 8: Behind the Curtain
+
+::: {.callout-green}
+**How the data was really made**
+
+- Each gnome has a hidden **size**. Both `height_cm` and `hat_cm` were made from this size, plus a little noise.
+- The chance of plotting depends on just two things: **size** and **`night_moves`**
+- `beard_cm`, `garden_m2` and `fishing_rod` are **pure noise**. They are random numbers, and have nothing to do with plotting.
+:::
+
+::: {.callout-tip icon="true"}
+## What we learn
+- **Height does not cause plotting, and neither do hats.** Both are stand-ins for a hidden variable that was never measured. Real data has this problem as well.
+- **Garden size is a false lead:** it appeared in 7 of the 20 trees and was at the top of 3, and yet it has no connection to plotting whatsoever. Random noise, a small sample and a greedy search can do this.
+- This is why repeating the analysis across samples is so valuable. It would have been hard to spot this from a single tree.
+:::
+
+<!-- ============================ THE BIG PICTURE ============================ -->
+
+# The Big Picture 🌳
+
+## Eight Scenarios, Eight Lessons
+
+::: {.callout-green icon="true"}
+| Group | Scenario | The lesson |
+|:---:|---|---|
+| 1 | The Golden Bagel | A probability from a leaf is not proof, and 0.00 does not mean impossible |
+| 2 | The Zombie Checkpoint | Mistakes have different costs, so accuracy is not the whole story |
+| 3 | Shark Robots | Trees handle steps and interactions, but they cannot extrapolate |
+| 4 | Dr. Evil-Pants | Interactions hide from one-variable summaries, and need a lot of data |
+| 5 | Treasure Maps | A bigger tree remembers more and can predict worse |
+| 6 | Haunted Houses | A perfect score is a warning: ask when each column becomes known |
+| 7 | Cryptid Affairs | A tree only uses the questions that it asks |
+| 8 | Garden Gnomes | One tree is one story, and small changes can rewrite it |
+
+: {tbl-colwidths="[8,27,65]"}
+:::
+
+## The Scoreboard: How Do the Classification Trees Compare?
+
+```{r scoreboard}
+#| echo: false
+board <- tribble(
+  ~group, ~data,                          ~outcome,   ~n_train,
+  "1",    case_files,                     "guilty",   54,
+  "2",    checkpoint,                     "status",   65,
+  "4",    warehouses,                     "raided",   60,
+  "5",    maps,                           "treasure", 80,
+  "6",    select(houses, -exorcist_bill), "haunted",  58,
+  "7",    sightings,                      "creature", 75,
+  "8",    gnomes,                         "plotting", 56
+)
+scores <- pmap_dfr(board, \(group, data, outcome, n_train) {
+  model <- as.formula(paste(outcome, "~ ."))
+  fit <- rpart(model, data, method = "class")
+  predicted <- predict(fit, type = "class")
+  tibble(group = group,
+         baseline = max(table(data[[outcome]])) / nrow(data),
+         training = mean(predicted == data[[outcome]]),
+         unseen   = holdout_accuracy(data, outcome, n_train))
+})
+```
+
+::: {style="font-size: 0.7em;"}
+```{r scoreboard-table}
+#| echo: false
+show_table(scores, digits = 3)
+```
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**In every group, the unseen score is lower than the training score, and Group 8 does not beat its baseline. Report the honest one!**
+:::
+
+```{r scoreboard-code, ref.label="scoreboard", eval=FALSE}
+```
+
+## Five Questions to Ask of Any Tree
+
+::: {.callout-tip icon="true"}
+## Take these with you
+1. **What is the baseline?** Does the tree actually beat a model with no questions at all?
+2. **What did it score on unseen data?** A training score only tells you how well it remembers.
+3. **Which mistakes does it make?** And what does each mistake cost?
+4. **When does each column become known?** Could you really have this information at prediction time?
+5. **Would the story survive a different sample?** Which rules hold up, and which ones vanish?
+:::
+
+::: {style="text-align: center; font-size: 1.4em; margin-top: 30px; margin-bottom: 30px;"}
+[**Data**]{.blue-text} → [**Questions**]{.purple-text} → [**Tree**]{.green-text} → [**Prediction**]{.orange-text} → [**Trust**]{.red-text}
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**The world is safe. For now. Thank you, data scientists.**
+:::
