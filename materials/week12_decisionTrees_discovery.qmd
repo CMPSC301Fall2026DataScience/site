@@ -429,11 +429,11 @@ rpart.plot(cat_tree, cex = 1)
 
 
 
-## Step 3: Grow and Draw the Tree (A better View)
+## Step 3: Grow and Draw the Tree (A Better View!)
 
 
 ```{r cat-draw2}
-#| echo: false
+#| echo: true
 #| fig-width: 5.8
 #| fig-height: 4.6
 #| fig-align: center
@@ -462,6 +462,7 @@ The importance of each variable in the tree is shown in the output of `cat_tree$
 :::
 
 ```{r cat-rules}
+#| echo: true
 rpart.rules(cat_tree, cover = TRUE)
 cat_tree$variable.importance
 ```
@@ -473,7 +474,7 @@ cat_tree$variable.importance
 ## How Important are the Variables of the Tree? (A Better View)
 
 ```{r cat-importance}
-#| echo: false
+#| echo: true
 #| fig-width: 5.8
 #| fig-height: 4.6
 #| fig-align: center
