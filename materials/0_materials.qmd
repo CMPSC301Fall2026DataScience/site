@@ -159,6 +159,8 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 
 - <a href="https://forms.gle/mThZReAjgttwqmcE6" target="_blank">Speaker Form</a>
 
+- **Lab 6**: Vaccine Efficacy: Evidence, Models, and Ethics
+  - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/lab06/accept" target="_blank">Lab06</a>
 
 ---
 
