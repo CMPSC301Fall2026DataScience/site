@@ -162,6 +162,14 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **Lab 6**: Vaccine Efficacy: Evidence, Models, and Ethics
   - <a href="https://classroom50.org/cmpsc301f2026/cmpsc301-fall2026/assignments/lab06/accept" target="_blank">Lab06</a>
 
+
+
+## W13. Neural Networks
+
+- **Introduction to Neural Networks**
+  - <a href="week13_neural_networks_slides.html" target="_blank">Slides</a>
+
+  
 ---
 
 <!-- 
