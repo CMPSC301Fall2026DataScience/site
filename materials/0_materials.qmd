@@ -169,7 +169,9 @@ Welcome to the course materials hub! Here you will find all lecture slides, assi
 - **Introduction to Neural Networks**
   - <a href="week13_neural_networks_slides.html" target="_blank">Slides</a>
 
-  
+- **Discovery by Neural Networks**: Neural Networks Activity 9
+  - <a href="week13_neuralNetworks_discovery.html" target="_blank">Slides and Activity09</a>
+
 ---
 
 <!-- 

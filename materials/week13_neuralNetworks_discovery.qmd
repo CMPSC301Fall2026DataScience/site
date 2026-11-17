@@ -1,0 +1,1474 @@
+---
+title: "Discovering Neural Networks And Activity 9"
+subtitle: "Teaching Tiny Neurons to Guess (Unicorns, Cows and Hamsters Included)"
+#author: "CS301 - Data Science with R"
+#date: "Fall 2026"
+format:
+  revealjs:
+    theme: white
+    highlight-style: github
+    code-block-background: true
+    code-block-border-left: "#31BAE9"
+    slide-number: true
+    chalkboard: true
+    scrollable: true
+    transition: none
+    css: custom_ds.css
+    width: 1200
+    height: 800
+    margin: 0.05
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+
+<!-- ::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"} **All of the data is synthetic. No unicorns were upset in the making of this activity. (Well, some were.)** ::: -->
+
+
+<style>
+.reveal .data-code pre { max-height: 330px; }
+</style>
+
+```{r setup}
+#| echo: false
+library(tidyverse)
+library(neuralnet)
+options(knitr.kable.NA = "")
+
+# Show a whole data set in a box that scrolls, so that it fits on one slide
+scroll_table <- function(df) {
+  knitr::kable(df, align = "c")
+}
+```
+
+# What's On For Today?
+
+::: {.callout-tip icon="true"}
+
+**Group Work** - discover how neural networks behave by poking them with silly data
+
+- **The Idea** - A one-slide reminder of what a neural network actually does
+- **R Code** - How do we scale, train, test and question a network?
+- **The Projects** - Eight scenarios. Eight groups. One extremely moody unicorn.
+- **Communication** - Present your findings to the class with slides
+
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**A neural network is a stack of tiny weighted guesses that learns its weights from data.**
+:::
+
+## A Neural Network in One Slide
+
+::: {.columns}
+::: {.column}
+::: {.callout-note icon="true"}
+## What happens inside
+1. Each **input** (e.g., `glitter_level`) is multiplied by a **weight**
+2. A **hidden neuron** adds up its weighted inputs, plus a bias, and squashes the total with an **activation function** (the sigmoid: a number between 0 and 1)
+3. The **output neuron** does the same with the hidden neurons' values
+4. **Training** nudges every weight, again and again, to make the error on the training data smaller
+:::
+:::
+::: {.column}
+::: {.callout-tip icon="true"}
+## The knobs you will turn today
+- `hidden = 3` - how many hidden neurons (and `c(4, 2)` for two layers)
+- `linear.output` - `FALSE` for a category (0/1), `TRUE` for a number
+- **Scaling** - squeezing every input into 0 to 1 before training
+- `set.seed()` - the random *starting* weights
+- **Train/test split** - the honest check
+:::
+:::
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**Last week, a tree showed you its rules. This week, the network will NOT. You will have to interrogate it.**
+:::
+
+## Trees vs. Networks: What Changes?
+
+::: {.callout-green icon="true"}
+| | Decision tree (`rpart`) | Neural network (`neuralnet`) |
+|---|---|---|
+| **What it learns** | A set of yes/no questions | Hundreds of weights |
+| **Can you read it?** | Yes - aloud, as rules | Not really - it is a "black box" |
+| **Needs scaling?** | No | **Yes**, usually 0 to 1 |
+| **Same answer each run?** | Yes | **No** - it starts from random weights |
+| **Curvy patterns?** | Only as staircases of boxes | Yes, smooth curves |
+| **Inputs** | Numbers and categories | Numbers only (categories become 0/1 columns) |
+
+: {tbl-colwidths="[24,38,38]"}
+:::
+
+# Group Activity
+
+[**Activity 9**]{.orange-text} 
+
+:::{.callout-note   icon="true"}
+
+
+
+
+[**Presentations to be given in class on Friday (or Monday for *special* circumstances) for an activity check mark grade.**]{.green-text}
+:::
+
+
+<center>
+[Oh yeah! This is where the neurons start firing!]{.red-text} 
+</center>
+
+## Activity: Saving the World with Neural Networks
+
+::: {style="text-align: center; font-size: 1.4em; margin-top: 30px; margin-bottom: 30px;"}
+[**Data**]{.blue-text} → [**Scale**]{.purple-text} → [**Network**]{.green-text} → [**Prediction**]{.orange-text} → [**Trust**]{.red-text}
+:::
+
+::: {.callout-note icon="true"}
+
+## Today you will *discover* each step of this chain for yourselves
+
+- [**Data**]{.blue-text} - What was measured? What is the outcome? Is it a category or a number?
+- [**Scale**]{.purple-text} - Are all of the inputs on the same scale? What happens if they are not?
+- [**Network**]{.green-text} - How many hidden neurons does your problem need? Does the network change when you rerun it?
+- [**Prediction**]{.orange-text} - What does your network say about new cases?
+- [**Trust**]{.red-text} - How well does it work on unseen data? Where does it fail, and why?
+:::
+
+## How Today Works
+
+::: {.callout-tip icon="true"}
+## Groups of four or five - each group gets its own scenario, data and research questions
+
+1. **Read** your scenario, your research questions, and the box called **"What this asks of the network"**
+2. **Inspect** your data. What are the inputs? What is the outcome? What is the baseline to beat?
+3. **Guess** - before you train anything, write down what you *expect* to happen
+4. **Scale** your inputs and **train** a network with `neuralnet()`
+5. **Test** it on rows that it has never seen, and **predict** for any new cases
+6. **Experiment** - run your group's special experiment (your group's *Your Code* slide)
+7. **Prepare** slides that answer your research questions, for your presentation to the class
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**All of the data is synthetic. No unicorns were upset in the making of this activity. (Well, some were.)**
+:::
+
+## What Your Group Will Produce
+
+To answer your research questions, your group will need to produce the following:
+
+::: {.callout-tip icon="true"}
+## To Address
+- A **plot of your network** from `plot(fit, rep = "best")`
+- Your **guess** about what would happen, written *before* training, and what actually happened
+- Your network's **results**: its test accuracy or error, compared with a **baseline**
+- The output of your group's **experiment** (a table or a plot)
+- Spoken answers to your **discussion questions** and the **general questions** (please be sure to take notes as you work)
+:::
+
+:::{.callout-blue}
+
+***Prepare a presentation for the class about your findings***
+
+- A five-minute presentation, with slides, in which everyone in the group speaks
+- (That's why you will need the notes!)
+:::
+
+# Your R Toolkit 🧰
+
+## The Seven-Step Workflow
+
+::: {.callout-important icon="true"}
+## Run these in order - and stop after each one to ask *"What did I just learn?"*
+:::
+
+:::{.callout-green icon="true"}
+|Step | R command | What you will discover|
+|:---:|---|---|
+| 1 | `mean(mydata$outcome)` or `table(mydata$outcome)`| The baseline to beat|
+| 2 | `mutate(across(-outcome, normalize))`| Putting every input on a 0 to 1 scale|
+| 3 | `sample()` to split into `train` and `test` | Keeping some rows secret for an honest test|
+| 4 | `fit <- neuralnet(outcome ~ ., data = train, hidden = 3, linear.output = FALSE)`| Training the network|
+| 5 | `plot(fit, rep = "best")` | Drawing the network (and seeing why it is hard to read)|
+| 6 | `predict(fit, test)` | Probabilities (or numbers) for unseen rows|
+| 7 | `table(actual, predicted)` and `mean(predicted == actual)` | Which mistakes does the network make?|
+
+: {tbl-colwidths="[7,55,38]"}
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**First time only: run `install.packages("neuralnet")` once on your machine.**
+:::
+
+## Three Helper Functions (Paste These First!)
+
+```{r helpers}
+#| eval: false
+# Squeeze a column into the range 0 to 1
+normalize <- function(x) (x - min(x)) / (max(x) - min(x))
+
+# Scale NEW cases using the min and max of the ORIGINAL data
+# (new cases must be measured with the same ruler as the training data!)
+scale_like <- function(new, ref) {
+  for (v in intersect(names(new), names(ref))) {
+    if (is.numeric(ref[[v]])) {
+      new[[v]] <- (new[[v]] - min(ref[[v]])) / (max(ref[[v]]) - min(ref[[v]]))
+    }
+  }
+  new
+}
+
+# Turn a 0-to-1 prediction back into the original units (for a numeric outcome)
+unscale <- function(p, original) p * (max(original) - min(original)) + min(original)
+```
+
+::: {.callout-tip icon="true"}
+## Why the fuss?
+A network only ever sees numbers between 0 and 1 (because you scaled them). A new case must be scaled with the **same** min and max, or the network will be reading it with the wrong ruler.
+:::
+
+## Starter Code: Steps 1 to 5
+
+::: {.callout-green icon="true"}
+This code will get you started, but you will need to change it (e.g., variable names). Use `?` before a command for help (e.g., `?neuralnet`, `?predict.nn`, `?plot.nn`).
+:::
+
+```{r starter-1}
+#| eval: false
+# Replace mydata and outcome with your own names
+
+# Clean up workspace
+rm(list = ls()) # clear variables from previous work.
+graphics.off() # clear out all old plots
+cat("\014") # clear the console
+
+library(tidyverse)
+library(neuralnet)
+
+# Read the CSV file for your group
+mydata <- read_csv("files/neuralNetworks/data/nn_groupN_something.csv")
+head(mydata)       # what do the first rows look like?
+summary(mydata)    # look at the RANGE of each variable!
+
+# Step 1: what is the baseline to beat?
+mean(mydata$outcome)   # the proportion of 1s (edit outcome to match)
+
+# Step 2: scale every input (but not the 0/1 outcome) to 0 to 1
+scaled <- mydata %>% mutate(across(-outcome, normalize))
+
+# Step 3: an honest split - 75% of the rows for training
+set.seed(301)
+train_rows <- sample(nrow(scaled), round(0.75 * nrow(scaled)))
+train <- scaled[train_rows, ]
+test  <- scaled[-train_rows, ]
+
+# Step 4: train the network
+fit <- neuralnet(outcome ~ ., data = train, hidden = 3,
+                 linear.output = FALSE, stepmax = 1e5)
+
+# Step 5: draw it
+plot(fit, rep = "best")
+```
+
+## Starter Code: Steps 6 and 7
+
+```{r starter-2}
+#| eval: false
+# Step 6: predict for the test rows (a probability between 0 and 1)
+prob      <- predict(fit, test)[, 1]
+predicted <- ifelse(prob > 0.5, 1, 0)
+
+# Step 7: which mistakes does it make?
+table(actual = test$outcome, predicted)   # the confusion matrix
+mean(predicted == test$outcome)           # the test accuracy
+
+# ... and how does that compare with the TRAINING accuracy?
+train_pred <- ifelse(predict(fit, train)[, 1] > 0.5, 1, 0)
+mean(train_pred == train$outcome)
+
+# Predict for new cases: scale them like the ORIGINAL data first!
+new_scaled <- scale_like(new_cases, mydata)
+predict(fit, new_scaled)
+```
+
+::: {.callout-important icon="true"}
+## When R says *"Algorithm did not converge"*
+The network ran out of steps before its error settled down. Try a different seed, a smaller network, or `stepmax = 1e6`. Make a note of it: **this is a finding, not a failure!**
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+**Note: Edit this code to match your own variables (e.g., `outcome` is not called `outcome` in your data)!**
+:::
+
+
+## Completed Unicorn Happiness Analysis Example
+
+```{r unicorn-example1}
+#| eval: false
+# Replace mydata and outcome with your own names
+
+# Clean up workspace
+rm(list = ls()) # clear variables from previous work.
+graphics.off() # clear out all old plots
+cat("\014") # clear the console
+
+library(tidyverse)
+library(neuralnet)
+
+# Squeeze a column into the range 0 to 1
+normalize <- function(x) (x - min(x)) / (max(x) - min(x))
+
+# Scale NEW cases using the min and max of the ORIGINAL data
+# (new cases must be measured with the same ruler as the training data!)
+scale_like <- function(new, ref) {
+  for (v in intersect(names(new), names(ref))) {
+    if (is.numeric(ref[[v]])) {
+      new[[v]] <- (new[[v]] - min(ref[[v]])) / (max(ref[[v]]) - min(ref[[v]]))
+    }
+  }
+  new
+}
+
+# Turn a 0-to-1 prediction back into the original units (for a numeric outcome)
+unscale <- function(p, original) p * (max(original) - min(original)) + min(original)
+# Read the CSV file for your group
+# fname <- file.choose()
+# mydata <- read_csv("files/neuralNetworks/data/nn_group1_moody_unicorn.csv")
+
+mydata <- read_csv("/home/obonhamcarter/Desktop/neuralNets/files/neuralNetworks/data/nn_group1_moody_unicorn.csv")
+head(mydata)       # what do the first rows look like?
+summary(mydata)    # look at the RANGE of each variable!
+
+# Step 1: what is the baseline to beat?
+mean(mydata$happy)   # the proportion of happy days
+
+# Step 2: scale every input (but not the 0/1 outcome) to 0 to 1
+scaled <- mydata %>% mutate(across(-happy, normalize))
+
+# Step 3: an honest split - 75% of the rows for training
+set.seed(301)
+train_rows <- sample(nrow(scaled), round(0.75 * nrow(scaled)))
+train <- scaled[train_rows, ]
+test  <- scaled[-train_rows, ]
+
+# Step 4: train the network
+# fit <- neuralnet(happy ~ ., data = train, hidden = 3,
+#                 linear.output = FALSE, stepmax = 1e5)
+
+# Step 4: train the network
+fit <- neuralnet(happy ~ ., data = train, hidden = 3,
+                 linear.output = FALSE, stepmax = 1e6)
+
+# Step 5: draw it
+plot(fit, rep = "best")
+
+
+# Step 6: predict for the test rows (a probability between 0 and 1)
+prob      <- predict(fit, test)[, 1]
+predicted <- ifelse(prob > 0.5, 1, 0)
+
+# Step 7: which mistakes does it make?
+table(actual = test$happy, predicted)   # the confusion matrix
+mean(predicted == test$happy)           # the test accuracy
+
+# ... and how does that compare with the TRAINING accuracy?
+train_pred <- ifelse(predict(fit, train)[, 1] > 0.5, 1, 0)
+mean(train_pred == train$happy)
+
+# Predict for a new case using all four inputs, scaled like the ORIGINAL data.
+new_cases <- tibble(
+  glitter_level = 9.0,
+  rainbow_count = 8.5,
+  carrots_eaten = 3,
+  tail_swishes = 31
+)
+new_scaled <- scale_like(new_cases, mydata)
+predict(fit, new_scaled) 
+```
+
+
+
+## Completed Unicorn Happiness Analysis Example Worked Out
+
+```{r unicorn-example2}
+#| eval: true
+# Replace mydata and outcome with your own names
+
+library(tidyverse)
+library(neuralnet)
+
+# Squeeze a column into the range 0 to 1
+normalize <- function(x) (x - min(x)) / (max(x) - min(x))
+
+# Scale NEW cases using the min and max of the ORIGINAL data
+# (new cases must be measured with the same ruler as the training data!)
+scale_like <- function(new, ref) {
+  for (v in intersect(names(new), names(ref))) {
+    if (is.numeric(ref[[v]])) {
+      new[[v]] <- (new[[v]] - min(ref[[v]])) / (max(ref[[v]]) - min(ref[[v]]))
+    }
+  }
+  new
+}
+
+# Turn a 0-to-1 prediction back into the original units (for a numeric outcome)
+unscale <- function(p, original) p * (max(original) - min(original)) + min(original)
+# Read the CSV file for your group
+# fname <- file.choose()
+# mydata <- read_csv("files/neuralNetworks/data/nn_group1_moody_unicorn.csv")
+
+mydata <- read_csv("./files/neuralNetworks/data/nn_group1_moody_unicorn.csv")
+head(mydata)       # what do the first rows look like?
+summary(mydata)    # look at the RANGE of each variable!
+
+# Step 1: what is the baseline to beat?
+mean(mydata$happy)   # the proportion of happy days
+
+# Step 2: scale every input (but not the 0/1 outcome) to 0 to 1
+scaled <- mydata %>% mutate(across(-happy, normalize))
+
+# Step 3: an honest split - 75% of the rows for training
+set.seed(301)
+train_rows <- sample(nrow(scaled), round(0.75 * nrow(scaled)))
+train <- scaled[train_rows, ]
+test  <- scaled[-train_rows, ]
+
+# Step 4: train the network
+# fit <- neuralnet(happy ~ ., data = train, hidden = 3,
+#                 linear.output = FALSE, stepmax = 1e5)
+
+# Step 4: train the network
+fit <- neuralnet(happy ~ ., data = train, hidden = 3,
+                 linear.output = FALSE, stepmax = 1e6)
+
+# Step 5: draw it
+plot(fit, rep = "best")
+
+# Step 6: predict for the test rows (a probability between 0 and 1)
+prob      <- predict(fit, test)[, 1]
+predicted <- ifelse(prob > 0.5, 1, 0)
+
+# Step 7: which mistakes does it make?
+table(actual = test$happy, predicted)   # the confusion matrix
+mean(predicted == test$happy)           # the test accuracy
+
+# ... and how does that compare with the TRAINING accuracy?
+train_pred <- ifelse(predict(fit, train)[, 1] > 0.5, 1, 0)
+mean(train_pred == train$happy)
+
+# Predict for a new case using all four inputs, scaled like the ORIGINAL data.
+new_cases <- tibble(
+  glitter_level = 9.0,
+  rainbow_count = 8.5,
+  carrots_eaten = 3,
+  tail_swishes = 31
+)
+new_scaled <- scale_like(new_cases, mydata)
+predict(fit, new_scaled) 
+```
+
+## Completed Unicorn Happiness Analysis Example Network
+
+```{r unicorn-plot, fig.width=6, fig.height=4}
+plot(fit, rep = "best")
+```
+
+## Code Ideas for Special Situations
+
+::: {.columns}
+::: {.column}
+```{r ideas-1}
+#| eval: false
+# Leave a column out of the model
+fit <- neuralnet(outcome ~ . - some_column,
+                 data = train, hidden = 3,
+                 linear.output = FALSE)
+
+# Use only the columns you name
+fit <- neuralnet(outcome ~ x1 + x2,
+                 data = train, hidden = 3,
+                 linear.output = FALSE)
+
+# Two hidden layers (4 neurons, then 2)
+fit <- neuralnet(outcome ~ ., data = train,
+                 hidden = c(4, 2),
+                 linear.output = FALSE)
+
+# No hidden layer at all
+# (this is just logistic regression!)
+fit <- neuralnet(outcome ~ ., data = train,
+                 hidden = 0,
+                 linear.output = FALSE)
+```
+:::
+::: {.column}
+```{r ideas-2}
+#| eval: false
+# A numeric outcome: scale it too, and
+# use a linear output neuron
+fit <- neuralnet(y ~ ., data = train,
+                 hidden = 3,
+                 linear.output = TRUE)
+
+# Train 5 times from different starts,
+# then keep the best one
+fit <- neuralnet(outcome ~ ., data = train,
+                 hidden = 3, rep = 5,
+                 linear.output = FALSE)
+plot(fit, rep = "best")
+
+# How well did training go?
+fit$result.matrix[c("error", "steps"), ]
+
+# A bigger picture for your slides
+plot(fit, rep = "best", fontsize = 14)
+```
+:::
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+This code could come in useful if your group wants to explore more than the starter code shows.
+:::
+
+# General Discussion Questions 💬
+
+## For Every Group: The Network
+
+::: {.callout-important icon="true"}
+## Answer these using *your* data and *your* network
+1. How many **weights** does your network have? (Count the arrows in the plot.) Could you explain your network's reasoning by reading them?
+2. What happens to your results if you **change the seed** and train again? Why would that happen?
+3. What happens if you add **more hidden neurons**? Fewer? None at all?
+4. Did the network agree with your group's **guess** about what would happen? What surprised you?
+5. How would a **decision tree** from last week have handled your data? Would you rather have the tree or the network here?
+:::
+
+## For Every Group: The Trust
+
+::: {.callout-important icon="true"}
+## Answer these using *your* data and *your* network
+6. What is the **baseline** for your data (e.g., always guessing the most common outcome, or always guessing the average)? Does your network beat it by much?
+7. What is the difference between your network's accuracy on its **training** data and on **unseen** data? Which number would you report to the unicorn, the farmer or the hamster?
+8. Which kind of **mistake** does your network make? Is one kind worse than the other in your scenario?
+9. Your network cannot show you its rules. How could you convince a skeptic that it has learned something **real**?
+10. Trace your project through **Data → Scale → Network → Prediction → Trust**. At which step could things go wrong for your scenario?
+:::
+
+## Presenting Your Findings 🎤
+
+::: {.callout-tip icon="true"}
+## Your Group has about 5 minutes. Cover:
+1. **The scenario** - the threat to the world, in one or two dramatic sentences
+2. **The data** - what was measured, how many observations, what is the outcome
+3. **The network** - show your plot: how many layers and neurons, and why you chose them
+4. **The experiment** - show the table or plot from your group's experiment, and explain it
+5. **The answers** - answer each of your **research questions**, with evidence
+6. **The trust** - how well does the network work, and how much would you bet on it?
+7. **The discovery** - the one big lesson your project taught you about neural networks
+:::
+
+::: {style="text-align: center; font-size: 1.4em; margin-top: 30px; margin-bottom: 30px;"}
+[**Data**]{.blue-text} → [**Scale**]{.purple-text} → [**Network**]{.green-text} → [**Prediction**]{.orange-text} → [**Trust**]{.red-text}
+:::
+
+## Come prepared to present your findings to the class.
+
+:::{.callout-tip icon="true"}
+
+We will present in the order of the groups, so please be ready to present your findings when your group is called on. Bring slides, code, and notes to class. You will have about 5 minutes to present your findings. Everyone in the group should address one of the questions.
+:::
+
+# The Projects 🗂️
+
+## Which Group Are You?
+
+::: {.callout-green icon="true"}
+| Group | Scenario | Outcome to predict | Data frame | n | The big idea |
+|:---:|---|---|---|:---:|---|
+| 1 | The Moody Unicorn 🦄 | Is the unicorn `happy`? | `unicorn` | 200 | Hidden layers |
+| 2 | Alien Cow Abductions 🛸 | Was the cow `abducted`? | `cows` | 200 | Scaling |
+| 3 | The Marshmallow Campfire Forecast 🔥 | Number of `marshmallows` | `camp` | 180 | Predicting a number |
+| 4 | The Intergalactic Pet Shelter 👽 | Which `species`? | `pets` | 210 | Three or more categories |
+| 5 | Professor Pumpernickel's Pop Quiz 📝 | Is there a `pop_quiz`? | `quiz` | 60 | Overfitting |
+| 6 | The Llama Stock Exchange 🦙 | Does the price go up (`price_up`)? | `llama` | 160 | Random starting weights |
+| 7 | The Robot Bake-Off Judge 🎂 | Does the cake win a `blue_ribbon`? | `bake` | 200 | Opening the black box |
+| 8 | The Hamster Wheel Power Plant 🐹 | `watts` of power | `hamster` | 150 | Extrapolation |
+
+: {tbl-colwidths="[7,30,22,10,6,25]"}
+
+:::
+
+::: {style="color: #8E44AD; text-align: center; margin-top: 20px;"}
+The data sets are CSV files in the `files/neuralNetworks/data/` folder, and are also on the <a href="https://dodatascience.com/materials/1_project_files.html" target="_blank">Project Downloads Page</a>
+:::
+
+<!-- ============================ GROUP 1 ============================ -->
+
+# Group 1: The Moody Unicorn 🦄
+
+## Group 1: The Scenario and Research Questions
+
+::: {.callout-note icon="true"}
+## The threat
+Sparklehoof, the kingdom's only unicorn, powers every rainbow in the land, but only when happy. The royal stable-keepers have logged 200 days of glitter, rainbows, carrots and tail swishes, and whether the unicorn was happy. A grumpy unicorn means a grey kingdom. The king wants a machine that can predict tomorrow's mood.
+:::
+
+::: {.callout-tip icon="true"}
+## Research questions
+1. Can a network with **no hidden layer** (`hidden = 0`) predict the unicorn's mood? Why or why not?
+2. What is the **smallest** network that does the job well?
+3. Which of the five upcoming royal visits will leave the unicorn happy?
+:::
+
+## Group 1: What This Asks of the Network
+
+::: {.callout-important icon="true"}
+## Under the hood
+A network with `hidden = 0` can only draw a **straight line** (a flat cut) through the data: "more glitter is better" or "more rainbows are worse". Hidden neurons let the network **bend** and **combine** these lines. Your question is really: *is the unicorn's mood a straight-line problem?* Plot `glitter_level` against `rainbow_count`, coloured by `happy`, before you train anything. Does the picture remind you of a famous problem from the lecture slides?
+:::
+
+::: {.callout-tip icon="true"}
+## Your experiment
+Train networks with `hidden = 0, 1, 2, 4` and `c(4, 2)`. Record the training and test accuracy of each in a table.
+:::
+
+## Group 1: The Data
+
+::: {.callout-note icon="true"}
+## About the data
+`glitter_level` (0 to 10), `rainbow_count` (0 to 10), `carrots_eaten` (0 to 5), `tail_swishes` (per minute), and the outcome: `happy` (1 = happy, 0 = grumpy). File: `files/neuralNetworks/data/nn_group1_moody_unicorn.csv` in the [project materials](1_project_files.html).
+:::
+
+```{r g1-data}
+unicorn <- read_csv("files/neuralNetworks/data/nn_group1_moody_unicorn.csv")
+```
+
+*Scroll down inside the table to see all 200 rows.*
+
+::: {style="font-size: 0.55em; max-height: 420px; overflow-y: auto;"}
+```{r g1-table}
+#| echo: false
+scroll_table(unicorn)
+```
+:::
+
+## Group 1: The Royal Visits
+
+```{r g1-new}
+visits <- tibble(
+  visitor       = c("Duke of Dazzle", "Lady Drizzle", "Baron Beige",
+                    "Princess Prism", "The Glitter Goblin"),
+  glitter_level = c(9.0, 1.5, 2.0, 8.5, 9.5),
+  rainbow_count = c(8.5, 8.0, 1.0, 2.0, 0.5),
+  carrots_eaten = c(3, 5, 1, 4, 2),
+  tail_swishes  = c(31, 28, 35, 25, 30)
+)
+```
+
+::: {style="font-size: 0.6em;"}
+```{r g1-new-table}
+#| echo: false
+scroll_table(visits)
+```
+:::
+
+## Group 1: Discussion Questions and Your Code
+
+::: {.callout-important icon="true"}
+## Talk these over as a group
+1. Before you train anything: from your plot, can you draw **one straight line** that separates the happy days from the grumpy days?
+2. In theory two hidden neurons are enough for this pattern. Did `hidden = 2` always find it? What happens if you change the seed?
+3. Do `carrots_eaten` and `tail_swishes` matter? How could you find out, without being able to read the weights?
+:::
+
+```{r g1-code}
+#| eval: false
+ggplot(unicorn, aes(glitter_level, rainbow_count, colour = factor(happy))) +
+  geom_point()
+
+scaled <- unicorn %>% mutate(across(-happy, normalize))
+# ... split into train and test (see the starter code) ...
+
+for (h in list(0, 1, 2, 4, c(4, 2))) {
+  set.seed(301)
+  fit <- neuralnet(happy ~ ., data = train, hidden = h,
+                   linear.output = FALSE, stepmax = 1e5)
+  train_acc <- mean((predict(fit, train)[, 1] > 0.5) == train$happy)
+  test_acc  <- ___   # your turn!
+  cat("hidden =", h, " train:", train_acc, " test:", test_acc, "\n")
+}
+```
+
+## Group 1: What to Present
+
+::: {.callout-important icon="true"}
+## Answer your research questions on your slides
+1. **The straight line:** Show your scatter plot, and your table of accuracy for each network size. Why does `hidden = 0` fail (or succeed)?
+2. **The smallest network:** Which network would you hand to the king, and why? Show its plot.
+3. **The visits:** Show a table of the probability of a happy unicorn for each of the five visitors. Which visits should the king cancel?
+:::
+
+<!-- ============================ GROUP 2 ============================ -->
+
+# Group 2: Alien Cow Abductions 🛸
+
+## Group 2: The Scenario and Research Questions
+
+::: {.callout-note icon="true"}
+## The threat
+Every full moon, flying saucers hover over Moo Valley, and cows vanish. Farmer Daisy has records for 200 cows on abduction nights: their weight, how far they were from the barn, how bright the moonlight was, and how much they mooed. She wants to know which of her cows to lock in the barn tonight.
+:::
+
+::: {.callout-tip icon="true"}
+## Research questions
+1. What happens if you train a network on the data **exactly as it was recorded** (without scaling)?
+2. How much better is the network after you scale the inputs to 0 to 1?
+3. Which of tonight's five cows are most at risk?
+:::
+
+## Group 2: What This Asks of the Network
+
+::: {.callout-important icon="true"}
+## Under the hood
+Every input is multiplied by a weight, and the total goes through a **sigmoid** that squashes it into 0 to 1. The sigmoid is only "interesting" for totals between about −5 and +5. Look at your columns: `barn_distance_m` goes up to 5000, but `moonlight` stays between 0 and 1. Your question is really: *what happens to the sigmoid, and to training, when one input is thousands of times bigger than another?*
+:::
+
+::: {.callout-tip icon="true"}
+## Your experiment
+Train the same network twice, on raw data and on scaled data, with the same seed. Compare the test accuracy, the error and the number of steps. Then try three different seeds for each.
+:::
+
+## Group 2: The Data
+
+::: {.callout-note icon="true"}
+## About the data
+`cow_weight_kg` (400 to 900), `barn_distance_m` (0 to 5000), `moonlight` (0 to 1), `moos_per_hour`, and the outcome: `abducted` (1 = taken, 0 = still here). File: `files/neuralNetworks/data/nn_group2_cow_abductions.csv` in the [project materials](1_project_files.html).
+
+:::
+
+```{r g2-data}
+cows <- read_csv("files/neuralNetworks/data/nn_group2_cow_abductions.csv")
+```
+
+*Scroll down inside the table to see all 200 rows.*
+
+::: {style="font-size: 0.55em; max-height: 420px; overflow-y: auto;"}
+```{r g2-table}
+#| echo: false
+scroll_table(cows)
+```
+:::
+
+## Group 2: Tonight's Herd
+
+```{r g2-new}
+tonight <- tibble(
+  name            = c("Bessie", "Moonpie", "Sir Loin", "Clover", "Big Bertha"),
+  cow_weight_kg   = c(850, 420, 610, 700, 890),
+  barn_distance_m = c(4500, 300, 2600, 1200, 4900),
+  moonlight       = c(0.10, 0.90, 0.50, 0.20, 0.05),
+  moos_per_hour   = c(12, 55, 30, 5, 40)
+)
+```
+
+::: {style="font-size: 0.6em;"}
+```{r g2-new-table}
+#| echo: false
+scroll_table(tonight)
+```
+:::
+
+## Group 2: Discussion Questions and Your Code
+
+::: {.callout-important icon="true"}
+## Talk these over as a group
+1. What do the predictions from the raw network look like? (Try `summary(predict(fit, test))`.) Is it making a real decision for each cow?
+2. Compare the raw network with the baseline (always guessing the most common outcome). What do you notice?
+3. A decision tree would not care about scaling. Why not?
+:::
+
+```{r g2-code}
+#| eval: false
+set.seed(301)
+train_rows <- sample(nrow(cows), 150)
+
+# Version A: the raw data
+raw_train <- cows[train_rows, ];  raw_test <- cows[-train_rows, ]
+set.seed(301)
+fit_raw <- neuralnet(abducted ~ ., data = raw_train, hidden = 3,
+                     linear.output = FALSE, stepmax = 1e5)
+
+# Version B: the scaled data
+scaled <- cows %>% mutate(across(-abducted, normalize))
+sc_train <- ___ ;  sc_test <- ___
+set.seed(301)
+fit_scaled <- ___
+
+fit_raw$result.matrix[c("error", "steps"), ]
+fit_scaled$result.matrix[c("error", "steps"), ]
+
+# Tonight's herd (scale like the original cows!)
+predict(fit_scaled, scale_like(tonight, cows))
+```
+
+## Group 2: What to Present
+
+::: {.callout-important icon="true"}
+## Answer your research questions on your slides
+1. **The raw network:** Show its test accuracy, error and predictions. What went wrong, in terms of the sigmoid?
+2. **The scaled network:** Show the same numbers for the scaled network, side by side. How big is the difference? Did it hold for other seeds?
+3. **Tonight:** Show the probability of abduction for each cow in tonight's herd. Which cows go in the barn? What would go wrong if you forgot to scale `tonight` with `scale_like()`?
+:::
+
+<!-- ============================ GROUP 3 ============================ -->
+
+# Group 3: The Marshmallow Campfire Forecast 🔥
+
+## Group 3: The Scenario and Research Questions
+
+::: {.callout-note icon="true"}
+## The threat
+The Camp Wanna-S'more supply truck can only make one delivery per weekend. Order too few marshmallows, and there is a camper uprising. Order too many, and the bears move in. You have records from 180 campfires. Build a network that predicts **how many** marshmallows a campfire will roast.
+:::
+
+::: {.callout-tip icon="true"}
+## Research questions
+1. How close are the network's predictions, in marshmallows, for campfires it has never seen?
+2. Is the network better than simply guessing the average, or than a straight-line model (`lm()`)?
+3. How many marshmallows should the truck bring for next weekend's four campfires?
+:::
+
+## Group 3: What This Asks of the Network
+
+::: {.callout-important icon="true"}
+## Under the hood
+Your outcome is a **number**, not a category. A sigmoid output can only say numbers between 0 and 1, so this time you use `linear.output = TRUE` (the output neuron just adds up, with no squashing). You must also scale the **outcome**, and then **unscale** the predictions to get marshmallows back. Your question is really: *does the network find curved relationships that a straight line would miss?* (Plot `marshmallows` against `temperature_c` and against `campers` to see.)
+:::
+
+::: {.callout-tip icon="true"}
+## Your experiment
+Compare three forecasters on the test campfires, using RMSE: the average, `lm()`, and your network.
+:::
+
+## Group 3: The Data
+
+::: {.callout-note icon="true"}
+## About the data
+`campers` (2 to 20), `temperature_c`, `stick_length_cm`, `ghost_stories` told, `mosquito_index` (0 to 10), and the outcome: `marshmallows` roasted. File: `files/neuralNetworks/data/nn_group3_marshmallow_forecast.csv` in the [project materials](1_project_files.html).
+:::
+
+```{r g3-data}
+camp <- read_csv("files/neuralNetworks/data/nn_group3_marshmallow_forecast.csv")
+```
+
+*Scroll down inside the table to see all 180 rows.*
+
+::: {style="font-size: 0.55em; max-height: 420px; overflow-y: auto;"}
+```{r g3-table}
+#| echo: false
+scroll_table(camp)
+```
+:::
+
+## Group 3: Next Weekend's Campfires
+
+```{r g3-new}
+next_weekend <- tibble(
+  site            = c("Lakeside", "Bear Ridge", "Frosty Hollow", "Swamp Point"),
+  campers         = c(4, 18, 12, 10),
+  temperature_c   = c(11, 25, -3, 9),
+  stick_length_cm = c(90, 60, 110, 45),
+  ghost_stories   = c(2, 7, 4, 0),
+  mosquito_index  = c(2.0, 6.5, 0.5, 9.5)
+)
+```
+
+::: {style="font-size: 0.6em;"}
+```{r g3-new-table}
+#| echo: false
+scroll_table(next_weekend)
+```
+:::
+
+## Group 3: Discussion Questions and Your Code
+
+::: {.callout-important icon="true"}
+## Talk these over as a group
+1. What does an RMSE of, say, 6 mean, in marshmallows? Would the camp director be happy with that?
+2. What goes wrong if you forget `linear.output = TRUE`? What if you forget to unscale?
+3. Where does `lm()` make its biggest mistakes? (Hint: think about the temperature plot.)
+:::
+
+```{r g3-code}
+#| eval: false
+scaled <- camp %>% mutate(across(everything(), normalize))  # outcome too!
+set.seed(301)
+train_rows <- sample(nrow(camp), 135)
+train <- scaled[train_rows, ];  test <- scaled[-train_rows, ]
+actual <- camp$marshmallows[-train_rows]       # test answers, in marshmallows
+
+set.seed(301)
+fit <- neuralnet(marshmallows ~ ., data = train, hidden = 4,
+                 linear.output = TRUE, stepmax = 1e5)
+nn_pred <- unscale(predict(fit, test)[, 1], camp$marshmallows)
+
+# RMSE: the typical size of an error (in marshmallows). Smaller is better.
+rmse <- function(actual, pred) sqrt(mean((actual - pred)^2))
+rmse(actual, nn_pred)
+rmse(actual, mean(camp$marshmallows[train_rows]))        # the average
+lm_fit <- lm(marshmallows ~ ., data = camp[train_rows, ])
+rmse(actual, ___)                                        # the straight line
+
+# Next weekend
+unscale(predict(fit, scale_like(next_weekend, camp)), camp$marshmallows)
+```
+
+## Group 3: What to Present
+
+::: {.callout-important icon="true"}
+## Answer your research questions on your slides
+1. **The accuracy:** Show a plot of actual against predicted marshmallows for the test campfires. What is the RMSE?
+2. **The rivals:** Show a table with the RMSE of the average, `lm()` and the network. Which curves in the data did the network catch that `lm()` missed?
+3. **The order:** Show your forecast for each of next weekend's campfires, and the total order for the truck. Would you add a safety margin? How big?
+:::
+
+<!-- ============================ GROUP 4 ============================ -->
+
+# Group 4: The Intergalactic Pet Shelter 👽
+
+## Group 4: The Scenario and Research Questions
+
+::: {.callout-note icon="true"}
+## The problem
+The Intergalactic Pet Shelter takes in three alien species: **blorps**, **zibs** and **fluffs**. They look alike, but a blorp fed zib food will explode (politely, but still). The shelter has 210 pets whose species was confirmed by DNA tests. The DNA machine is now broken, and five mystery pets have just arrived.
+:::
+
+::: {.callout-tip icon="true"}
+## Research questions
+1. How well can a network sort the three species, on pets it has never seen?
+2. Which species does the network confuse with each other, and why?
+3. What are the five mystery pets, and how sure is the network about each one?
+:::
+
+## Group 4: What This Asks of the Network
+
+::: {.callout-important icon="true"}
+## Under the hood
+A network's outputs are numbers, so three categories need **three output neurons**: one 0/1 column for each species ("one-hot encoding"). The network gives each pet three scores, and the **highest** score wins (`which.max`). Your question is really: *which measurements put the three species in different regions, and where do those regions overlap?* (A boxplot of each input by species will help.)
+:::
+
+::: {.callout-tip icon="true"}
+## Your experiment
+Build the three-output network, make a 3 × 3 confusion matrix for the test pets, and look at the three scores for each mystery pet.
+:::
+
+## Group 4: The Data
+
+::: {.callout-note icon="true"}
+## About the data
+`tentacles`, `glow_level` (0 to 10), `weight_kg`, `squeak_hz` (pitch of the squeak), `slime_ml` (slime per day), and the outcome: `species` (blorp, zib or fluff). File: `files/neuralNetworks/data/nn_group4_pet_shelter.csv` in the [project materials](1_project_files.html).
+:::
+
+```{r g4-data}
+pets <- read_csv("files/neuralNetworks/data/nn_group4_pet_shelter.csv")
+```
+
+*Scroll down inside the table to see all 210 rows.*
+
+::: {style="font-size: 0.55em; max-height: 420px; overflow-y: auto;"}
+```{r g4-table}
+#| echo: false
+scroll_table(pets)
+```
+:::
+
+## Group 4: The Mystery Pets
+
+```{r g4-new}
+mystery <- tibble(
+  pet_id    = c("M-1", "M-2", "M-3", "M-4", "M-5"),
+  tentacles = c(7, 1, 3, 4, 3),
+  glow_level = c(8.0, 5.5, 1.0, 6.5, 4.0),
+  weight_kg = c(3.5, 10.0, 4.5, 6.5, 5.0),
+  squeak_hz = c(1000, 380, 850, 650, 700),
+  slime_ml  = c(45, 30, 2, 38, 20)
+)
+```
+
+::: {style="font-size: 0.6em;"}
+```{r g4-new-table}
+#| echo: false
+scroll_table(mystery)
+```
+:::
+
+## Group 4: Discussion Questions and Your Code
+
+::: {.callout-important icon="true"}
+## Talk these over as a group
+1. Why can we not simply code the species as 1, 2 and 3 in a single output column?
+2. Do the three scores for a pet add up to 1? What does it mean if all three are low, or two are high?
+3. Which mystery pet would you send for a (repaired) DNA test before feeding it, and why?
+:::
+
+```{r g4-code}
+#| eval: false
+scaled <- pets %>%
+  mutate(across(-species, normalize),
+         blorp = as.integer(species == "blorp"),
+         zib   = as.integer(species == "zib"),
+         fluff = ___)
+# ... split into train and test (see the starter code) ...
+
+set.seed(301)
+fit <- neuralnet(blorp + zib + fluff ~ tentacles + glow_level + weight_kg +
+                   squeak_hz + slime_ml,
+                 data = train, hidden = 4, linear.output = FALSE, stepmax = 1e5)
+
+scores    <- predict(fit, test)
+predicted <- c("blorp", "zib", "fluff")[apply(scores, 1, which.max)]
+table(actual = test$species, predicted)
+
+# The mystery pets: three scores each
+round(predict(fit, scale_like(mystery, pets)), 2)
+```
+
+## Group 4: What to Present
+
+::: {.callout-important icon="true"}
+## Answer your research questions on your slides
+1. **The sorting:** Show your network plot (three output neurons!) and its test accuracy.
+2. **The confusion:** Show your 3 × 3 confusion matrix. Which pair of species gets mixed up? Show a plot that explains why.
+3. **The mystery pets:** Show a table of the three scores for each mystery pet, and your verdict. Which pet is the riskiest to feed?
+:::
+
+<!-- ============================ GROUP 5 ============================ -->
+
+# Group 5: Professor Pumpernickel's Pop Quiz 📝
+
+## Group 5: The Scenario and Research Questions
+
+::: {.callout-note icon="true"}
+## The threat
+Professor Pumpernickel gives surprise pop quizzes, and the class is suffering. A secret student society has spied on 60 class days, recording everything from coffee cups to the number of pigeons on the window sill. They want a network that predicts whether today brings a quiz. One member insists: *"The bigger the network, the better!"*
+:::
+
+::: {.callout-tip icon="true"}
+## Research questions
+1. As the network grows (`hidden = 0, 1, 2, 4, 8, 16`), what happens to its accuracy on the **training** days? On the **unseen** days?
+2. Which network size would you trust, and is it much better than guessing?
+3. Is the society member right? What is going wrong with the biggest networks?
+:::
+
+## Group 5: What This Asks of the Network
+
+::: {.callout-important icon="true"}
+## Under the hood
+A network with 16 hidden neurons and 7 inputs has more than **140 weights**, but your training data has only 45 days. With that many knobs, a network can **memorize** each day (including its random noise, like the pigeons) instead of learning the real pattern. Your question is really: *when does a network stop learning and start memorizing?* This is called **overfitting**.
+:::
+
+::: {.callout-tip icon="true"}
+## Your experiment
+For each network size, train on five different random splits, and record the average training and test accuracy. Plot both against the network size.
+:::
+
+## Group 5: The Data
+
+::: {.callout-note icon="true"}
+## About the data
+`coffee_cups` the professor drank, `rain_mm`, `students_late`, `day_of_week` (1 = Monday), `socks_matching` (1 = yes), `pigeons_outside`, `chalk_sticks` left, and the outcome: `pop_quiz` (1 = quiz!). File: `files/neuralNetworks/data/nn_group5_pop_quiz.csv` in the [project materials](1_project_files.html).
+:::
+
+```{r g5-data}
+quiz <- read_csv("files/neuralNetworks/data/nn_group5_pop_quiz.csv")
+```
+
+*Scroll down inside the table to see all 60 rows.*
+
+::: {style="font-size: 0.55em; max-height: 420px; overflow-y: auto;"}
+```{r g5-table}
+#| echo: false
+scroll_table(quiz)
+```
+:::
+
+## Group 5: Discussion Questions
+
+::: {.callout-important icon="true"}
+## Talk these over as a group
+1. A network that is 100% right on its training days: is that good news or bad news?
+2. Why do we average over five different splits, instead of using just one?
+3. Which columns do you suspect are pure noise? Try leaving them out. Does a smaller set of inputs help?
+4. The professor reads your slides and starts drinking decaf. What happens to your network?
+:::
+
+::: {.callout-tip icon="true"}
+## Hints
+- Count the weights in a network with `length(unlist(fit$weights))`.
+- With so few days, results jump around. That is part of the lesson. Write down the numbers before you rerun anything!
+:::
+
+## Group 5: Your Code
+
+```{r g5-code}
+#| eval: false
+scaled <- quiz %>% mutate(across(-pop_quiz, normalize))
+accuracy <- function(fit, data) mean((predict(fit, data)[, 1] > 0.5) == data$pop_quiz)
+
+results <- map_dfr(c(0, 1, 2, 4, 8, 16), \(h) {
+  map_dfr(1:5, \(s) {
+    set.seed(s)
+    rows  <- sample(nrow(scaled), 45)
+    train <- scaled[rows, ];  test <- scaled[-rows, ]
+    fit <- neuralnet(pop_quiz ~ ., data = train, hidden = h,
+                     linear.output = FALSE, stepmax = 1e5)
+    tibble(hidden = h, train = accuracy(fit, train), test = ___)
+  })
+})
+
+summary_table <- results %>%
+  group_by(hidden) %>%
+  summarise(train = mean(train), test = mean(test))
+summary_table
+
+summary_table %>%
+  pivot_longer(c(train, test), names_to = "data", values_to = "accuracy") %>%
+  ggplot(aes(hidden, accuracy, colour = data)) +
+  geom_line() + geom_point()
+```
+
+## Group 5: What to Present
+
+::: {.callout-important icon="true"}
+## Answer your research questions on your slides
+1. **The growth:** Show your table and plot of training and test accuracy against network size. Describe the two lines in plain words.
+2. **The choice:** Which size would you use, and how much better is it than always guessing the most common answer?
+3. **The verdict:** Is "bigger is better" true? Explain overfitting to the secret society, using your plot.
+:::
+
+<!-- ============================ GROUP 6 ============================ -->
+
+# Group 6: The Llama Stock Exchange 🦙
+
+## Group 6: The Scenario and Research Questions
+
+::: {.callout-note icon="true"}
+## The threat
+The world economy now runs on **LlamaCoin**. Investors are panicking, and the Central Bank of Llamas has hired your group to predict whether the price will go up tomorrow. You have 160 days of market data. Your first network looks great. Then your teammate trains the *same* network on the *same* data and gets a *different* answer...
+:::
+
+::: {.callout-tip icon="true"}
+## Research questions
+1. If you train the same network ten times with ten different seeds, how much does the test accuracy change?
+2. Do the ten networks agree about **tomorrow**?
+3. How should the Central Bank report a prediction from a network, given what you found?
+:::
+
+## Group 6: What This Asks of the Network
+
+::: {.callout-important icon="true"}
+## Under the hood
+Training starts from **random weights**, then walks downhill on the error. The error "landscape" has many valleys, and different starting points can end up in **different valleys** (different networks, with different predictions). `set.seed()` only fixes *which* random start you get. Your question is really: *how much of my result is the data, and how much is luck?*
+:::
+
+::: {.callout-tip icon="true"}
+## Your experiment
+Keep the train/test split fixed. Train the same network with seeds 1 to 10, and record the training error, the test accuracy, and the prediction for tomorrow. Then try `rep = 10`.
+:::
+
+## Group 6: The Data
+
+::: {.callout-note icon="true"}
+## About the data
+`hay_price` (in dollars), `llama_posts` (social media posts about llamas), `spit_incidents` on the trading floor, `fog_level` (0 to 1), `head_llama_mood` (1 = grumpy, 5 = delighted), and the outcome: `price_up` (1 = yes). File: `files/neuralNetworks/data/nn_group6_llama_stocks.csv` in the [project materials](1_project_files.html).
+:::
+
+```{r g6-data}
+llama <- read_csv("files/neuralNetworks/data/nn_group6_llama_stocks.csv")
+```
+
+*Scroll down inside the table to see all 160 rows.*
+
+::: {style="font-size: 0.55em; max-height: 420px; overflow-y: auto;"}
+```{r g6-table}
+#| echo: false
+scroll_table(llama)
+```
+:::
+
+**Tomorrow's market:**
+
+```{r g6-new}
+tomorrow <- tibble(hay_price = 6.5, llama_posts = 260, spit_incidents = 4,
+                   fog_level = 0.4, head_llama_mood = 3)
+```
+
+## Group 6: Discussion Questions and Your Code
+
+::: {.callout-important icon="true"}
+## Talk these over as a group
+1. Is the network with the lowest **training** error also the one with the best **test** accuracy?
+2. What does `rep = 10` do, and does picking the "best" of ten repetitions solve the problem?
+3. If the ten networks split 6 to 4 about tomorrow, what should the bank tell investors?
+:::
+
+```{r g6-code}
+#| eval: false
+scaled <- llama %>% mutate(across(-price_up, normalize))
+set.seed(301)                                   # this seed fixes the SPLIT
+rows  <- sample(nrow(scaled), 120)
+train <- scaled[rows, ];  test <- scaled[-rows, ]
+tomorrow_scaled <- scale_like(tomorrow, llama)
+
+runs <- map_dfr(1:10, \(s) {
+  set.seed(s)                                   # this seed fixes the START
+  fit <- neuralnet(price_up ~ ., data = train, hidden = 3,
+                   linear.output = FALSE, stepmax = 1e5)
+  tibble(seed      = s,
+         train_err = fit$result.matrix["error", 1],
+         test_acc  = mean((predict(fit, test)[, 1] > 0.5) == test$price_up),
+         tomorrow  = ___)                       # P(price goes up tomorrow)
+})
+runs
+ggplot(runs, aes(seed, test_acc)) + geom_col()
+```
+
+## Group 6: What to Present
+
+::: {.callout-important icon="true"}
+## Answer your research questions on your slides
+1. **The luck:** Show your table of ten runs and a plot of the test accuracy. What are the best and worst results? Which single number would you report?
+2. **Tomorrow:** Show the ten predictions for tomorrow. Do they agree? What is their average?
+3. **The advice:** Write one sentence for the Central Bank's press release that is honest about the uncertainty. How would you make a network's prediction more trustworthy?
+:::
+
+<!-- ============================ GROUP 7 ============================ -->
+
+# Group 7: The Robot Bake-Off Judge 🎂
+
+## Group 7: The Scenario and Research Questions
+
+::: {.callout-note icon="true"}
+## The problem
+The National Cake Contest has replaced its human judges with **JudgeBot 3000**, a neural network. Bakers are complaining that the robot is unfair, but the network cannot explain itself. You have 200 cakes from last year, with the robot's verdicts. The contest committee asks: *what is the robot actually rewarding?*
+:::
+
+::: {.callout-tip icon="true"}
+## Research questions
+1. Train your own copy of the judge. Which inputs matter most to it?
+2. How does the chance of a blue ribbon change as each input changes? Are any of the relationships curved?
+3. Is the judge **fair**? Look at the twin cakes. What should the committee do?
+:::
+
+## Group 7: What This Asks of the Network
+
+::: {.callout-important icon="true"}
+## Under the hood
+You cannot read the rules from a network's weights, but you can **interrogate** it, like a detective. Two tricks:
+
+- **Shuffle test (permutation importance):** scramble one column of the test data and see how much the accuracy drops. A big drop means that the network relied on that column.
+- **What-if sweep:** hold every input at a typical value, slide **one** input from low to high, and watch the predicted probability.
+
+Your question is really: *can we explain a black box from the outside?*
+:::
+
+## Group 7: The Data
+
+::: {.callout-note icon="true"}
+## About the data
+`sugar_g`, `bake_minutes`, `frosting_layers` (0 to 4), `sprinkles` (count), `baker_hat_cm` (height of the baker's hat), and the outcome: `blue_ribbon` (1 = won). File: `files/neuralNetworks/data/nn_group7_robot_bakeoff.csv` in the [project materials](1_project_files.html).
+
+:::
+
+```{r g7-data}
+bake <- read_csv("files/neuralNetworks/data/nn_group7_robot_bakeoff.csv")
+```
+
+*Scroll down inside the table to see all 200 rows.*
+
+::: {style="font-size: 0.55em; max-height: 420px; overflow-y: auto;"}
+```{r g7-table}
+#| echo: false
+scroll_table(bake)
+```
+:::
+
+## Group 7: The Twin Cakes
+
+These two cakes are identical in every way, except for the height of the baker's hat.
+
+```{r g7-new}
+twins <- tibble(
+  baker           = c("Chef Petite", "Chef Towering"),
+  sugar_g         = c(220, 220),
+  bake_minutes    = c(35, 35),
+  frosting_layers = c(2, 2),
+  sprinkles       = c(150, 150),
+  baker_hat_cm    = c(12, 48)
+)
+```
+
+::: {style="font-size: 0.6em;"}
+```{r g7-new-table}
+#| echo: false
+scroll_table(twins)
+```
+:::
+
+## Group 7: Discussion Questions and Your Code
+
+::: {.callout-important icon="true"}
+## Talk these over as a group
+1. Which input *should* not matter in a cake contest? Does it matter to the robot?
+2. If you retrain the robot **without** that column, how much accuracy do you lose? Is that a price worth paying?
+3. The robot learned from past verdicts. Where could an unfair pattern have come from?
+:::
+
+```{r g7-code}
+#| eval: false
+scaled <- bake %>% mutate(across(-blue_ribbon, normalize))
+# ... split into train and test, then train fit with hidden = 4 ...
+accuracy <- function(fit, data) mean((predict(fit, data)[, 1] > 0.5) == data$blue_ribbon)
+
+# Shuffle test: how much does the accuracy drop?
+base_acc <- accuracy(fit, test)
+for (v in setdiff(names(test), "blue_ribbon")) {
+  shuffled <- test
+  shuffled[[v]] <- sample(shuffled[[v]])
+  cat(v, ":", round(base_acc - accuracy(fit, shuffled), 3), "\n")
+}
+
+# What-if sweep: slide ONE input from 0 to 1, keep the rest typical
+typical <- scaled %>% summarise(across(-blue_ribbon, median))
+sweep <- typical[rep(1, 21), ] %>% mutate(sugar_g = seq(0, 1, 0.05))
+sweep$prob <- predict(fit, sweep)[, 1]
+ggplot(sweep, aes(sugar_g, prob)) + geom_line()   # now try the others!
+
+# The twin cakes
+predict(fit, scale_like(twins, bake))
+```
+
+## Group 7: What to Present
+
+::: {.callout-important icon="true"}
+## Answer your research questions on your slides
+1. **The importance:** Show a bar chart of how much the accuracy drops when each column is shuffled. What does the robot rely on most?
+2. **The shapes:** Show your what-if plots. Describe the robot's "ideal cake" in plain language.
+3. **The fairness:** Show the twin cakes' probabilities. Is JudgeBot fair? Show what happens when you retrain without the unfair column, and make a recommendation to the committee.
+:::
+
+<!-- ============================ GROUP 8 ============================ -->
+
+# Group 8: The Hamster Wheel Power Plant 🐹
+
+## Group 8: The Scenario and Research Questions
+
+::: {.callout-note icon="true"}
+## The threat
+The town of Squeakton runs entirely on hamster power. You have readings from 150 wheel sessions, with the power produced in watts. The mayor has just bought **Turbo**, a genetically enhanced hamster who can run at 300 rpm, more than twice as fast as any hamster in your data. The town's new hospital is depending on Turbo's power.
+:::
+
+::: {.callout-tip icon="true"}
+## Research questions
+1. How well does the network predict the power of hamsters like the ones in the data?
+2. What does the network predict for Turbo, and for the other new hamsters? Do you believe it?
+3. How does the network's guess for Turbo compare with a straight-line model (`lm()`)? Which would you give to the hospital?
+:::
+
+## Group 8: What This Asks of the Network
+
+::: {.callout-important icon="true"}
+## Under the hood
+A network builds its curve out of sigmoids, and every sigmoid **flattens out** at its ends. Inside the range of the training data (20 to 120 rpm), the network can bend to fit the data. Outside that range, it has never seen anything, and it must guess. Your question is really: *what does a network do when it is asked about something it has never seen?* This is called **extrapolation**.
+:::
+
+::: {.callout-tip icon="true"}
+## Your experiment
+Make a what-if sweep of `wheel_rpm` from 20 to 300 (with the other inputs at typical values). Plot the network's predictions and the `lm()` predictions on top of the real data.
+:::
+
+## Group 8: The Data
+
+::: {.callout-note icon="true"}
+## About the data
+`wheel_rpm` (20 to 120), `hamster_g` (weight in grams), `seeds_eaten` that day, `cage_temp_c`, and the outcome: `watts` produced. File: `files/neuralNetworks/data/nn_group8_hamster_power.csv`
+ in the [project materials](1_project_files.html).
+
+:::
+
+```{r g8-data}
+hamster <- read_csv("files/neuralNetworks/data/nn_group8_hamster_power.csv")
+```
+
+*Scroll down inside the table to see all 150 rows.*
+
+::: {style="font-size: 0.55em; max-height: 420px; overflow-y: auto;"}
+```{r g8-table}
+#| echo: false
+scroll_table(hamster)
+```
+:::
+
+## Group 8: The New Hamsters
+
+```{r g8-new}
+new_hamsters <- tibble(
+  name        = c("Nibbles", "Dash", "Zoom", "Rocket", "Turbo"),
+  wheel_rpm   = c(60, 110, 150, 200, 300),
+  hamster_g   = c(140, 140, 140, 140, 140),
+  seeds_eaten = c(15, 15, 15, 15, 15),
+  cage_temp_c = c(23, 23, 23, 23, 23)
+)
+```
+
+::: {style="font-size: 0.6em;"}
+```{r g8-new-table}
+#| echo: false
+scroll_table(new_hamsters)
+```
+:::
+
+## Group 8: Discussion Questions and Your Code
+
+::: {.callout-important icon="true"}
+## Talk these over as a group
+1. Which new hamsters are *inside* the range of the training data, and which are *outside*?
+2. What shape does the network's curve take beyond 120 rpm? Why that shape?
+3. Neither model can be trusted for Turbo. What would you tell the mayor to do before plugging in the hospital?
+:::
+
+```{r g8-code}
+#| eval: false
+scaled <- hamster %>% mutate(across(everything(), normalize))
+set.seed(301)
+fit <- neuralnet(watts ~ ., data = scaled, hidden = 3,
+                 linear.output = TRUE, stepmax = 1e5)
+lm_fit <- lm(watts ~ ., data = hamster)
+
+# Predictions for the new hamsters
+nn_watts <- unscale(predict(fit, scale_like(new_hamsters, hamster))[, 1],
+                    hamster$watts)
+lm_watts <- predict(lm_fit, new_hamsters)
+tibble(new_hamsters["name"], nn_watts, lm_watts)
+
+# What-if sweep from 20 to 300 rpm
+sweep <- tibble(wheel_rpm = 20:300, hamster_g = 140,
+                seeds_eaten = 15, cage_temp_c = 23)
+sweep$nn <- unscale(predict(fit, scale_like(sweep, hamster))[, 1], hamster$watts)
+sweep$lm <- ___
+ggplot(hamster, aes(wheel_rpm, watts)) + geom_point(alpha = 0.4) +
+  geom_line(data = sweep, aes(y = nn), colour = "purple") +
+  geom_line(data = sweep, aes(y = lm), colour = "orange") +
+  geom_vline(xintercept = 120, linetype = "dashed")
+```
+
+## Group 8: What to Present
+
+::: {.callout-important icon="true"}
+## Answer your research questions on your slides
+1. **Inside the data:** How well does the network fit hamsters between 20 and 120 rpm? (A test RMSE, or a plot of actual against predicted watts.)
+2. **Turbo:** Show your what-if plot with both curves and the dashed line at 120 rpm. What do the two models predict for Turbo, and why do they disagree?
+3. **The hospital:** Which number would you give to the hospital, if either? What data would you collect to make a trustworthy prediction?
+:::
